@@ -17,12 +17,16 @@ import {
 
 const playerLinks = [
   { href: "/app", label: "Dashboard", icon: "◆" },
-  { href: "/app/profile", label: "Profile", icon: "◉" },
+  { href: "/app/profile", label: "Profile", icon: "���" },
   { href: "/app/documents", label: "Documents", icon: "▤" },
   { href: "/app/payments", label: "Payments", icon: "◈" },
   { href: "/app/games", label: "Game History", icon: "▶" },
   { href: "/app/tactics", label: "Tactics", icon: "⬡" },
   { href: "/app/tutorials", label: "Tutorials", icon: "▣" },
+  { href: "/app/contracts", label: "Contracts", icon: "◫" },
+  { href: "/app/training", label: "Training", icon: "◭" },
+  { href: "/app/evaluations", label: "Evaluations", icon: "◮" },
+  { href: "/app/goals", label: "Goals", icon: "◎" },
 ]
 
 const adminLinks = [
@@ -31,6 +35,10 @@ const adminLinks = [
   { href: "/app/admin/schedule", label: "Schedule Manager", icon: "▦" },
   { href: "/app/admin/applications", label: "Applications", icon: "◧" },
   { href: "/app/admin/media", label: "Media Manager", icon: "◩" },
+  { href: "/app/admin/contracts", label: "Contracts Manager", icon: "◫" },
+  { href: "/app/admin/training", label: "Training Manager", icon: "◭" },
+  { href: "/app/admin/scouting", label: "Scouting", icon: "◬" },
+  { href: "/app/admin/evaluations", label: "Evaluations", icon: "◮" },
 ]
 
 const superadminLinks = [
