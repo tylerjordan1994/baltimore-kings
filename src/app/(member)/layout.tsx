@@ -30,13 +30,13 @@ export default async function MemberLayout({
 
   if (profile.role === "pending") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-8">
-        <div className="mx-auto max-w-md rounded-xl border border-amber-500/30 bg-zinc-900 p-8 text-center">
+      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] p-8">
+        <div className="mx-auto max-w-md rounded-xl border border-white/10 bg-white/5 p-8 text-center">
           <div className="mb-4 text-4xl">⏳</div>
           <h1 className="mb-2 text-xl font-bold text-white">
             Account Pending Approval
           </h1>
-          <p className="text-zinc-400">
+          <p className="text-white/50">
             Your account is awaiting coach approval. You will receive an email
             once your account has been activated.
           </p>
@@ -58,9 +58,13 @@ export default async function MemberLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-[#0a0a0a]">
       <MemberSidebar profile={profile} brandUploaded={brandUploaded} />
-      <main className="flex-1 overflow-y-auto p-6 lg:p-8">{children}</main>
+      <main className="flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-7xl p-6 lg:p-8">
+          {children}
+        </div>
+      </main>
     </div>
   )
 }

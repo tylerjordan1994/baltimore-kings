@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 
 // basePath handled by next.config.ts
 
@@ -68,118 +69,189 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      {/* Greeting */}
       <div>
-        <h1 className="text-2xl font-bold text-white">
-          Welcome back, {profile?.full_name?.split(" ")[0] ?? "Player"}
+        <h1 className="text-3xl font-bold text-white">
+          Hello, {profile?.full_name?.split(" ")[0] ?? "Player"}
         </h1>
-        <p className="mt-1 text-zinc-400">Here is your dashboard overview.</p>
+        <p className="mt-1 text-white/50">Here is your dashboard overview.</p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Row */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
+          icon="◆"
           label="Teams"
           value={teams.length.toString()}
           detail={teams.map((t) => t?.name).join(", ") || "None"}
         />
         <StatCard
+          icon="▶"
+          label="Upcoming Events"
+          value={nextEvent ? "1" : "0"}
+          detail={nextEvent ? nextEvent.title : "Nothing scheduled"}
+        />
+        <StatCard
+          icon="◈"
           label="Outstanding Fees"
-          value={`$${(totalOwed / 100).toFixed(2)}`}
+          value={`$${(totalOwed / 100).toFixed(0)}`}
           detail={`${outstandingFees?.length ?? 0} unpaid item(s)`}
         />
         <StatCard
-          label="Unsigned Requirements"
-          value={unsignedCount.toString()}
-          detail={unsignedCount > 0 ? "Action needed" : "All signed"}
-        />
-        <StatCard
+          icon="▣"
           label="Games Played"
           value={(recentGames?.length ?? 0).toString()}
           detail="Recent participations"
         />
       </div>
 
-      {/* Next Event */}
-      {nextEvent && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500">
-            Next Event
-          </h2>
-          <p className="text-lg font-medium text-white">{nextEvent.title}</p>
-          <p className="text-sm text-zinc-400">
-            {new Date(nextEvent.starts_at).toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-            })}
-            {nextEvent.location && ` — ${nextEvent.location}`}
-          </p>
-        </div>
-      )}
-
-      {/* Recent Games */}
-      {recentGames && recentGames.length > 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">
-            Recent Games
-          </h2>
-          <div className="space-y-2">
-            {recentGames.map((gp: any) => (
-              <div
-                key={gp.id}
-                className="flex items-center justify-between rounded-lg bg-zinc-800/50 px-4 py-2"
-              >
-                <div>
-                  <span className="text-sm font-medium text-white">
-                    vs {gp.games?.opponent}
-                  </span>
-                  <span className="ml-2 text-xs text-zinc-500">
-                    {gp.games?.teams?.name}
-                  </span>
-                </div>
-                <div className="flex gap-3 text-xs text-zinc-400">
-                  <span>{gp.minutes} min</span>
-                  <span>{gp.goals}G</span>
-                  <span>{gp.assists}A</span>
-                  {gp.games?.result && (
-                    <span
-                      className={
-                        gp.games.result === "W"
-                          ? "text-green-400"
-                          : gp.games.result === "L"
-                            ? "text-red-400"
-                            : "text-yellow-400"
-                      }
-                    >
-                      {gp.games.result}
-                    </span>
-                  )}
-                </div>
+      {/* Two Column Layout */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Next Up */}
+          <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-amber-400/80">
+              Next Up
+            </h2>
+            {nextEvent ? (
+              <div>
+                <p className="text-lg font-medium text-white">{nextEvent.title}</p>
+                <p className="mt-1 text-sm text-white/50">
+                  {new Date(nextEvent.starts_at).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                  })}
+                  {nextEvent.location && ` — ${nextEvent.location}`}
+                </p>
               </div>
-            ))}
+            ) : (
+              <p className="text-sm text-white/40">No upcoming events scheduled.</p>
+            )}
+          </div>
+
+          {/* Recent Games */}
+          <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-amber-400/80">
+              Recent Games
+            </h2>
+            {recentGames && recentGames.length > 0 ? (
+              <div className="space-y-2">
+                {recentGames.map((gp: any) => (
+                  <div
+                    key={gp.id}
+                    className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-4 py-2.5"
+                  >
+                    <div>
+                      <span className="text-sm font-medium text-white">
+                        vs {gp.games?.opponent}
+                      </span>
+                      <span className="ml-2 text-xs text-white/30">
+                        {gp.games?.teams?.name}
+                      </span>
+                    </div>
+                    <div className="flex gap-3 text-xs text-white/40">
+                      <span>{gp.minutes} min</span>
+                      <span>{gp.goals}G</span>
+                      <span>{gp.assists}A</span>
+                      {gp.games?.result && (
+                        <span
+                          className={
+                            gp.games.result === "W"
+                              ? "font-medium text-green-400"
+                              : gp.games.result === "L"
+                                ? "font-medium text-red-400"
+                                : "font-medium text-yellow-400"
+                          }
+                        >
+                          {gp.games.result}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-white/40">No recent games recorded.</p>
+            )}
           </div>
         </div>
-      )}
+
+        {/* Right Column - Action Required */}
+        <div className="space-y-6">
+          <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-amber-400/80">
+              Action Required
+            </h2>
+            <div className="space-y-3">
+              {unsignedCount > 0 && (
+                <Link
+                  href="/app/requirements"
+                  className="flex items-center justify-between rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 transition-colors hover:bg-amber-500/10"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-white">Unsigned Requirements</p>
+                    <p className="text-xs text-white/40">
+                      {unsignedCount} document(s) need your signature
+                    </p>
+                  </div>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/20 text-xs font-bold text-amber-400">
+                    {unsignedCount}
+                  </span>
+                </Link>
+              )}
+
+              {totalOwed > 0 && (
+                <Link
+                  href="/app/payments"
+                  className="flex items-center justify-between rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 transition-colors hover:bg-red-500/10"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-white">Unpaid Fees</p>
+                    <p className="text-xs text-white/40">
+                      ${(totalOwed / 100).toFixed(2)} outstanding
+                    </p>
+                  </div>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-red-500/20 text-xs font-bold text-red-400">
+                    {outstandingFees?.length ?? 0}
+                  </span>
+                </Link>
+              )}
+
+              {unsignedCount === 0 && totalOwed === 0 && (
+                <div className="rounded-lg border border-green-500/20 bg-green-500/5 px-4 py-3">
+                  <p className="text-sm font-medium text-green-400">All clear</p>
+                  <p className="text-xs text-white/40">No outstanding actions required.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
 
 function StatCard({
+  icon,
   label,
   value,
   detail,
 }: {
+  icon: string
   label: string
   value: string
   detail: string
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-      <p className="text-sm text-zinc-500">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-white">{value}</p>
-      <p className="mt-1 truncate text-xs text-zinc-400">{detail}</p>
+    <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+      <div className="mb-2 text-lg opacity-40">{icon}</div>
+      <p className="text-2xl font-bold text-white">{value}</p>
+      <p className="mt-0.5 text-sm text-white/50">{label}</p>
+      <p className="mt-1 truncate text-xs text-white/30">{detail}</p>
     </div>
   )
 }
