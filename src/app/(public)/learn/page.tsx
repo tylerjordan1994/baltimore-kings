@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
 import { BookOpen, ExternalLink } from "lucide-react"
 import { createBrowserClient } from "@supabase/ssr"
 
@@ -60,53 +59,57 @@ export default function LearnPage() {
 
   return (
     <>
-      <section className="bg-primary py-16 sm:py-20">
+      <section className="bg-gradient-to-b from-[#0a0a0a] to-[#141414] py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Learn
           </h1>
-          <p className="mt-2 text-primary-foreground/70">
+          <p className="mt-2 text-white/60">
             Futsal and arena soccer tutorials. Technical breakdowns, set pieces, positioning.
           </p>
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="bg-[#0a0a0a] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Category filter */}
           <div className="flex flex-wrap gap-2">
-            <Button
-              variant={filter === "all" ? "default" : "outline"}
-              size="sm"
+            <button
               onClick={() => setFilter("all")}
-              className="font-heading"
+              className={`rounded-full px-4 py-1.5 font-heading text-sm font-semibold transition-all ${
+                filter === "all"
+                  ? "bg-gold text-black"
+                  : "border border-white/10 bg-white/5 text-white/70 hover:border-gold/30 hover:text-white"
+              }`}
             >
               All
-            </Button>
+            </button>
             {categories.map((cat) => (
-              <Button
+              <button
                 key={cat}
-                variant={filter === cat ? "default" : "outline"}
-                size="sm"
                 onClick={() => setFilter(cat)}
-                className="font-heading capitalize"
+                className={`rounded-full px-4 py-1.5 font-heading text-sm font-semibold capitalize transition-all ${
+                  filter === cat
+                    ? "bg-gold text-black"
+                    : "border border-white/10 bg-white/5 text-white/70 hover:border-gold/30 hover:text-white"
+                }`}
               >
                 {cat}
-              </Button>
+              </button>
             ))}
           </div>
 
           {loading ? (
-            <div className="mt-12 text-center text-muted-foreground">Loading tutorials...</div>
+            <div className="mt-12 text-center text-white/60">Loading tutorials...</div>
           ) : filtered.length > 0 ? (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((tutorial) => (
                 <div
                   key={tutorial.id}
-                  className="overflow-hidden rounded-lg border border-border bg-card"
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all hover:border-gold/30"
                 >
                   {tutorial.youtube_url && (
-                    <div className="aspect-video">
+                    <div className="aspect-video bg-black">
                       <iframe
                         src={getEmbedUrl(tutorial.youtube_url)}
                         className="h-full w-full"
@@ -116,15 +119,15 @@ export default function LearnPage() {
                     </div>
                   )}
                   <div className="p-4">
-                    <p className="font-heading font-semibold">{tutorial.title}</p>
+                    <p className="font-heading font-semibold text-white">{tutorial.title}</p>
                     {tutorial.description && (
-                      <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">
+                      <p className="mt-1.5 text-sm text-white/60 line-clamp-2">
                         {tutorial.description}
                       </p>
                     )}
                     <div className="mt-3 flex flex-wrap gap-2">
                       {tutorial.category && (
-                        <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                        <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/50">
                           {tutorial.category}
                         </span>
                       )}
@@ -144,10 +147,10 @@ export default function LearnPage() {
               ))}
             </div>
           ) : (
-            <div className="mt-12 rounded-lg border border-dashed border-border p-12 text-center">
-              <BookOpen className="mx-auto h-10 w-10 text-muted-foreground/50" />
-              <p className="mt-3 font-heading text-lg font-semibold">Tutorials incoming</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+            <div className="mt-12 rounded-2xl border border-dashed border-white/10 p-12 text-center">
+              <BookOpen className="mx-auto h-10 w-10 text-white/30" />
+              <p className="mt-3 font-heading text-lg font-semibold text-white">Tutorials incoming</p>
+              <p className="mt-1 text-sm text-white/60">
                 Video breakdowns and written guides drop here throughout the season.
               </p>
             </div>

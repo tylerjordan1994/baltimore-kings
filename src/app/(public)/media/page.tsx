@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { ImageIcon, Play, X, Film } from "lucide-react"
 import { createBrowserClient } from "@supabase/ssr"
 
@@ -51,36 +50,38 @@ export default function MediaPage() {
 
   return (
     <>
-      <section className="bg-primary py-16 sm:py-20">
+      <section className="bg-gradient-to-b from-[#0a0a0a] to-[#141414] py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Media
           </h1>
-          <p className="mt-2 text-primary-foreground/70">
+          <p className="mt-2 text-white/60">
             Match footage, training clips, and game day photos.
           </p>
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="bg-[#0a0a0a] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Filter */}
           <div className="flex flex-wrap gap-2">
             {FILTERS.map((f) => (
-              <Button
+              <button
                 key={f.value}
-                variant={filter === f.value ? "default" : "outline"}
-                size="sm"
                 onClick={() => setFilter(f.value)}
-                className="font-heading"
+                className={`rounded-full px-4 py-1.5 font-heading text-sm font-semibold transition-all ${
+                  filter === f.value
+                    ? "bg-gold text-black"
+                    : "border border-white/10 bg-white/5 text-white/70 hover:border-gold/30 hover:text-white"
+                }`}
               >
                 {f.label}
-              </Button>
+              </button>
             ))}
           </div>
 
           {loading ? (
-            <div className="mt-12 text-center text-muted-foreground">Loading media...</div>
+            <div className="mt-12 text-center text-white/60">Loading media...</div>
           ) : filtered.length > 0 ? (
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {filtered.map((item) => (
@@ -89,7 +90,7 @@ export default function MediaPage() {
                   onClick={() => {
                     if (item.media_type === "photo") setLightbox(item)
                   }}
-                  className="group relative aspect-square overflow-hidden rounded-lg border border-border bg-muted"
+                  className="group relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-white/5"
                 >
                   {item.thumbnail_url || (item.media_type === "photo" && item.url) ? (
                     <Image
@@ -100,13 +101,19 @@ export default function MediaPage() {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <Film className="h-8 w-8 text-muted-foreground/50" />
+                      <Film className="h-8 w-8 text-white/30" />
                     </div>
                   )}
+                  {/* Glass overlay on hover */}
+                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100">
+                    {item.title && (
+                      <p className="p-3 text-xs font-medium text-white">{item.title}</p>
+                    )}
+                  </div>
                   {item.media_type === "video" && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90">
-                        <Play className="h-4 w-4 text-primary" />
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+                        <Play className="h-4 w-4 text-white" />
                       </div>
                     </div>
                   )}
@@ -114,10 +121,10 @@ export default function MediaPage() {
               ))}
             </div>
           ) : (
-            <div className="mt-12 rounded-lg border border-dashed border-border p-12 text-center">
-              <ImageIcon className="mx-auto h-10 w-10 text-muted-foreground/50" />
-              <p className="mt-3 font-heading text-lg font-semibold">No media yet</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+            <div className="mt-12 rounded-2xl border border-dashed border-white/10 p-12 text-center">
+              <ImageIcon className="mx-auto h-10 w-10 text-white/30" />
+              <p className="mt-3 font-heading text-lg font-semibold text-white">No media yet</p>
+              <p className="mt-1 text-sm text-white/60">
                 Photos and videos will be posted here after match days.
               </p>
             </div>
@@ -126,13 +133,13 @@ export default function MediaPage() {
           {/* Inline video players */}
           {filter !== "photo" && filtered.filter((i) => i.media_type === "video").length > 0 && (
             <div className="mt-12 space-y-6">
-              <h2 className="font-heading text-xl font-bold">Videos</h2>
+              <h2 className="font-heading text-xl font-bold text-white">Videos</h2>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered
                   .filter((i) => i.media_type === "video")
                   .map((video) => (
-                    <div key={video.id} className="overflow-hidden rounded-lg border border-border">
-                      <div className="aspect-video">
+                    <div key={video.id} className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                      <div className="aspect-video bg-black">
                         {video.url.includes("youtube.com") || video.url.includes("youtu.be") ? (
                           <iframe
                             src={video.url.replace("watch?v=", "embed/")}
@@ -150,7 +157,7 @@ export default function MediaPage() {
                       </div>
                       {video.title && (
                         <div className="p-3">
-                          <p className="font-heading text-sm font-semibold">{video.title}</p>
+                          <p className="font-heading text-sm font-semibold text-white">{video.title}</p>
                         </div>
                       )}
                     </div>
@@ -164,11 +171,11 @@ export default function MediaPage() {
       {/* Lightbox */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
           onClick={() => setLightbox(null)}
         >
           <button
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white hover:bg-white/10"
             onClick={() => setLightbox(null)}
           >
             <X className="h-5 w-5" />
@@ -182,7 +189,7 @@ export default function MediaPage() {
               className="max-h-[85vh] w-auto rounded-lg object-contain"
             />
             {lightbox.title && (
-              <p className="mt-3 text-center text-sm text-white/80">{lightbox.title}</p>
+              <p className="mt-3 text-center text-sm text-white/70">{lightbox.title}</p>
             )}
           </div>
         </div>

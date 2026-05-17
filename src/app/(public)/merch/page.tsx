@@ -40,13 +40,14 @@ export default function MerchPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-primary py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0a0a0a] to-[#141414] py-20 sm:py-28">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(201,169,78,0.08)_0%,_transparent_60%)]" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <h1 className="font-heading text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl">
+            <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Rep the Kings
             </h1>
-            <p className="mt-4 text-lg text-primary-foreground/80">
+            <p className="mt-4 text-lg text-white/70">
               Official gear. Limited drops. All proceeds fund player development and travel.
             </p>
             <div className="mt-8">
@@ -55,7 +56,7 @@ export default function MerchPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button size="lg" variant="secondary" className="font-heading font-semibold">
+                <Button size="lg" className="bg-gold font-heading font-semibold text-black hover:bg-gold/90">
                   Shop now
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -66,20 +67,20 @@ export default function MerchPage() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-16 sm:py-20">
+      <section className="bg-[#0a0a0a] py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-heading text-2xl font-bold tracking-tight">Featured</h2>
+          <h2 className="font-heading text-2xl font-bold tracking-tight text-white">Featured</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURED_PRODUCTS.map((product) => (
               <div
                 key={product.id}
-                className="group rounded-lg border border-border bg-card p-5 transition-colors hover:border-gold/50"
+                className="group rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-all hover:border-gold/30"
               >
-                <div className="mb-4 flex h-40 items-center justify-center rounded bg-muted">
-                  <ShoppingBag className="h-10 w-10 text-muted-foreground/40" />
+                <div className="mb-4 flex h-40 items-center justify-center rounded-lg bg-white/5">
+                  <ShoppingBag className="h-10 w-10 text-white/20" />
                 </div>
-                <p className="font-heading font-semibold">{product.name}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{product.description}</p>
+                <p className="font-heading font-semibold text-white">{product.name}</p>
+                <p className="mt-1 text-sm text-white/60">{product.description}</p>
                 <p className="mt-2 font-heading text-lg font-bold text-gold">{product.price}</p>
               </div>
             ))}
@@ -88,10 +89,10 @@ export default function MerchPage() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-border bg-muted/30 py-16 sm:py-20">
+      <section className="border-t border-white/10 bg-[#111111] py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-heading text-2xl font-bold tracking-tight">Full catalog on Printify</h2>
-          <p className="mt-2 text-muted-foreground">
+          <h2 className="font-heading text-2xl font-bold tracking-tight text-white">Full catalog on Printify</h2>
+          <p className="mt-2 text-white/60">
             Tees, hoodies, hats, accessories. Ships direct.
           </p>
           <div className="mt-6">
@@ -100,7 +101,7 @@ export default function MerchPage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button size="lg" className="font-heading font-semibold">
+              <Button size="lg" className="bg-gold font-heading font-semibold text-black hover:bg-gold/90">
                 Browse full store
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

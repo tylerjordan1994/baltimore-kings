@@ -68,16 +68,16 @@ export function AccordionSections({ markdown }: { markdown: string }) {
   }
 
   return (
-    <div className="divide-y divide-zinc-800 rounded-xl border border-zinc-800">
+    <div className="divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
       {sections.map((section, i) => (
         <div key={i}>
           <button
             onClick={() => toggle(i)}
-            className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-zinc-800/50"
+            className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-white/[0.07]"
           >
             <h3 className="text-lg font-semibold text-white">{section.heading}</h3>
             <svg
-              className={`h-5 w-5 shrink-0 text-zinc-400 transition-transform ${
+              className={`h-5 w-5 shrink-0 text-gold transition-transform ${
                 openSections.has(i) ? "rotate-180" : ""
               }`}
               fill="none"
@@ -91,7 +91,7 @@ export function AccordionSections({ markdown }: { markdown: string }) {
           {openSections.has(i) && (
             <div className="px-6 pb-6">
               <div
-                className="prose prose-invert prose-sm max-w-none text-zinc-300"
+                className="prose prose-invert prose-sm max-w-none text-white/70"
                 dangerouslySetInnerHTML={{ __html: markdownToHtml(section.body) }}
               />
             </div>
