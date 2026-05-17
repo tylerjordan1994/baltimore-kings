@@ -168,7 +168,7 @@ export default function AdminEvaluationsPage() {
                 <select
                   value={form.profile_id}
                   onChange={(e) => setForm({ ...form, profile_id: e.target.value })}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 >
                   <option value="">Select player...</option>
                   {players.map((p) => (
@@ -183,7 +183,7 @@ export default function AdminEvaluationsPage() {
                   value={form.period}
                   onChange={(e) => setForm({ ...form, period: e.target.value })}
                   placeholder="e.g. Fall 2025"
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -193,7 +193,7 @@ export default function AdminEvaluationsPage() {
                     <select
                       value={form[`${cat}_rating` as keyof typeof form] as number}
                       onChange={(e) => setForm({ ...form, [`${cat}_rating`]: parseInt(e.target.value) })}
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                     >
                       {[1, 2, 3, 4, 5].map((n) => (
                         <option key={n} value={n}>{n}</option>
@@ -208,7 +208,7 @@ export default function AdminEvaluationsPage() {
                   value={form.strengths}
                   onChange={(e) => setForm({ ...form, strengths: e.target.value })}
                   rows={2}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -217,7 +217,7 @@ export default function AdminEvaluationsPage() {
                   value={form.areas_for_growth}
                   onChange={(e) => setForm({ ...form, areas_for_growth: e.target.value })}
                   rows={2}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -226,7 +226,7 @@ export default function AdminEvaluationsPage() {
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   rows={2}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">

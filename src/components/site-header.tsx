@@ -293,7 +293,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
               <div className="my-3 border-t border-border" />
 
               <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-brand">Club</p>
-              {clubDropdown.map((item) => (
+              {[...clubDropdown.about, ...clubDropdown.joinUs, ...clubDropdown.outcomes].map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}

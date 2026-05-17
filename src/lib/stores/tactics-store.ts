@@ -6,9 +6,13 @@ import type {
   TacticsBoardState,
   TacticsKind,
   FieldType,
+  TacticsPosition,
 } from "@/types/database"
 
-export type TacticsTool = "select" | "arrow" | "label"
+export type TacticsTool = "select" | "arrow" | "label" | "ball" | "player_home" | "player_away"
+
+export const FUTSAL_POSITIONS: TacticsPosition[] = ["GK", "Fixo", "Ala", "Pivô"]
+export const MASL_POSITIONS: TacticsPosition[] = ["TF", "SF", "MF", "DEF", "GK"]
 
 interface TacticsState {
   // Board metadata
@@ -30,6 +34,7 @@ interface TacticsState {
   arrowStart: { x: number; y: number } | null
   curvedArrows: boolean
   isDirty: boolean
+  selectedPosition: TacticsPosition
 }
 
 interface TacticsActions {
@@ -53,6 +58,7 @@ interface TacticsActions {
   setArrowStart: (point: { x: number; y: number } | null) => void
   setCurvedArrows: (curved: boolean) => void
   setSelectedId: (id: string | null) => void
+  setSelectedPosition: (pos: TacticsPosition) => void
 
   // Board meta
   setName: (name: string) => void
@@ -84,6 +90,7 @@ const initialState: TacticsState = {
   arrowStart: null,
   curvedArrows: false,
   isDirty: false,
+  selectedPosition: "GK",
 }
 
 export const useTacticsStore = create<TacticsState & TacticsActions>()(
@@ -142,6 +149,7 @@ export const useTacticsStore = create<TacticsState & TacticsActions>()(
     setArrowStart: (point) => set({ arrowStart: point }),
     setCurvedArrows: (curved) => set({ curvedArrows: curved }),
     setSelectedId: (id) => set({ selectedId: id }),
+    setSelectedPosition: (pos) => set({ selectedPosition: pos }),
 
     // Board meta
     setName: (name) => set({ name, isDirty: true }),

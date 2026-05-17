@@ -18,6 +18,7 @@ export function FieldSvg({ fieldType, children, onClick }: FieldSvgProps) {
       className="w-full rounded-lg border border-zinc-700"
       preserveAspectRatio="xMidYMid meet"
       onClick={onClick}
+      data-tactics-svg=""
     >
       {isFutsal ? <FutsalField /> : <MaslField />}
       {children}
@@ -31,9 +32,9 @@ function FutsalField() {
       {/* Surface */}
       <rect x="0" y="0" width="1000" height="500" rx="3" fill="#2d6b30" />
 
-      {/* Outline */}
+      {/* Outline with rounded corners */}
       <rect
-        x="40" y="20" width="920" height="460" rx="3"
+        x="40" y="20" width="920" height="460" rx="12"
         fill="none" stroke="white" strokeWidth="2"
       />
 
@@ -44,43 +45,66 @@ function FutsalField() {
       <circle cx="500" cy="250" r="60" fill="none" stroke="white" strokeWidth="2" />
       <circle cx="500" cy="250" r="3" fill="white" />
 
-      {/* Left penalty area */}
-      <rect
-        x="40" y="150" width="120" height="200"
+      {/* Left penalty area (D-shaped) */}
+      <path
+        d="M 40,175 L 130,175 A 75,75 0 0,1 130,325 L 40,325"
         fill="none" stroke="white" strokeWidth="2"
       />
-      {/* Left penalty spot */}
+      {/* Left penalty spot (6m) */}
       <circle cx="100" cy="250" r="3" fill="white" />
-      {/* Left second penalty spot */}
+      {/* Left second penalty spot (10m) */}
       <circle cx="160" cy="250" r="3" fill="white" />
+      {/* Left penalty arc from second spot */}
+      <path
+        d="M 160,225 A 25,25 0 0,1 160,275"
+        fill="none" stroke="white" strokeWidth="1.5" strokeDasharray="3 3"
+      />
 
-      {/* Right penalty area */}
-      <rect
-        x="840" y="150" width="120" height="200"
+      {/* Right penalty area (D-shaped) */}
+      <path
+        d="M 960,175 L 870,175 A 75,75 0 0,0 870,325 L 960,325"
         fill="none" stroke="white" strokeWidth="2"
       />
-      {/* Right penalty spot */}
+      {/* Right penalty spot (6m) */}
       <circle cx="900" cy="250" r="3" fill="white" />
-      {/* Right second penalty spot */}
+      {/* Right second penalty spot (10m) */}
       <circle cx="840" cy="250" r="3" fill="white" />
+      {/* Right penalty arc from second spot */}
+      <path
+        d="M 840,225 A 25,25 0 0,0 840,275"
+        fill="none" stroke="white" strokeWidth="1.5" strokeDasharray="3 3"
+      />
 
       {/* Left goal */}
       <rect
-        x="20" y="210" width="20" height="80"
-        fill="none" stroke="white" strokeWidth="2"
+        x="20" y="215" width="20" height="70"
+        fill="none" stroke="white" strokeWidth="2.5"
       />
+      {/* Goal depth shading */}
+      <rect x="20" y="215" width="20" height="70" fill="rgba(255,255,255,0.08)" />
 
       {/* Right goal */}
       <rect
-        x="960" y="210" width="20" height="80"
-        fill="none" stroke="white" strokeWidth="2"
+        x="960" y="215" width="20" height="70"
+        fill="none" stroke="white" strokeWidth="2.5"
       />
+      <rect x="960" y="215" width="20" height="70" fill="rgba(255,255,255,0.08)" />
 
       {/* Corner arcs */}
-      <path d="M 40,20 A 15,15 0 0,1 55,20" fill="none" stroke="white" strokeWidth="2" />
-      <path d="M 945,20 A 15,15 0 0,1 960,20" fill="none" stroke="white" strokeWidth="2" />
-      <path d="M 40,480 A 15,15 0 0,0 55,480" fill="none" stroke="white" strokeWidth="2" />
-      <path d="M 945,480 A 15,15 0 0,0 960,480" fill="none" stroke="white" strokeWidth="2" />
+      <path d="M 40,35 A 15,15 0 0,1 55,20" fill="none" stroke="white" strokeWidth="2" />
+      <path d="M 945,20 A 15,15 0 0,1 960,35" fill="none" stroke="white" strokeWidth="2" />
+      <path d="M 55,480 A 15,15 0 0,1 40,465" fill="none" stroke="white" strokeWidth="2" />
+      <path d="M 960,465 A 15,15 0 0,1 945,480" fill="none" stroke="white" strokeWidth="2" />
+
+      {/* Substitution zones (near halfway line, both sides) */}
+      {/* Home substitution zone */}
+      <line x1="460" y1="480" x2="460" y2="490" stroke="#fbbf24" strokeWidth="2" />
+      <line x1="500" y1="480" x2="500" y2="490" stroke="#fbbf24" strokeWidth="2" />
+      <line x1="460" y1="488" x2="500" y2="488" stroke="#fbbf24" strokeWidth="1.5" />
+      {/* Away substitution zone */}
+      <line x1="500" y1="480" x2="500" y2="490" stroke="#fbbf24" strokeWidth="2" />
+      <line x1="540" y1="480" x2="540" y2="490" stroke="#fbbf24" strokeWidth="2" />
+      <line x1="500" y1="488" x2="540" y2="488" stroke="#fbbf24" strokeWidth="1.5" />
     </g>
   )
 }
@@ -91,14 +115,22 @@ function MaslField() {
       {/* Surface - arena blue/gray */}
       <rect x="0" y="0" width="1000" height="425" rx="8" fill="#2a3a4a" />
 
-      {/* Dasher boards */}
+      {/* Dasher boards (rounded rectangle) */}
       <rect
-        x="30" y="15" width="940" height="395" rx="8"
-        fill="none" stroke="#88aacc" strokeWidth="3"
+        x="30" y="15" width="940" height="395" rx="40"
+        fill="none" stroke="#88aacc" strokeWidth="4"
       />
 
-      {/* Center line (red) */}
+      {/* Red center line */}
       <line x1="500" y1="15" x2="500" y2="410" stroke="#cc3333" strokeWidth="3" />
+
+      {/* Blue lines (territorial markers) */}
+      <line x1="300" y1="15" x2="300" y2="410" stroke="#3366cc" strokeWidth="2.5" />
+      <line x1="700" y1="15" x2="700" y2="410" stroke="#3366cc" strokeWidth="2.5" />
+
+      {/* Red lines (behind goals - 3-line violation reference) */}
+      <line x1="130" y1="55" x2="130" y2="370" stroke="#cc3333" strokeWidth="2" />
+      <line x1="870" y1="55" x2="870" y2="370" stroke="#cc3333" strokeWidth="2" />
 
       {/* Center circle */}
       <circle cx="500" cy="212" r="55" fill="none" stroke="white" strokeWidth="2" />
@@ -110,7 +142,7 @@ function MaslField() {
         fill="none" stroke="white" strokeWidth="2"
       />
       {/* Left penalty spot */}
-      <circle cx="130" cy="212" r="3" fill="white" />
+      <circle cx="155" cy="212" r="3" fill="white" />
 
       {/* Right penalty arc */}
       <path
@@ -118,34 +150,41 @@ function MaslField() {
         fill="none" stroke="white" strokeWidth="2"
       />
       {/* Right penalty spot */}
-      <circle cx="870" cy="212" r="3" fill="white" />
+      <circle cx="845" cy="212" r="3" fill="white" />
 
-      {/* Left goal crease */}
-      <rect
-        x="30" y="162" width="40" height="100"
-        fill="none" stroke="#ffcc00" strokeWidth="2"
+      {/* Left goal crease (semi-circular) */}
+      <path
+        d="M 30,170 A 50,50 0 0,1 30,255"
+        fill="none" stroke="#ffcc00" strokeWidth="2.5"
       />
+      <rect x="30" y="170" width="35" height="85" fill="rgba(255,204,0,0.06)" />
 
-      {/* Right goal crease */}
-      <rect
-        x="930" y="162" width="40" height="100"
-        fill="none" stroke="#ffcc00" strokeWidth="2"
+      {/* Right goal crease (semi-circular) */}
+      <path
+        d="M 970,170 A 50,50 0 0,0 970,255"
+        fill="none" stroke="#ffcc00" strokeWidth="2.5"
       />
+      <rect x="935" y="170" width="35" height="85" fill="rgba(255,204,0,0.06)" />
 
       {/* Left goal */}
       <rect
-        x="10" y="180" width="20" height="65"
-        fill="none" stroke="white" strokeWidth="2"
+        x="10" y="185" width="20" height="55"
+        fill="none" stroke="white" strokeWidth="2.5"
       />
+      <rect x="10" y="185" width="20" height="55" fill="rgba(255,255,255,0.08)" />
 
       {/* Right goal */}
       <rect
-        x="970" y="180" width="20" height="65"
-        fill="none" stroke="white" strokeWidth="2"
+        x="970" y="185" width="20" height="55"
+        fill="none" stroke="white" strokeWidth="2.5"
       />
+      <rect x="970" y="185" width="20" height="55" fill="rgba(255,255,255,0.08)" />
 
-      {/* Corner markings */}
-      <path d="M 30,15 Q 30,15 30,15" fill="none" stroke="#88aacc" strokeWidth="2" />
+      {/* Corner dots */}
+      <circle cx="65" cy="50" r="3" fill="#88aacc" opacity="0.5" />
+      <circle cx="935" cy="50" r="3" fill="#88aacc" opacity="0.5" />
+      <circle cx="65" cy="375" r="3" fill="#88aacc" opacity="0.5" />
+      <circle cx="935" cy="375" r="3" fill="#88aacc" opacity="0.5" />
     </g>
   )
 }

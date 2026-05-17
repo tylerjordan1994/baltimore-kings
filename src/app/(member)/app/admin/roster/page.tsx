@@ -278,7 +278,9 @@ export default function RosterPage() {
                     className="flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
                   >
                     <option value="">Select player...</option>
-                    {allPlayers.map((p) => (
+                    {allPlayers
+                      .filter((p) => !(teamMembers[team.id] ?? []).some((tm) => tm.profileId === p.id))
+                      .map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.full_name}
                       </option>

@@ -152,7 +152,7 @@ export default function AdminScoutingPage() {
                   type="text"
                   value={form.full_name}
                   onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -162,7 +162,7 @@ export default function AdminScoutingPage() {
                     type="text"
                     value={form.position}
                     onChange={(e) => setForm({ ...form, position: e.target.value })}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -171,7 +171,7 @@ export default function AdminScoutingPage() {
                     type="text"
                     value={form.current_team}
                     onChange={(e) => setForm({ ...form, current_team: e.target.value })}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -181,7 +181,7 @@ export default function AdminScoutingPage() {
                   type="text"
                   value={form.contact}
                   onChange={(e) => setForm({ ...form, contact: e.target.value })}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -191,7 +191,7 @@ export default function AdminScoutingPage() {
                     type="date"
                     value={form.scouted_at}
                     onChange={(e) => setForm({ ...form, scouted_at: e.target.value })}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -200,7 +200,7 @@ export default function AdminScoutingPage() {
                     type="text"
                     value={form.event}
                     onChange={(e) => setForm({ ...form, event: e.target.value })}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -209,7 +209,7 @@ export default function AdminScoutingPage() {
                 <select
                   value={form.priority}
                   onChange={(e) => setForm({ ...form, priority: e.target.value as ProspectPriority })}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 >
                   {columns.map((c) => (
                     <option key={c.key} value={c.key}>{c.label}</option>
@@ -222,7 +222,7 @@ export default function AdminScoutingPage() {
                   value={form.assessment}
                   onChange={(e) => setForm({ ...form, assessment: e.target.value })}
                   rows={4}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">

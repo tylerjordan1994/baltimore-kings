@@ -243,7 +243,7 @@ export default function AdminContractsPage() {
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -252,7 +252,7 @@ export default function AdminContractsPage() {
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   rows={8}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -261,7 +261,7 @@ export default function AdminContractsPage() {
                   <select
                     value={kind}
                     onChange={(e) => setKind(e.target.value as ContractKind)}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   >
                     {kindOptions.map((k) => (
                       <option key={k} value={k}>{k.replace(/_/g, " ")}</option>
@@ -273,7 +273,7 @@ export default function AdminContractsPage() {
                   <select
                     value={appliesTo}
                     onChange={(e) => setAppliesTo(e.target.value as ContractAppliesTo)}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   >
                     <option value="individual">Individual</option>
                     <option value="team">Team</option>
@@ -287,7 +287,7 @@ export default function AdminContractsPage() {
                   <select
                     value={teamId}
                     onChange={(e) => setTeamId(e.target.value)}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   >
                     <option value="">Select team...</option>
                     {teams.map((t) => (
@@ -302,7 +302,7 @@ export default function AdminContractsPage() {
                   type="date"
                   value={expirationDate}
                   onChange={(e) => setExpirationDate(e.target.value)}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
@@ -337,7 +337,7 @@ export default function AdminContractsPage() {
                   <select
                     value={assignProfileId}
                     onChange={(e) => setAssignProfileId(e.target.value)}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   >
                     <option value="">Select player...</option>
                     {players.map((p) => (

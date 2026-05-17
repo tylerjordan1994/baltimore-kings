@@ -266,7 +266,7 @@ export default function AdminTrainingPage() {
                   type="text"
                   value={faName}
                   onChange={(e) => setFaName(e.target.value)}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -275,7 +275,7 @@ export default function AdminTrainingPage() {
                   value={faDescription}
                   onChange={(e) => setFaDescription(e.target.value)}
                   rows={3}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -283,7 +283,7 @@ export default function AdminTrainingPage() {
                 <select
                   value={faCategory}
                   onChange={(e) => setFaCategory(e.target.value as FocusCategory)}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 >
                   <option value="technical">Technical</option>
                   <option value="tactical">Tactical</option>
@@ -298,7 +298,7 @@ export default function AdminTrainingPage() {
                   value={faPositions}
                   onChange={(e) => setFaPositions(e.target.value)}
                   placeholder="GK, CB, ST"
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
@@ -332,7 +332,7 @@ export default function AdminTrainingPage() {
                 <select
                   value={assignFocusId}
                   onChange={(e) => setAssignFocusId(e.target.value)}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 >
                   <option value="">Select focus area...</option>
                   {focusAreas.map((fa) => (
@@ -357,7 +357,7 @@ export default function AdminTrainingPage() {
                   </button>
                 </div>
                 {assignToType === "player" ? (
-                  <div className="max-h-40 overflow-y-auto rounded-lg border border-white/10 bg-white/5 p-2 space-y-1">
+                  <div className="max-h-40 overflow-y-auto rounded-lg border border-zinc-700 bg-zinc-800 p-2 space-y-1">
                     {players.map((p) => (
                       <label key={p.id} className="flex items-center gap-2 cursor-pointer px-2 py-1 rounded hover:bg-white/5">
                         <input
@@ -374,7 +374,7 @@ export default function AdminTrainingPage() {
                   <select
                     value={assignTeamId}
                     onChange={(e) => setAssignTeamId(e.target.value)}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   >
                     <option value="">Select team...</option>
                     {teams.map((t) => (
@@ -390,7 +390,7 @@ export default function AdminTrainingPage() {
                     type="date"
                     value={assignDue}
                     onChange={(e) => setAssignDue(e.target.value)}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -398,7 +398,7 @@ export default function AdminTrainingPage() {
                   <select
                     value={assignPriority}
                     onChange={(e) => setAssignPriority(e.target.value as TrainingPriority)}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                   >
                     <option value="low">Low</option>
                     <option value="normal">Normal</option>
@@ -412,7 +412,7 @@ export default function AdminTrainingPage() {
                   value={assignNotes}
                   onChange={(e) => setAssignNotes(e.target.value)}
                   rows={3}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -422,7 +422,7 @@ export default function AdminTrainingPage() {
                   value={assignVideo}
                   onChange={(e) => setAssignVideo(e.target.value)}
                   placeholder="https://youtube.com/..."
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">

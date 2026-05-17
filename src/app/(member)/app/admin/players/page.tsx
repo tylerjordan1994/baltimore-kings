@@ -47,6 +47,9 @@ const INACTIVE_REASON_LABELS: Record<string, string> = {
   other: 'Other',
 }
 
+const FUTSAL_POSITIONS = ['GK', 'Fixo', 'Ala', 'Piv\u00f4'] as const
+const MASL_POSITIONS = ['Target Forward', 'Second Forward', 'Midfielder', 'Defender', 'GK'] as const
+
 export default function PlayersPage() {
   const [players, setPlayers] = useState<Profile[]>([])
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -58,6 +61,9 @@ export default function PlayersPage() {
   const [inactiveReasons, setInactiveReasons] = useState<string[]>([])
   const [inactiveNotes, setInactiveNotes] = useState('')
   const [processing, setProcessing] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortField, setSortField] = useState<string>('full_name')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   const supabase = createClient()
 
@@ -182,10 +188,24 @@ export default function PlayersPage() {
     )
   }
 
-  const filteredPlayers = players.filter((p) => {
-    if (activeTab === 'all') return true
-    return p.status === activeTab
-  })
+  const filteredPlayers = players
+    .filter((p) => {
+      if (activeTab !== 'all' && p.status !== activeTab) return false
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase()
+        return p.full_name.toLowerCase().includes(q) ||
+          (p.phone ?? '').toLowerCase().includes(q) ||
+          (p.position_primary ?? '').toLowerCase().includes(q) ||
+          (p.position_secondary ?? '').toLowerCase().includes(q)
+      }
+      return true
+    })
+    .sort((a, b) => {
+      const aVal = (a as any)[sortField] ?? ''
+      const bVal = (b as any)[sortField] ?? ''
+      const cmp = String(aVal).localeCompare(String(bVal), undefined, { numeric: true })
+      return sortDir === 'asc' ? cmp : -cmp
+    })
 
   const tabs: { key: TabKey; label: string; count: number }[] = [
     { key: 'active', label: 'Active', count: players.filter((p) => p.status === 'active').length },
@@ -201,22 +221,31 @@ export default function PlayersPage() {
         <p className="text-zinc-400">View and edit all player profiles.</p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === tab.key
-                ? 'bg-gold/20 text-gold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-            }`}
-          >
-            {tab.label}
-            <span className="ml-1.5 text-xs opacity-60">({tab.count})</span>
-          </button>
-        ))}
+      {/* Search + Tabs */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === tab.key
+                  ? 'bg-gold/20 text-gold'
+                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+              }`}
+            >
+              {tab.label}
+              <span className="ml-1.5 text-xs opacity-60">({tab.count})</span>
+            </button>
+          ))}
+        </div>
+        <input
+          type="text"
+          placeholder="Search players..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none w-full sm:w-64"
+        />
       </div>
 
       {/* Edit Dialog/Sheet */}
@@ -262,18 +291,28 @@ export default function PlayersPage() {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Primary Position</label>
-                  <input
+                  <label className="mb-1 block text-xs text-zinc-400">Futsal Position</label>
+                  <select
                     {...register('position_primary')}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
-                  />
+                  >
+                    <option value="">None</option>
+                    {FUTSAL_POSITIONS.map((pos) => (
+                      <option key={pos} value={pos}>{pos}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Secondary Position</label>
-                  <input
+                  <label className="mb-1 block text-xs text-zinc-400">MASL Position</label>
+                  <select
                     {...register('position_secondary')}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
-                  />
+                  >
+                    <option value="">None</option>
+                    {MASL_POSITIONS.map((pos) => (
+                      <option key={pos} value={pos}>{pos}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="mb-1 block text-xs text-zinc-400">Role</label>
@@ -459,19 +498,49 @@ export default function PlayersPage() {
           <table className="w-full text-left text-sm">
             <thead className="border-b border-zinc-800 bg-zinc-900/50">
               <tr>
-                <th className="px-4 py-3 font-medium text-zinc-300">Name</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Role</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Also Plays</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Position</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">#</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Phone</th>
+                {([
+                  ['full_name', 'Name'],
+                  ['role', 'Role'],
+                  ['position_primary', 'Futsal Pos'],
+                  ['position_secondary', 'MASL Pos'],
+                  ['jersey_number', '#'],
+                  ['phone', 'Phone'],
+                  ['created_at', 'Joined'],
+                ] as [string, string][]).map(([field, label]) => (
+                  <th
+                    key={field}
+                    className="px-4 py-3 font-medium text-zinc-300 cursor-pointer hover:text-white select-none"
+                    onClick={() => {
+                      if (sortField === field) {
+                        setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
+                      } else {
+                        setSortField(field)
+                        setSortDir('asc')
+                      }
+                    }}
+                  >
+                    {label}
+                    {sortField === field && (
+                      <span className="ml-1 text-amber-400">{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
+                    )}
+                  </th>
+                ))}
                 <th className="px-4 py-3 font-medium text-zinc-300">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800">
               {filteredPlayers.map((p) => (
                 <tr key={p.id} className="bg-zinc-900 hover:bg-zinc-800/50">
-                  <td className="px-4 py-3 text-white">{p.full_name}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      {p.photo_url ? (
+                        <img src={p.photo_url} alt="" className="h-7 w-7 rounded-full object-cover" />
+                      ) : (
+                        <div className="h-7 w-7 rounded-full bg-zinc-700" />
+                      )}
+                      <span className="text-white">{p.full_name}</span>
+                    </div>
+                  </td>
                   <td className="px-4 py-3">
                     <span className={`rounded px-1.5 py-0.5 text-[10px] uppercase ${
                       p.role === 'superadmin' ? 'bg-purple-900/50 text-purple-300' :
@@ -482,28 +551,13 @@ export default function PlayersPage() {
                       {p.role}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    {(p.role === 'coach' || p.role === 'superadmin') ? (
-                      <button
-                        onClick={async () => {
-                          await supabase.from('profiles').update({ also_plays: !p.also_plays }).eq('id', p.id)
-                          loadData()
-                        }}
-                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                          p.also_plays ? 'bg-green-600' : 'bg-zinc-700'
-                        }`}
-                      >
-                        <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
-                          p.also_plays ? 'translate-x-4.5' : 'translate-x-0.5'
-                        }`} />
-                      </button>
-                    ) : (
-                      <span className="text-xs text-zinc-500">—</span>
-                    )}
+                  <td className="px-4 py-3 text-zinc-400">{p.position_primary ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-zinc-400">{p.position_secondary ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-zinc-400">{p.jersey_number ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-zinc-400">{p.phone ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-zinc-400 text-xs">
+                    {new Date(p.created_at).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-3 text-zinc-400">{p.position_primary ?? '—'}</td>
-                  <td className="px-4 py-3 text-zinc-400">{p.jersey_number ?? '—'}</td>
-                  <td className="px-4 py-3 text-zinc-400">{p.phone ?? '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <Button size="sm" variant="ghost" onClick={() => openEdit(p)}>

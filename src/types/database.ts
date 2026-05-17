@@ -149,6 +149,12 @@ export interface TacticsBoardState {
   labels?: TacticsLabel[]
 }
 
+export type TacticsTokenType = 'player' | 'ball'
+
+export type FutsalPosition = 'GK' | 'Fixo' | 'Ala' | 'Pivô'
+export type MaslPosition = 'TF' | 'SF' | 'MF' | 'DEF' | 'GK'
+export type TacticsPosition = FutsalPosition | MaslPosition
+
 export interface TacticsPlayer {
   id: string
   x: number
@@ -157,6 +163,8 @@ export interface TacticsPlayer {
   name: string
   photoUrl?: string
   team: 'home' | 'away'
+  tokenType?: TacticsTokenType
+  position?: TacticsPosition
 }
 
 export interface TacticsArrow {

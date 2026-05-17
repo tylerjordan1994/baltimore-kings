@@ -1,8 +1,8 @@
 "use client"
 
-import { useTacticsStore, type TacticsTool } from "@/lib/stores/tactics-store"
+import { useTacticsStore, type TacticsTool, FUTSAL_POSITIONS, MASL_POSITIONS } from "@/lib/stores/tactics-store"
 import { Button } from "@/components/ui/button"
-import type { TacticsKind, FieldType } from "@/types/database"
+import type { TacticsKind, FieldType, TacticsPosition } from "@/types/database"
 
 interface ToolbarProps {
   teams: { id: string; name: string }[]
@@ -43,8 +43,13 @@ export function Toolbar({
   const arrows = useTacticsStore((s) => s.arrows)
   const labels = useTacticsStore((s) => s.labels)
   const isDirty = useTacticsStore((s) => s.isDirty)
+  const selectedPosition = useTacticsStore((s) => s.selectedPosition)
+  const setSelectedPosition = useTacticsStore((s) => s.setSelectedPosition)
 
-  function handleDelete() {
+  const isFutsal = fieldType === "futsal_rounded"
+  const positions = isFutsal ? FUTSAL_POSITIONS : MASL_POSITIONS
+
+  function handleDeleteSelected() {
     if (!selectedId) return
     if (players.find((p) => p.id === selectedId)) removePlayer(selectedId)
     else if (arrows.find((a) => a.id === selectedId)) removeArrow(selectedId)
@@ -77,9 +82,27 @@ export function Toolbar({
       {/* Tools */}
       <div className="flex gap-1">
         {toolBtn("select", "Select")}
+        {toolBtn("player_home", "Home")}
+        {toolBtn("player_away", "Away")}
+        {toolBtn("ball", "Ball")}
         {toolBtn("arrow", "Arrow")}
         {toolBtn("label", "Label")}
       </div>
+
+      {/* Position selector for player tools */}
+      {(tool === "player_home" || tool === "player_away") && (
+        <select
+          value={selectedPosition}
+          onChange={(e) => setSelectedPosition(e.target.value as TacticsPosition)}
+          className="h-7 rounded border border-zinc-700 bg-zinc-800 px-2 text-xs text-white"
+        >
+          {positions.map((pos) => (
+            <option key={pos} value={pos}>
+              {pos}
+            </option>
+          ))}
+        </select>
+      )}
 
       {/* Arrow curve toggle */}
       {tool === "arrow" && (
@@ -113,7 +136,7 @@ export function Toolbar({
         onChange={(e) => setFieldType(e.target.value as FieldType)}
         className="h-7 rounded border border-zinc-700 bg-zinc-800 px-2 text-xs text-white"
       >
-        <option value="futsal_rounded">Futsal</option>
+        <option value="futsal_rounded">Futsal Court</option>
         <option value="masl_rounded_extra_player">MASL Arena</option>
       </select>
 
@@ -135,7 +158,7 @@ export function Toolbar({
 
       {/* Delete selected */}
       {selectedId && (
-        <Button variant="destructive" size="sm" onClick={handleDelete}>
+        <Button variant="destructive" size="sm" onClick={handleDeleteSelected}>
           Delete
         </Button>
       )}

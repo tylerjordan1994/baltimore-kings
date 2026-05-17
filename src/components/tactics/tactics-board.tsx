@@ -42,7 +42,7 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.isDirty, store.players, store.arrows, store.labels, store.name, store.kind, store.fieldType, store.teamId, store.isPublished])
+  }, [store.isDirty, store.players, store.arrows, store.labels, store.name, store.kind, store.fieldType, store.teamId, store.isPublished, store.selectedPosition])
 
   const handleSave = useCallback(async () => {
     if (savingRef.current) return
@@ -116,7 +116,7 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
     store.reset()
   }, [store])
 
-  // Handle field click for arrow/label tools
+  // Handle field click for arrow/label/player/ball tools
   function handleFieldClick(e: React.MouseEvent<SVGSVGElement>) {
     if (!editable) return
     const point = svgPointFromEvent(e, store.fieldType)
@@ -151,6 +151,32 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
           text,
         })
       }
+    } else if (store.tool === "ball") {
+      store.addPlayer({
+        id: crypto.randomUUID(),
+        x: point.x,
+        y: point.y,
+        jerseyNumber: 0,
+        name: "Ball",
+        team: "home",
+        tokenType: "ball",
+      })
+    } else if (store.tool === "player_home" || store.tool === "player_away") {
+      const team = store.tool === "player_home" ? "home" : "away"
+      const teamPlayers = store.players.filter(
+        (p) => p.team === team && p.tokenType !== "ball"
+      )
+      const nextNumber = teamPlayers.length + 1
+      store.addPlayer({
+        id: crypto.randomUUID(),
+        x: point.x,
+        y: point.y,
+        jerseyNumber: nextNumber,
+        name: store.selectedPosition,
+        team,
+        tokenType: "player",
+        position: store.selectedPosition,
+      })
     } else if (store.tool === "select") {
       store.setSelectedId(null)
     }
@@ -257,14 +283,7 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
             fieldType={store.fieldType}
             onClick={handleFieldClick}
           >
-            {/* data attribute for drag calculations */}
-            <rect
-              data-tactics-svg=""
-              width="100%"
-              height="100%"
-              fill="transparent"
-              style={{ pointerEvents: "none" }}
-            />
+            {/* field SVG now has data-tactics-svg attribute directly */}
 
             {/* Arrows */}
             <ArrowLayer

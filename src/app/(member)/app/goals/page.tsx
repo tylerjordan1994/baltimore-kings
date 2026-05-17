@@ -165,7 +165,7 @@ export default function GoalsPage() {
                   onChange={(e) => setGoalText(e.target.value)}
                   rows={3}
                   placeholder="What do you want to achieve?"
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -175,7 +175,7 @@ export default function GoalsPage() {
                   value={season}
                   onChange={(e) => setSeason(e.target.value)}
                   placeholder="e.g. 2025-2026"
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
