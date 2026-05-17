@@ -19,8 +19,25 @@ type RosterMember = {
 
 const TEAM_FILTERS = [
   { slug: "all", label: "All" },
-  { slug: "baltimore-kings-masl3", label: "MASL3" },
-  { slug: "baltimore-kings-futsal-l1", label: "Futsal L1" },
+  { slug: "futsal-kings-1", label: "Futsal Kings 1" },
+  { slug: "futsal-kings-2", label: "Futsal Kings 2" },
+  { slug: "kings-masl3", label: "MASL3" },
+]
+
+const FALLBACK_ROSTER: RosterMember[] = [
+  { id: "f1", team_slug: "futsal-kings-1", jersey_number: null, position: "Coach/Player", status: "active", profiles: { full_name: "Josh Danza", avatar_url: null } },
+  { id: "f2", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Gavin Boyer", avatar_url: null } },
+  { id: "f3", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Pat Fleming", avatar_url: null } },
+  { id: "f4", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Antonios Araviakis", avatar_url: null } },
+  { id: "f5", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Axel Bax", avatar_url: null } },
+  { id: "f6", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Ken Truong", avatar_url: null } },
+  { id: "f7", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Henry Scott", avatar_url: null } },
+  { id: "f8", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "David Boretti", avatar_url: null } },
+  { id: "f9", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Max Cerulla", avatar_url: null } },
+  { id: "f10", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Brandon Alexander", avatar_url: null } },
+  { id: "f11", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Lucasz Kalkowski", avatar_url: null } },
+  { id: "f12", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Chris Kin", avatar_url: null } },
+  { id: "f13", team_slug: "futsal-kings-1", jersey_number: null, position: null, status: "active", profiles: { full_name: "Carson Shamoo", avatar_url: null } },
 ]
 
 export default function RosterPage() {
@@ -41,7 +58,9 @@ export default function RosterPage() {
         .eq("status", "active")
         .order("jersey_number", { ascending: true })
 
-      setRoster((data as RosterMember[]) || [])
+      const fetched = (data as RosterMember[]) || []
+      // Use fallback if DB is empty
+      setRoster(fetched.length > 0 ? fetched : FALLBACK_ROSTER)
       setLoading(false)
     }
 
@@ -117,7 +136,7 @@ export default function RosterPage() {
                       {member.position || "—"}
                     </p>
                     <span className="mt-1.5 inline-block rounded-full bg-paper px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                      {member.team_slug === "baltimore-kings-masl3" ? "MASL3" : "Futsal L1"}
+                      {member.team_slug === "kings-masl3" ? "MASL3" : member.team_slug === "futsal-kings-2" ? "Kings 2" : "Kings 1"}
                     </span>
                   </div>
                 </div>

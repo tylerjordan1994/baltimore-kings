@@ -68,7 +68,7 @@ export function AccordionSections({ markdown }: { markdown: string }) {
   }
 
   return (
-    <div className="divide-y divide-border rounded-xl border border-border bg-white">
+    <div className="mx-auto max-w-3xl divide-y divide-border rounded-xl border border-border bg-white">
       {sections.map((section, i) => (
         <div key={i}>
           <button

@@ -20,6 +20,70 @@ type CalendarEvent = {
   event_type: string | null
 }
 
+// Static fallback events
+function getStaticEvents(): CalendarEvent[] {
+  const now = new Date()
+
+  // Next Tuesday
+  const nextTuesday = new Date(now)
+  nextTuesday.setDate(now.getDate() + ((2 - now.getDay() + 7) % 7 || 7))
+  nextTuesday.setHours(20, 0, 0, 0)
+
+  // Next Thursday
+  const nextThursday = new Date(now)
+  nextThursday.setDate(now.getDate() + ((4 - now.getDay() + 7) % 7 || 7))
+  nextThursday.setHours(20, 0, 0, 0)
+
+  // Next Saturday
+  const nextSaturday = new Date(now)
+  nextSaturday.setDate(now.getDate() + ((6 - now.getDay() + 7) % 7 || 7))
+  nextSaturday.setHours(19, 0, 0, 0)
+
+  // Following Saturday
+  const followingSaturday = new Date(nextSaturday)
+  followingSaturday.setDate(nextSaturday.getDate() + 7)
+  followingSaturday.setHours(18, 0, 0, 0)
+
+  return [
+    {
+      id: "static-practice-tue",
+      title: "Weekly Practice",
+      description: "Open to all rostered players. Bring both indoor and futsal shoes.",
+      start_time: nextTuesday.toISOString(),
+      end_time: new Date(nextTuesday.getTime() + 90 * 60 * 1000).toISOString(),
+      location: "Benfield Sports, 1031 Benfield Blvd, Millersville, MD 21108",
+      event_type: "practice",
+    },
+    {
+      id: "static-practice-thu",
+      title: "Weekly Practice",
+      description: "Open to all rostered players. Bring both indoor and futsal shoes.",
+      start_time: nextThursday.toISOString(),
+      end_time: new Date(nextThursday.getTime() + 90 * 60 * 1000).toISOString(),
+      location: "Benfield Sports, 1031 Benfield Blvd, Millersville, MD 21108",
+      event_type: "practice",
+    },
+    {
+      id: "static-home-game",
+      title: "Home Game vs Maryland Storm",
+      description: "League match. Full kit required. Arrive 45 minutes early for warm-up.",
+      start_time: nextSaturday.toISOString(),
+      end_time: new Date(nextSaturday.getTime() + 120 * 60 * 1000).toISOString(),
+      location: "GOALS Baltimore, 6159 Edmondson Ave, Catonsville, MD 21228",
+      event_type: "game",
+    },
+    {
+      id: "static-away-game",
+      title: "Away Game @ DC Futsal",
+      description: "Away match. Carpool details shared in group chat.",
+      start_time: followingSaturday.toISOString(),
+      end_time: new Date(followingSaturday.getTime() + 120 * 60 * 1000).toISOString(),
+      location: "DC Futsal Arena, Washington, DC",
+      event_type: "game",
+    },
+  ]
+}
+
 function groupByMonth(events: CalendarEvent[]) {
   const groups: Record<string, CalendarEvent[]> = {}
   for (const event of events) {
@@ -43,7 +107,15 @@ export default async function SchedulePage() {
     .gte("start_time", new Date().toISOString())
     .order("start_time", { ascending: true })
 
-  const grouped = groupByMonth((events as CalendarEvent[]) || [])
+  const dbEvents = (events as CalendarEvent[]) || []
+  const staticEvents = getStaticEvents()
+
+  // Combine: DB events first, then static fallback
+  const allEvents = [...dbEvents, ...staticEvents].sort(
+    (a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+  )
+
+  const grouped = groupByMonth(allEvents)
 
   return (
     <>
@@ -99,7 +171,7 @@ export default async function SchedulePage() {
                               })}
                               {event.end_time && (
                                 <>
-                                  {" – "}
+                                  {" \u2013 "}
                                   {new Date(event.end_time).toLocaleTimeString("en-US", {
                                     hour: "numeric",
                                     minute: "2-digit",

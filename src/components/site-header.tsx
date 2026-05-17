@@ -8,8 +8,8 @@ import { HeaderLogo } from "@/components/header-logo"
 // basePath handled by next.config.ts
 
 const teamsDropdown = [
-  { href: "/teams/futsal-l1", label: "Futsal League 1", description: "Premier futsal competition in the Mid-Atlantic" },
-  { href: "/teams/futsal-t2", label: "Futsal Team 2", description: "Development squad building the next generation" },
+  { href: "/teams/futsal-kings-1", label: "Futsal Kings 1", description: "Premier futsal competition in the Mid-Atlantic" },
+  { href: "/teams/futsal-kings-2", label: "Futsal Kings 2", description: "Development squad building the next generation" },
   { href: "/teams/masl3", label: "MASL3 Arena Soccer", description: "Indoor arena soccer at the professional level" },
   { href: "/teams/pathway", label: "Pathway to MASL2", description: "Our roadmap to Division 2 promotion" },
 ]

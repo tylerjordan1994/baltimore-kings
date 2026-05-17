@@ -39,9 +39,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right — photo placeholder */}
+          {/* Right — photo placeholder with pattern */}
           <div className="relative hidden w-full lg:block lg:w-[60%]">
-            <div className="aspect-[3/4] max-h-[85vh] w-full rounded-2xl bg-gradient-to-b from-brand/10 to-paper">
+            <div
+              className="aspect-[3/4] max-h-[85vh] w-full rounded-2xl bg-gradient-to-b from-brand/10 to-paper"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231a2744' fill-opacity='0.04'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+            >
               {/* TODO: Replace with futsal court action photo */}
             </div>
           </div>
@@ -54,13 +59,13 @@ export default function HomePage() {
       </section>
 
       {/* ─── 2. KINETIC MARQUEE ─── */}
-      <section className="overflow-hidden bg-brand py-8 md:py-10">
+      <section className="overflow-hidden bg-brand py-10 md:py-12">
         <div className="group flex whitespace-nowrap">
           <div className="animate-marquee flex shrink-0 items-center gap-8 group-hover:[animation-play-state:paused]">
             {Array.from({ length: 4 }).map((_, i) => (
               <span
                 key={i}
-                className="font-heading text-6xl uppercase text-paper/20 md:text-8xl"
+                className="font-heading text-7xl uppercase text-paper/20 md:text-9xl"
               >
                 League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2024 &middot;&nbsp;
               </span>
@@ -70,7 +75,7 @@ export default function HomePage() {
             {Array.from({ length: 4 }).map((_, i) => (
               <span
                 key={i}
-                className="font-heading text-6xl uppercase text-paper/20 md:text-8xl"
+                className="font-heading text-7xl uppercase text-paper/20 md:text-9xl"
               >
                 League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2024 &middot;&nbsp;
               </span>
@@ -80,14 +85,17 @@ export default function HomePage() {
       </section>
 
       {/* ─── 3. TEAMS / PROGRAMS ─── */}
-      <section className="bg-paper py-24 sm:py-32">
+      <section className="relative bg-paper py-24 sm:py-32">
+        {/* Gradient accent line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent" />
+
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">Our Programs</p>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-5">
             {/* Large card — Futsal Kings 1 */}
-            <Link href="/teams/futsal-l1" className="group lg:col-span-3">
-              <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-8 transition-colors hover:border-brand/30">
+            <Link href="/teams/futsal-kings-1" className="group lg:col-span-3">
+              <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-8 transition-all duration-200 hover:border-brand/30 hover:-translate-y-1">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pro-SA League 1 Futsal</span>
                   <h3 className="mt-3 font-heading text-3xl text-ink sm:text-4xl">Futsal Kings 1</h3>
@@ -103,8 +111,8 @@ export default function HomePage() {
 
             {/* Stacked smaller cards */}
             <div className="flex flex-col gap-6 lg:col-span-2">
-              <Link href="/teams/futsal-l1" className="group flex-1">
-                <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-6 transition-colors hover:border-brand/30">
+              <Link href="/teams/futsal-kings-2" className="group flex-1">
+                <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-6 transition-all duration-200 hover:border-brand/30 hover:-translate-y-1">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pro-SA League 1 Futsal</span>
                     <h3 className="mt-2 font-heading text-xl text-ink">Kings 2</h3>
@@ -119,7 +127,7 @@ export default function HomePage() {
               </Link>
 
               <Link href="/teams/masl3" className="group flex-1">
-                <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-6 transition-colors hover:border-brand/30">
+                <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-6 transition-all duration-200 hover:border-brand/30 hover:-translate-y-1">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Major Arena Soccer League 3</span>
                     <h3 className="mt-2 font-heading text-xl text-ink">MASL3</h3>
@@ -141,7 +149,7 @@ export default function HomePage() {
       <section className="bg-paper py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            {/* Photo placeholder — slight negative margin for editorial overlap */}
+            {/* Photo placeholder */}
             <div className="relative lg:-ml-8">
               <div className="aspect-[4/5] w-full rounded-2xl bg-gradient-to-br from-brand/10 via-accent/5 to-paper">
                 {/* TODO: Replace with club photo */}
@@ -161,15 +169,15 @@ export default function HomePage() {
               {/* Stat blocks */}
               <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
                 <div>
-                  <p className="font-heading text-3xl text-ink">2024</p>
+                  <p className="font-heading text-5xl text-ink">2024</p>
                   <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">Founded</p>
                 </div>
                 <div>
-                  <p className="font-heading text-3xl text-ink">30+</p>
+                  <p className="font-heading text-5xl text-ink">30+</p>
                   <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">Active Players</p>
                 </div>
                 <div>
-                  <p className="font-heading text-3xl text-ink">3</p>
+                  <p className="font-heading text-5xl text-ink">3</p>
                   <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">Teams Fielded</p>
                 </div>
               </div>
@@ -247,59 +255,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ─── 7. FOOTER ─── */}
-      <footer className="bg-paper py-16">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Logo / identity */}
-            <div>
-              <p className="font-heading text-xl text-ink">Baltimore Kings</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Futsal-first. Baltimore-built.
-              </p>
-            </div>
-
-            {/* Nav */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink">Navigate</p>
-              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                <li><Link href="/teams/futsal-l1" className="hover:text-brand">Futsal L1</Link></li>
-                <li><Link href="/teams/masl3" className="hover:text-brand">MASL3</Link></li>
-                <li><Link href="/schedule" className="hover:text-brand">Schedule</Link></li>
-                <li><Link href="/apply" className="hover:text-brand">Apply</Link></li>
-              </ul>
-            </div>
-
-            {/* Social */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink">Social</p>
-              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                <li><a href="https://www.instagram.com/baltimorekingsfc" target="_blank" rel="noopener noreferrer" className="hover:text-brand">Instagram</a></li>
-              </ul>
-            </div>
-
-            {/* Addresses */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink">Venues</p>
-              <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
-                <li>Benfield Sports<br />1031 Benfield Blvd, Millersville, MD 21108</li>
-                <li>GOALS Baltimore<br />6159 Edmondson Ave, Catonsville, MD 21228</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Affiliations + copyright */}
-          <div className="mt-14 border-t border-border pt-8">
-            <p className="text-xs text-muted-foreground">
-              Affiliated with PRO-SA &middot; League 1 Futsal &middot; Salisbury Steaks
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} Baltimore Kings FC. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
     </>
   )
 }

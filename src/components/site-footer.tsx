@@ -12,7 +12,8 @@ export function SiteFooter() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Club Info */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-ink">Baltimore Kings</h3>
+            <img src="/project/football-team/logo.png" alt="Baltimore Kings" className="h-24 w-24 object-contain" />
+            <h3 className="mt-4 font-heading text-lg font-bold text-ink">Baltimore Kings</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Futsal and arena soccer in Baltimore. League 1 Futsal, MASL3 arena soccer, and a pathway to the top of American indoor soccer.
             </p>
@@ -46,7 +47,8 @@ export function SiteFooter() {
           <div>
             <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">Teams</h4>
             <ul className="mt-4 space-y-3">
-              <li><Link href="/teams/futsal-l1" className="text-sm text-muted-foreground transition-colors hover:text-ink">Futsal League 1</Link></li>
+              <li><Link href="/teams/futsal-kings-1" className="text-sm text-muted-foreground transition-colors hover:text-ink">Futsal Kings 1</Link></li>
+              <li><Link href="/teams/futsal-kings-2" className="text-sm text-muted-foreground transition-colors hover:text-ink">Futsal Kings 2</Link></li>
               <li><Link href="/teams/masl3" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL3 Arena Soccer</Link></li>
               <li><a href="https://www.masl3.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL3 League</a></li>
               <li><a href="http://www.prosocceralliance.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">Pro-SA</a></li>
