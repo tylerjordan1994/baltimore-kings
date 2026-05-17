@@ -47,20 +47,20 @@ export default async function SchedulePage() {
 
   return (
     <>
-      <section className="bg-primary py-16 sm:py-20">
+      <section className="bg-gradient-to-b from-[#0a0a0a] to-[#141414] py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between">
             <div>
-              <h1 className="font-heading text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+              <h1 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Schedule
               </h1>
-              <p className="mt-2 text-primary-foreground/70">
+              <p className="mt-2 text-white/60">
                 Games, training sessions, and events.
               </p>
             </div>
             <Link href={`/api/calendar/ical`}>
-              <Button variant="secondary" size="sm" className="font-heading font-semibold">
-                <Download className="mr-1.5 h-3.5 w-3.5" />
+              <Button variant="outline" size="sm" className="border-white/20 font-heading font-semibold text-white hover:bg-white/[0.07]">
+                <Download className="mr-1.5 h-3.5 w-3.5 text-gold" />
                 iCal Export
               </Button>
             </Link>
@@ -68,30 +68,30 @@ export default async function SchedulePage() {
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="bg-[#0a0a0a] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {Object.keys(grouped).length > 0 ? (
             <div className="space-y-10">
               {Object.entries(grouped).map(([month, monthEvents]) => (
                 <div key={month}>
-                  <h2 className="font-heading text-lg font-bold text-foreground">{month}</h2>
+                  <h2 className="font-heading text-lg font-bold text-white">{month}</h2>
                   <div className="mt-4 space-y-3">
                     {monthEvents.map((event) => (
                       <div
                         key={event.id}
-                        className="flex items-start gap-4 rounded-lg border border-border bg-card p-4"
+                        className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all hover:border-gold/30"
                       >
-                        <div className="flex flex-col items-center rounded bg-muted px-3 py-1.5 text-center">
-                          <span className="text-xs font-medium text-muted-foreground">
+                        <div className="flex flex-col items-center rounded-lg bg-white/5 px-3 py-1.5 text-center">
+                          <span className="text-xs font-medium text-white/60">
                             {new Date(event.start_time).toLocaleDateString("en-US", { weekday: "short" })}
                           </span>
-                          <span className="font-heading text-lg font-bold">
+                          <span className="font-heading text-lg font-bold text-white">
                             {new Date(event.start_time).getDate()}
                           </span>
                         </div>
                         <div className="flex-1">
-                          <p className="font-heading font-semibold">{event.title}</p>
-                          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                          <p className="font-heading font-semibold text-white">{event.title}</p>
+                          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/60">
                             <span>
                               {new Date(event.start_time).toLocaleTimeString("en-US", {
                                 hour: "numeric",
@@ -110,12 +110,12 @@ export default async function SchedulePage() {
                             {event.location && <span>{event.location}</span>}
                           </div>
                           {event.description && (
-                            <p className="mt-1.5 text-sm text-muted-foreground">
+                            <p className="mt-1.5 text-sm text-white/60">
                               {event.description}
                             </p>
                           )}
                           {event.event_type && (
-                            <span className="mt-2 inline-block rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                            <span className="mt-2 inline-block rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/50">
                               {event.event_type}
                             </span>
                           )}
@@ -127,10 +127,10 @@ export default async function SchedulePage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-lg border border-dashed border-border p-12 text-center">
-              <Calendar className="mx-auto h-10 w-10 text-muted-foreground/50" />
-              <p className="mt-3 font-heading text-lg font-semibold">No upcoming events</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+            <div className="rounded-2xl border border-dashed border-white/10 p-12 text-center">
+              <Calendar className="mx-auto h-10 w-10 text-white/30" />
+              <p className="mt-3 font-heading text-lg font-semibold text-white">No upcoming events</p>
+              <p className="mt-1 text-sm text-white/60">
                 The schedule will be updated as events are confirmed.
               </p>
             </div>

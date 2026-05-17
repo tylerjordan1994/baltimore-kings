@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { createBrowserClient } from "@supabase/ssr"
 
 type RosterMember = {
@@ -53,44 +52,46 @@ export default function RosterPage() {
 
   return (
     <>
-      <section className="bg-primary py-16 sm:py-20">
+      <section className="bg-gradient-to-b from-[#0a0a0a] to-[#141414] py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Full Roster
           </h1>
-          <p className="mt-2 text-primary-foreground/70">
+          <p className="mt-2 text-white/60">
             Every active player across both squads.
           </p>
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="bg-[#0a0a0a] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Filter buttons */}
           <div className="flex flex-wrap gap-2">
             {TEAM_FILTERS.map((t) => (
-              <Button
+              <button
                 key={t.slug}
-                variant={filter === t.slug ? "default" : "outline"}
-                size="sm"
                 onClick={() => setFilter(t.slug)}
-                className="font-heading"
+                className={`rounded-full px-4 py-1.5 font-heading text-sm font-semibold transition-all ${
+                  filter === t.slug
+                    ? "bg-gold text-black"
+                    : "border border-white/10 bg-white/5 text-white/70 hover:border-gold/30 hover:text-white"
+                }`}
               >
                 {t.label}
-              </Button>
+              </button>
             ))}
           </div>
 
           {loading ? (
-            <div className="mt-12 text-center text-muted-foreground">Loading roster...</div>
+            <div className="mt-12 text-center text-white/60">Loading roster...</div>
           ) : filtered.length > 0 ? (
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {filtered.map((member) => (
                 <div
                   key={member.id}
-                  className="relative overflow-hidden rounded-lg border border-border bg-card p-4 transition-colors hover:border-gold/50"
+                  className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]"
                 >
-                  <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-muted mx-auto">
+                  <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-white/5 mx-auto">
                     {member.profiles?.avatar_url ? (
                       <Image
                         src={member.profiles.avatar_url}
@@ -100,7 +101,7 @@ export default function RosterPage() {
                         className="h-20 w-20 rounded-full object-cover"
                       />
                     ) : (
-                      <Users className="h-8 w-8 text-muted-foreground" />
+                      <Users className="h-8 w-8 text-white/40" />
                     )}
                   </div>
                   <div className="text-center">
@@ -109,13 +110,13 @@ export default function RosterPage() {
                         #{member.jersey_number}
                       </span>
                     )}
-                    <p className="font-heading text-sm font-semibold leading-tight">
+                    <p className="font-heading text-sm font-semibold leading-tight text-white">
                       {member.profiles?.full_name || "TBA"}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
+                    <p className="mt-0.5 text-xs text-white/60">
                       {member.position || "—"}
                     </p>
-                    <span className="mt-1.5 inline-block rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                    <span className="mt-1.5 inline-block rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-medium text-white/50">
                       {member.team_slug === "baltimore-kings-masl3" ? "MASL3" : "Futsal L1"}
                     </span>
                   </div>
@@ -123,10 +124,10 @@ export default function RosterPage() {
               ))}
             </div>
           ) : (
-            <div className="mt-12 rounded-lg border border-dashed border-border p-12 text-center">
-              <Users className="mx-auto h-10 w-10 text-muted-foreground/50" />
-              <p className="mt-3 font-heading text-lg font-semibold">No players found</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+            <div className="mt-12 rounded-2xl border border-dashed border-white/10 p-12 text-center">
+              <Users className="mx-auto h-10 w-10 text-white/30" />
+              <p className="mt-3 font-heading text-lg font-semibold text-white">No players found</p>
+              <p className="mt-1 text-sm text-white/60">
                 {filter === "all"
                   ? "Roster announcements coming soon."
                   : "No active players on this team yet."}
