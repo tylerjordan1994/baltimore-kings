@@ -2,47 +2,79 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import type { PlayerGoal, GoalStatus } from "@/types/database"
+import type { PlayerGoal, GoalStatus, Profile } from "@/types/database"
 
 export default function GoalsPage() {
-  const [goals, setGoals] = useState<PlayerGoal[]>([])
+  const [goals, setGoals] = useState<(PlayerGoal & { profiles?: Profile })[]>([])
+  const [players, setPlayers] = useState<Profile[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [goalText, setGoalText] = useState("")
   const [season, setSeason] = useState("")
+  const [selectedPlayerId, setSelectedPlayerId] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
+  const [userRole, setUserRole] = useState<string>("player")
+  const [filterPlayer, setFilterPlayer] = useState("")
 
   const supabase = createClient()
 
   useEffect(() => {
     load()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function load() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     setUserId(user.id)
 
-    const { data } = await supabase
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single()
+    if (profile) setUserRole(profile.role)
+
+    const isCoach = profile?.role === "coach" || profile?.role === "superadmin"
+
+    // Coaches see all goals; players see only their own
+    let goalsQuery = supabase
       .from("player_goals")
-      .select("*")
-      .eq("profile_id", user.id)
+      .select("*, profiles:profile_id(*)")
       .order("set_at", { ascending: false })
 
-    setGoals((data as PlayerGoal[]) || [])
+    if (!isCoach) {
+      goalsQuery = goalsQuery.eq("profile_id", user.id)
+    }
+
+    const { data } = await goalsQuery
+    setGoals(data || [])
+
+    // Load players for coach dropdown
+    if (isCoach) {
+      const { data: playersData } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("status", "active")
+        .order("full_name")
+      setPlayers(playersData || [])
+    }
+
     setLoading(false)
   }
 
+  const isCoach = userRole === "coach" || userRole === "superadmin"
+
   async function handleCreate() {
     if (!userId || !goalText.trim()) return
+    if (isCoach && !selectedPlayerId) return
     setSubmitting(true)
 
     const { error } = await supabase.from("player_goals").insert({
-      profile_id: userId,
+      profile_id: isCoach ? selectedPlayerId : userId,
       goal_text: goalText.trim(),
       season: season || null,
-      status: "proposed",
+      status: isCoach ? "approved" : "proposed",
       set_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
@@ -51,6 +83,7 @@ export default function GoalsPage() {
       setShowForm(false)
       setGoalText("")
       setSeason("")
+      setSelectedPlayerId("")
       load()
     }
     setSubmitting(false)
@@ -78,32 +111,52 @@ export default function GoalsPage() {
     dropped: "bg-red-500/20 text-red-400 border-red-500/30",
   }
 
-  const canAdd = goals.filter((g) => !["achieved", "dropped"].includes(g.status)).length < 3
+  const filteredGoals = filterPlayer
+    ? goals.filter((g) => g.profile_id === filterPlayer)
+    : goals
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">My Goals</h1>
-        {canAdd && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black hover:bg-amber-400 transition-colors"
-          >
-            Set Goal
-          </button>
-        )}
+        <h1 className="text-2xl font-bold text-white">
+          {isCoach ? "Player Goals" : "My Goals"}
+        </h1>
+        <div className="flex items-center gap-3">
+          {isCoach && players.length > 0 && (
+            <select
+              value={filterPlayer}
+              onChange={(e) => setFilterPlayer(e.target.value)}
+              className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white focus:border-amber-500 focus:outline-none"
+            >
+              <option value="">All Players</option>
+              {players.map((p) => (
+                <option key={p.id} value={p.id}>{p.full_name}</option>
+              ))}
+            </select>
+          )}
+          {isCoach && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black hover:bg-amber-400 transition-colors"
+            >
+              Set Goal
+            </button>
+          )}
+        </div>
       </div>
 
       {loading ? (
         <p className="text-sm text-zinc-500">Loading...</p>
-      ) : goals.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <p className="text-sm text-zinc-500">No goals set yet. You can set up to 3 active goals.</p>
+      ) : filteredGoals.length === 0 ? (
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+          <p className="text-sm text-zinc-500">
+            {isCoach ? "No goals set yet. Use 'Set Goal' to assign goals to players." : "No goals set for you yet."}
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
-          {goals.map((g) => (
-            <div key={g.id} className="rounded-xl border border-white/10 bg-white/5 p-5">
+          {filteredGoals.map((g) => (
+            <div key={g.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -111,6 +164,11 @@ export default function GoalsPage() {
                       {g.status.replace(/_/g, " ")}
                     </span>
                     {g.season && <span className="text-xs text-zinc-500">{g.season}</span>}
+                    {isCoach && g.profiles && (
+                      <span className="text-xs font-medium text-zinc-300">
+                        {g.profiles.full_name}
+                      </span>
+                    )}
                   </div>
                   <p className="mt-2 text-sm text-white">{g.goal_text}</p>
                   {g.coach_feedback && (
@@ -121,23 +179,49 @@ export default function GoalsPage() {
                   )}
                 </div>
                 <div className="flex flex-col gap-1">
-                  {g.status === "proposed" && (
-                    <button
-                      onClick={() => deleteGoal(g.id)}
-                      className="rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-colors"
-                    >
-                      Remove
-                    </button>
+                  {isCoach && (
+                    <>
+                      {g.status === "proposed" && (
+                        <button
+                          onClick={() => updateStatus(g.id, "approved")}
+                          className="rounded-lg bg-blue-500/20 px-3 py-1.5 text-xs font-medium text-blue-400 hover:bg-blue-500/30 transition-colors"
+                        >
+                          Approve
+                        </button>
+                      )}
+                      {g.status === "approved" && (
+                        <button
+                          onClick={() => updateStatus(g.id, "in_progress")}
+                          className="rounded-lg bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-400 hover:bg-amber-500/30 transition-colors"
+                        >
+                          Start
+                        </button>
+                      )}
+                      {g.status === "in_progress" && (
+                        <button
+                          onClick={() => updateStatus(g.id, "achieved")}
+                          className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/30 transition-colors"
+                        >
+                          Achieved
+                        </button>
+                      )}
+                      {!["achieved", "dropped"].includes(g.status) && (
+                        <button
+                          onClick={() => updateStatus(g.id, "dropped")}
+                          className="rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-colors"
+                        >
+                          Drop
+                        </button>
+                      )}
+                      <button
+                        onClick={() => deleteGoal(g.id)}
+                        className="rounded-lg bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-400 hover:bg-zinc-700 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </>
                   )}
-                  {g.status === "approved" && (
-                    <button
-                      onClick={() => updateStatus(g.id, "in_progress")}
-                      className="rounded-lg bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-400 hover:bg-amber-500/30 transition-colors"
-                    >
-                      Start
-                    </button>
-                  )}
-                  {g.status === "in_progress" && (
+                  {!isCoach && g.status === "in_progress" && (
                     <button
                       onClick={() => updateStatus(g.id, "achieved")}
                       className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/30 transition-colors"
@@ -155,16 +239,29 @@ export default function GoalsPage() {
       {/* New Goal Form */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f0f] p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Set a New Goal</h2>
+          <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+            <h2 className="text-lg font-bold text-white mb-4">Set a Player Goal</h2>
             <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-1">Player</label>
+                <select
+                  value={selectedPlayerId}
+                  onChange={(e) => setSelectedPlayerId(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                >
+                  <option value="">Select player...</option>
+                  {players.map((p) => (
+                    <option key={p.id} value={p.id}>{p.full_name}</option>
+                  ))}
+                </select>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-300 mb-1">Goal</label>
                 <textarea
                   value={goalText}
                   onChange={(e) => setGoalText(e.target.value)}
                   rows={3}
-                  placeholder="What do you want to achieve?"
+                  placeholder="What should this player achieve?"
                   className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
@@ -181,14 +278,14 @@ export default function GoalsPage() {
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleCreate}
-                  disabled={!goalText.trim() || submitting}
+                  disabled={!goalText.trim() || !selectedPlayerId || submitting}
                   className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
                 >
                   {submitting ? "Saving..." : "Save Goal"}
                 </button>
                 <button
                   onClick={() => setShowForm(false)}
-                  className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                  className="rounded-lg bg-zinc-800 px-6 py-2 text-sm font-medium text-white hover:bg-zinc-700 transition-colors"
                 >
                   Cancel
                 </button>
