@@ -39,15 +39,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right — photo placeholder with pattern */}
+          {/* Right — team photo */}
           <div className="relative hidden w-full lg:block lg:w-[60%]">
-            <div
-              className="aspect-[3/4] max-h-[85vh] w-full rounded-2xl bg-gradient-to-b from-brand/10 to-paper"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231a2744' fill-opacity='0.04'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E")`,
-              }}
-            >
-              {/* TODO: Replace with futsal court action photo */}
+            <div className="aspect-[3/4] max-h-[85vh] w-full overflow-hidden rounded-2xl">
+              <img src="/project/football-team/photos/futsal-kings-combined.jpg" alt="Baltimore Kings Futsal" className="h-full w-full rounded-2xl object-cover" />
             </div>
           </div>
         </div>
@@ -149,10 +144,10 @@ export default function HomePage() {
       <section className="bg-paper py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            {/* Photo placeholder */}
+            {/* Photo */}
             <div className="relative lg:-ml-8">
-              <div className="aspect-[4/5] w-full rounded-2xl bg-gradient-to-br from-brand/10 via-accent/5 to-paper">
-                {/* TODO: Replace with club photo */}
+              <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl">
+                <img src="/project/football-team/photos/futsal-action.jpg" alt="Baltimore Kings futsal action" className="h-full w-full rounded-2xl object-cover" />
               </div>
             </div>
 
@@ -216,6 +211,9 @@ export default function HomePage() {
 
             {/* GOALS — 45% */}
             <div className="overflow-hidden rounded-xl border border-border bg-white lg:col-span-4">
+              <div className="aspect-video w-full overflow-hidden">
+                <img src="/project/football-team/photos/masl3-huddle.jpg" alt="Baltimore Kings MASL3 huddle" className="h-full w-full object-cover" />
+              </div>
               <div className="aspect-video w-full">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3087.5!2d-76.731!3d39.272!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c81f8a0c0e7b7d%3A0x0!2zNjE1OSBFZG1vbmRzb24gQXZl!5e0!3m2!1sen!2sus"

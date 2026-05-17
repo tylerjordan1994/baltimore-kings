@@ -14,33 +14,30 @@ const teamsDropdown = [
   { href: "/teams/pathway", label: "Pathway to MASL2", description: "Our roadmap to Division 2 promotion" },
 ]
 
-const clubDropdown = [
-  { href: "/club/expectations", label: "Team Expectations", description: "Standards and culture" },
-  { href: "/schedule", label: "Schedule", description: "Games, practices, and events" },
-  { href: "/club/achievements", label: "Achievements", description: "Trophies, records, and milestones" },
-  { href: "/media", label: "Media", description: "Photos, videos, and press" },
-]
-
-const joinDropdown = {
-  pathway: [
-    { href: "/join/why-kings", label: "Why the Kings" },
-    { href: "/join/pathway", label: "The Pathway" },
-    { href: "/join/development", label: "Development" },
+const clubDropdown = {
+  about: [
+    { href: "/club", label: "About" },
     { href: "/join/coaches", label: "Coaches" },
+    { href: "/club/expectations", label: "Expectations" },
+    { href: "/join/facilities", label: "Locations" },
+    { href: "/club/affiliations", label: "Affiliations" },
   ],
-  logistics: [
+  joinUs: [
+    { href: "/join/why-kings", label: "Why Kings" },
+    { href: "/join/pathway", label: "Pathway" },
+    { href: "/join/development", label: "Development" },
     { href: "/join/facilities", label: "Facilities" },
-    { href: "/schedule", label: "Schedule" },
     { href: "/join/costs", label: "Costs" },
+    { href: "/join/apply", label: "Trial" },
   ],
   outcomes: [
     { href: "/join/alumni", label: "Alumni" },
-    { href: "/achievements", label: "Achievements" },
+    { href: "/club/achievements", label: "Achievements" },
     { href: "/join/stories", label: "Stories" },
   ],
 }
 
-type DropdownId = "teams" | "club" | "join" | null
+type DropdownId = "teams" | "club" | null
 
 export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -146,19 +143,12 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           >
             Sign In
           </Link>
-          <div
-            className="relative"
-            onMouseEnter={() => handleDropdownEnter("join")}
-            onMouseLeave={handleDropdownLeave}
+          <Link
+            href="/join/apply"
+            className="inline-flex items-center rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
           >
-            <button
-              onClick={() => setActiveDropdown(activeDropdown === "join" ? null : "join")}
-              className="inline-flex items-center gap-1 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
-            >
-              Join
-              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === "join" ? "rotate-180" : ""}`} />
-            </button>
-          </div>
+            Join
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -201,31 +191,12 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
               </div>
             )}
             {activeDropdown === "club" && (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {clubDropdown.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setActiveDropdown(null)}
-                    className="group rounded-xl border border-border bg-white p-4 transition-colors hover:border-accent/30 hover:bg-paper"
-                  >
-                    <div className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">
-                      {item.label}
-                    </div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      {item.description}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-            {activeDropdown === "join" && (
               <div className="grid gap-6 lg:grid-cols-4">
-                {/* Column 1: Pathway */}
+                {/* Column 1: About */}
                 <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">Pathway</p>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">About</p>
                   <div className="space-y-1">
-                    {joinDropdown.pathway.map((item) => (
+                    {clubDropdown.about.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
@@ -237,11 +208,11 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                     ))}
                   </div>
                 </div>
-                {/* Column 2: Logistics */}
+                {/* Column 2: Join Us */}
                 <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">Logistics</p>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">Join Us</p>
                   <div className="space-y-1">
-                    {joinDropdown.logistics.map((item) => (
+                    {clubDropdown.joinUs.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
@@ -257,7 +228,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                 <div>
                   <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">Outcomes</p>
                   <div className="space-y-1">
-                    {joinDropdown.outcomes.map((item) => (
+                    {clubDropdown.outcomes.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
@@ -360,7 +331,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                 Sign In
               </Link>
               <Link
-                href="/join"
+                href="/join/apply"
                 onClick={() => setMobileOpen(false)}
                 className="mt-3 block rounded-full bg-brand px-4 py-2.5 text-center text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
               >

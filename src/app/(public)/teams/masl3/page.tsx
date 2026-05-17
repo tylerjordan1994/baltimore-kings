@@ -40,6 +40,9 @@ export default async function MASL3Page() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-paper py-20 sm:py-28">
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 overflow-hidden rounded-2xl">
+            <img src="/project/football-team/photos/masl3-team.jpg" alt="Baltimore Kings MASL3 team photo" className="w-full h-auto max-h-[480px] object-cover" />
+          </div>
           <div className="max-w-2xl">
             <p className="font-heading text-sm font-semibold uppercase tracking-widest text-brand">
               Major Arena Soccer League 3
