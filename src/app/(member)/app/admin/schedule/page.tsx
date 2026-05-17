@@ -33,7 +33,7 @@ export default function SchedulePage() {
   const supabase = createClient()
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<EventForm>({
-    resolver: zodResolver(eventSchema),
+    resolver: zodResolver(eventSchema) as any,
     defaultValues: {
       kind: 'practice',
       visibility: 'public',
@@ -120,7 +120,7 @@ export default function SchedulePage() {
 
       {showForm && (
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit as any)}
           className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-6"
         >
           <div className="grid gap-4 md:grid-cols-2">
