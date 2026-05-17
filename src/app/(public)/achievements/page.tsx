@@ -116,7 +116,7 @@ export default async function AchievementsPage() {
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <img src="/project/football-team/photos/player-arena.jpg" alt="Player in arena" className="h-32 w-full rounded-xl object-cover sm:h-44" />
-            <img src="/project/football-team/photos/masl3-team.jpg" alt="MASL3 team" className="h-32 w-full rounded-xl object-cover sm:h-44" />
+            <img src="/project/football-team/photos/masl3-huddle.jpg" alt="MASL3 team" className="h-32 w-full rounded-xl object-cover sm:h-44" />
             <img src="/project/football-team/photos/futsal-kings-1-alt.jpg" alt="Futsal Kings" className="h-32 w-full rounded-xl object-cover sm:h-44" />
             <img src="/project/football-team/photos/ball-red-goal.jpg" alt="Goal moment" className="h-32 w-full rounded-xl object-cover sm:h-44" />
           </div>

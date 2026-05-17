@@ -22,7 +22,7 @@ export const MASL_POSITIONS: TacticsPosition[] = [
   "Defender",
   "Midfielder",
   "Target Forward",
-  "Support Forward",
+  "2nd Forward",
 ]
 
 /**
@@ -43,7 +43,28 @@ const MASL_OPPONENT_LAYOUT: { position: string; x: number; y: number }[] = [
   { position: "Defender", x: 0.8, y: 0.68 },
   { position: "Midfielder", x: 0.66, y: 0.5 },
   { position: "Target Forward", x: 0.55, y: 0.34 },
-  { position: "Support Forward", x: 0.55, y: 0.66 },
+  { position: "2nd Forward", x: 0.55, y: 0.66 },
+]
+
+/**
+ * Standard starting positions for the HOME team, normalized 0-1.
+ * x≈0.05-0.45 keeps them on the left (attacking) side of the court.
+ */
+const FUTSAL_HOME_LAYOUT: { position: string; x: number; y: number }[] = [
+  { position: "Goalkeeper", x: 0.05, y: 0.5 },
+  { position: "Fixo", x: 0.22, y: 0.5 },
+  { position: "Ala", x: 0.32, y: 0.26 },
+  { position: "Ala", x: 0.32, y: 0.74 },
+  { position: "Pivô", x: 0.44, y: 0.5 },
+]
+
+const MASL_HOME_LAYOUT: { position: string; x: number; y: number }[] = [
+  { position: "Goalkeeper", x: 0.05, y: 0.5 },
+  { position: "Defender", x: 0.2, y: 0.5 },
+  { position: "Midfielder", x: 0.34, y: 0.32 },
+  { position: "Midfielder", x: 0.34, y: 0.68 },
+  { position: "2nd Forward", x: 0.45, y: 0.34 },
+  { position: "Target Forward", x: 0.45, y: 0.66 },
 ]
 
 /** Build the pre-populated opponent token list for a fresh board. */
@@ -58,6 +79,22 @@ export function buildOpponents(fieldType: FieldType): TacticsPlayer[] {
     y: p.y,
     name: p.position,
     team: "away" as const,
+    tokenType: "player" as const,
+    position: p.position,
+    profileId: null,
+  }))
+}
+
+/** Build the pre-populated HOME team token list for a fresh board. */
+export function buildHomePlayers(fieldType: FieldType): TacticsPlayer[] {
+  const layout =
+    fieldType === "futsal_rounded" ? FUTSAL_HOME_LAYOUT : MASL_HOME_LAYOUT
+  return layout.map((p) => ({
+    id: crypto.randomUUID(),
+    x: p.x,
+    y: p.y,
+    name: p.position,
+    team: "home" as const,
     tokenType: "player" as const,
     position: p.position,
     profileId: null,
@@ -314,7 +351,10 @@ export const useTacticsStore = create<TacticsState & TacticsActions>()(
           ...initialState,
           fieldType,
           kind,
-          players: buildOpponents(fieldType),
+          players: [
+            ...buildHomePlayers(fieldType),
+            ...buildOpponents(fieldType),
+          ],
         })
       },
       reset: () => set({ ...initialState }),

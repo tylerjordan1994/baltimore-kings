@@ -1,10 +1,11 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { toPng } from "html-to-image"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
+import type { BrandAssets } from "@/types/database"
 
 interface Template {
   id: string
@@ -58,7 +59,89 @@ const TEMPLATES: Template[] = [
   },
 ]
 
+// ── Brand assets (merged in from the former admin/brand page) ──
+interface AssetField {
+  field: string
+  label: string
+  storageName: string
+  required: boolean
+}
+
+const assetFields: AssetField[] = [
+  { field: "logo_full_url", label: "Full Color Logo", storageName: "kings-logo-full", required: true },
+  { field: "logo_mark_url", label: "Crest Mark", storageName: "kings-logo-mark", required: true },
+  { field: "logo_white_url", label: "White/Monochrome", storageName: "kings-logo-white", required: true },
+  { field: "logo_mono_url", label: "Black/Monochrome", storageName: "kings-logo-mono", required: false },
+  { field: "og_image_url", label: "Social Share Image (1200x630)", storageName: "og-default-image", required: false },
+]
+
+function AssetCard({
+  asset,
+  currentUrl,
+  uploading,
+  warning,
+  onUpload,
+}: {
+  asset: AssetField
+  currentUrl: string | null
+  uploading: boolean
+  warning?: string
+  onUpload: (file: File) => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-medium text-white">{asset.label}</h3>
+        {asset.required && (
+          <span className="text-[10px] font-medium uppercase text-amber-400">
+            Required
+          </span>
+        )}
+      </div>
+
+      <div className="mb-3 flex h-32 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800">
+        {currentUrl ? (
+          <img
+            src={currentUrl}
+            alt={asset.label}
+            className="max-h-28 max-w-full object-contain p-2"
+          />
+        ) : (
+          <span className="text-xs text-zinc-500">No image uploaded</span>
+        )}
+      </div>
+
+      {warning && <p className="mb-2 text-xs text-amber-400">{warning}</p>}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".svg,.png,image/svg+xml,image/png"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) onUpload(file)
+          e.target.value = ""
+        }}
+      />
+
+      <Button
+        size="sm"
+        variant="outline"
+        className="w-full"
+        disabled={uploading}
+        onClick={() => inputRef.current?.click()}
+      >
+        {uploading ? "Uploading..." : currentUrl ? "Replace" : "Upload"}
+      </Button>
+    </div>
+  )
+}
+
 export default function SocialStudioPage() {
+  const [section, setSection] = useState<"studio" | "brand">("studio")
   const cardRef = useRef<HTMLDivElement | null>(null)
   const [template, setTemplate] = useState<Template>(TEMPLATES[0])
   const [photoUrl, setPhotoUrl] = useState("")
@@ -67,6 +150,91 @@ export default function SocialStudioPage() {
   const [detail, setDetail] = useState(TEMPLATES[0].detail)
   const [badge, setBadge] = useState(TEMPLATES[0].badge)
   const [busy, setBusy] = useState(false)
+
+  // Brand assets state
+  const [brand, setBrand] = useState<BrandAssets | null>(null)
+  const [brandLoading, setBrandLoading] = useState(true)
+  const [brandUploading, setBrandUploading] = useState<string | null>(null)
+  const [brandError, setBrandError] = useState<string | null>(null)
+  const [brandWarnings, setBrandWarnings] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    loadBrandAssets()
+  }, [])
+
+  async function loadBrandAssets() {
+    try {
+      const res = await fetch("/project/football-team/api/admin/brand")
+      if (res.ok) {
+        const data = await res.json()
+        setBrand(data)
+      }
+    } catch {
+      // Brand assets may not exist yet
+    } finally {
+      setBrandLoading(false)
+    }
+  }
+
+  function checkBrandDimensions(file: File, field: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new Image()
+      img.onload = () => {
+        const longest = Math.max(img.width, img.height)
+        if (longest < 512) {
+          setBrandWarnings((prev) => ({
+            ...prev,
+            [field]: `Warning: Image is ${img.width}x${img.height}px. Recommended minimum 512px on longest edge.`,
+          }))
+        }
+        URL.revokeObjectURL(img.src)
+        resolve(true)
+      }
+      img.onerror = () => {
+        URL.revokeObjectURL(img.src)
+        resolve(true)
+      }
+      img.src = URL.createObjectURL(file)
+    })
+  }
+
+  async function handleBrandUpload(field: string, file: File) {
+    setBrandError(null)
+    setBrandWarnings((prev) => ({ ...prev, [field]: "" }))
+
+    if (!file.type.match(/^image\/(png|svg\+xml)$/)) {
+      setBrandError("Only SVG or PNG files are accepted.")
+      return
+    }
+
+    if (file.type === "image/png") {
+      const valid = await checkBrandDimensions(file, field)
+      if (!valid) return
+    }
+
+    setBrandUploading(field)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("field", field)
+
+      const res = await fetch("/project/football-team/api/admin/brand", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        setBrandError(data.error ?? "Upload failed")
+        return
+      }
+      await loadBrandAssets()
+    } catch {
+      setBrandError("Upload failed. Please try again.")
+    } finally {
+      setBrandUploading(null)
+    }
+  }
 
   function selectTemplate(t: Template) {
     setTemplate(t)
@@ -121,13 +289,61 @@ export default function SocialStudioPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Social Studio</h1>
+        <h1 className="text-2xl font-bold text-white">Social Studio &amp; Brand</h1>
         <p className="mt-1 text-zinc-400">
-          Build branded announcement graphics and export them for social media.
+          Build branded graphics for social media and manage club brand assets.
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
+      {/* Section toggle */}
+      <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+        {([
+          { key: "studio", label: "Social Studio" },
+          { key: "brand", label: "Brand Assets" },
+        ] as { key: "studio" | "brand"; label: string }[]).map((s) => (
+          <button
+            key={s.key}
+            onClick={() => setSection(s.key)}
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              section === s.key
+                ? "bg-zinc-800 text-white"
+                : "text-zinc-400 hover:text-white"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {section === "brand" && (
+        <div className="space-y-6">
+          {brandLoading ? (
+            <p className="text-zinc-400">Loading brand assets...</p>
+          ) : (
+            <>
+              {brandError && (
+                <div className="rounded-lg border border-red-800 bg-red-950/50 px-4 py-3 text-sm text-red-300">
+                  {brandError}
+                </div>
+              )}
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {assetFields.map((asset) => (
+                  <AssetCard
+                    key={asset.field}
+                    asset={asset}
+                    currentUrl={(brand as any)?.[asset.field] ?? null}
+                    uploading={brandUploading === asset.field}
+                    warning={brandWarnings[asset.field]}
+                    onUpload={(file) => handleBrandUpload(asset.field, file)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      <div className={`grid gap-6 lg:grid-cols-[1fr_auto] ${section === "studio" ? "" : "hidden"}`}>
         {/* Controls */}
         <div className="space-y-5">
           <div>

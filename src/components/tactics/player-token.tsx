@@ -19,6 +19,24 @@ const AWAY_ACCENT = "#e05555"
 
 const R = 16 // token radius — smaller than the old r=22
 
+/** Short abbreviations shown INSIDE the token circle. */
+const POSITION_ABBREVIATIONS: Record<string, string> = {
+  Goalkeeper: "GK",
+  "Pivô": "P",
+  Ala: "Ala",
+  Fixo: "F",
+  "Target Forward": "TF",
+  "2nd Forward": "2F",
+  Defender: "D",
+  Midfielder: "M",
+}
+
+/** Resolve the abbreviation displayed inside a token circle. */
+function abbreviate(label: string): string {
+  if (POSITION_ABBREVIATIONS[label]) return POSITION_ABBREVIATIONS[label]
+  return label.slice(0, 3)
+}
+
 export function PlayerToken({
   player,
   fieldType,
@@ -144,7 +162,7 @@ export function PlayerToken({
           fill="white"
           style={{ userSelect: "none" }}
         >
-          {label.slice(0, 3)}
+          {abbreviate(label)}
         </text>
       )}
 

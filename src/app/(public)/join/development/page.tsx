@@ -1,4 +1,3 @@
-import Link from "next/link"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -42,11 +41,8 @@ export default function DevelopmentPage() {
               Defensive rotations, set pieces, transition play, powerplay and powerplay defense. We teach the game at a level most clubs never reach.
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
-              Explore our educational content on the{" "}
-              <Link href="/learn" className="text-accent hover:text-accent/80 transition-colors">
-                Learn
-              </Link>{" "}
-              page.
+              Tactical work is built into every session — from first-team
+              futsal through the development squad.
             </p>
           </div>
 

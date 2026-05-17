@@ -15,6 +15,10 @@ const removePlayerSchema = z.object({
   teamMemberId: z.string().uuid(),
 })
 
+const deleteTeamSchema = z.object({
+  teamId: z.string().uuid(),
+})
+
 export async function POST(request: NextRequest) {
   try {
     const { profile } = await requireRole('coach')
@@ -58,9 +62,29 @@ export async function DELETE(request: NextRequest) {
   try {
     const { profile } = await requireRole('coach')
     const body = await request.json()
-    const { teamMemberId } = removePlayerSchema.parse(body)
 
     const supabase = await createClient()
+
+    // Two delete modes: remove a single player from a team, or delete an
+    // entire team (and all of its team_members rows).
+    if (body && typeof body === 'object' && 'teamId' in body) {
+      const { teamId } = deleteTeamSchema.parse(body)
+
+      // Remove team membership rows first to avoid orphaned references.
+      await supabase.from('team_members').delete().eq('team_id', teamId)
+
+      const { error } = await supabase.from('teams').delete().eq('id', teamId)
+
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 })
+      }
+
+      await logAudit(profile.id, 'delete_team', 'teams', teamId)
+
+      return NextResponse.json({ success: true })
+    }
+
+    const { teamMemberId } = removePlayerSchema.parse(body)
 
     const { data: existing } = await supabase
       .from('team_members')

@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
+import { ScheduleCalendar } from '@/components/schedule-calendar'
 import type { CalendarEvent, Team } from '@/types/database'
 
 // basePath handled by next.config.ts
@@ -29,6 +30,7 @@ export default function SchedulePage() {
   const [teams, setTeams] = useState<Team[]>([])
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [view, setView] = useState<'list' | 'calendar'>('list')
 
   const supabase = createClient()
 
@@ -113,9 +115,33 @@ export default function SchedulePage() {
           <h1 className="text-2xl font-bold text-white">Schedule Manager</h1>
           <p className="text-zinc-400">Create and manage calendar events.</p>
         </div>
-        <Button onClick={() => { reset(); setEditingId(null); setShowForm(!showForm) }}>
-          {showForm ? 'Cancel' : 'Create Event'}
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+            <button
+              onClick={() => setView('list')}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                view === 'list'
+                  ? 'bg-zinc-800 text-white'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              List
+            </button>
+            <button
+              onClick={() => setView('calendar')}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                view === 'calendar'
+                  ? 'bg-zinc-800 text-white'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Calendar
+            </button>
+          </div>
+          <Button onClick={() => { reset(); setEditingId(null); setShowForm(!showForm) }}>
+            {showForm ? 'Cancel' : 'Create Event'}
+          </Button>
+        </div>
       </div>
 
       {showForm && (
@@ -219,38 +245,47 @@ export default function SchedulePage() {
         </form>
       )}
 
-      <div className="space-y-3">
-        {events.map((event) => (
-          <div
-            key={event.id}
-            className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-4"
-          >
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-white">{event.title}</span>
-                <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] uppercase text-zinc-400">
-                  {event.kind}
-                </span>
+      {view === 'calendar' ? (
+        <ScheduleCalendar events={events} theme="dark" onEventClick={handleEdit} />
+      ) : (
+        <div className="space-y-3">
+          {events.map((event) => (
+            <div
+              key={event.id}
+              className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+            >
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-white">{event.title}</span>
+                  <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] uppercase text-zinc-400">
+                    {event.kind}
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-500">
+                  {new Date(event.starts_at).toLocaleString()}
+                  {event.location && ` — ${event.location}`}
+                </p>
               </div>
-              <p className="text-xs text-zinc-500">
-                {new Date(event.starts_at).toLocaleString()}
-                {event.location && ` — ${event.location}`}
-              </p>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleEdit(event)}
+                  className="text-zinc-200 hover:text-white"
+                >
+                  Edit
+                </Button>
+                <Button size="sm" variant="destructive" onClick={() => handleDelete(event.id)}>
+                  Delete
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="ghost" onClick={() => handleEdit(event)}>
-                Edit
-              </Button>
-              <Button size="sm" variant="destructive" onClick={() => handleDelete(event.id)}>
-                Delete
-              </Button>
-            </div>
-          </div>
-        ))}
-        {events.length === 0 && (
-          <p className="text-center text-sm text-zinc-500">No events yet.</p>
-        )}
-      </div>
+          ))}
+          {events.length === 0 && (
+            <p className="text-center text-sm text-zinc-500">No events yet.</p>
+          )}
+        </div>
+      )}
     </div>
   )
 }

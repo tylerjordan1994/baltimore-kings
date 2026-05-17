@@ -86,6 +86,33 @@ export function AddPlayerPanel({ roster }: AddPlayerPanelProps) {
       </h3>
 
       <div className="grid gap-5 sm:grid-cols-2">
+        {/* Generic position token */}
+        <div>
+          <p className="mb-1.5 text-xs font-medium text-zinc-500">
+            Generic position token
+          </p>
+          <div className="flex items-center gap-2">
+            <select
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              className="h-8 flex-1 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white"
+            >
+              {positions.map((pos) => (
+                <option key={pos} value={pos}>
+                  {pos}
+                </option>
+              ))}
+            </select>
+            <Button size="sm" onClick={addPositionToken}>
+              Add token
+            </Button>
+          </div>
+          <p className="mt-2 text-xs text-zinc-600">
+            Opponent tokens are placed automatically. Drag any token to
+            reposition it; numbers are intentionally hidden.
+          </p>
+        </div>
+
         {/* Roster picker */}
         <div>
           <p className="mb-1.5 text-xs font-medium text-zinc-500">
@@ -129,33 +156,6 @@ export function AddPlayerPanel({ roster }: AddPlayerPanelProps) {
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Generic position token */}
-        <div>
-          <p className="mb-1.5 text-xs font-medium text-zinc-500">
-            Generic position token
-          </p>
-          <div className="flex items-center gap-2">
-            <select
-              value={position}
-              onChange={(e) => setPosition(e.target.value)}
-              className="h-8 flex-1 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white"
-            >
-              {positions.map((pos) => (
-                <option key={pos} value={pos}>
-                  {pos}
-                </option>
-              ))}
-            </select>
-            <Button size="sm" onClick={addPositionToken}>
-              Add token
-            </Button>
-          </div>
-          <p className="mt-2 text-xs text-zinc-600">
-            Opponent tokens are placed automatically. Drag any token to
-            reposition it; numbers are intentionally hidden.
-          </p>
         </div>
       </div>
 

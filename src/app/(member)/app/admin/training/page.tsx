@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import type { FocusArea, FocusCategory, TrainingPriority, Profile, Team } from "@/types/database"
+import type { FocusArea, FocusCategory, TrainingPriority, Profile, Team, Tutorial } from "@/types/database"
 
-type Tab = "assignments" | "focus_areas" | "completions"
+type Tab = "assignments" | "focus_areas" | "completions" | "tutorials"
 
 export default function AdminTrainingPage() {
   const [tab, setTab] = useState<Tab>("assignments")
@@ -13,6 +13,17 @@ export default function AdminTrainingPage() {
   const [teams, setTeams] = useState<Team[]>([])
   const [completions, setCompletions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Tutorials (merged in from the former admin/tutorials page)
+  const [tutorials, setTutorials] = useState<Tutorial[]>([])
+  const [showTutorialForm, setShowTutorialForm] = useState(false)
+  const [editingTutorialId, setEditingTutorialId] = useState<string | null>(null)
+  const [tutTitle, setTutTitle] = useState("")
+  const [tutCategory, setTutCategory] = useState("")
+  const [tutYoutube, setTutYoutube] = useState("")
+  const [tutExternal, setTutExternal] = useState("")
+  const [tutBody, setTutBody] = useState("")
+  const [tutPublished, setTutPublished] = useState(false)
 
   // Focus area form
   const [showFocusForm, setShowFocusForm] = useState(false)
@@ -59,7 +70,67 @@ export default function AdminTrainingPage() {
       setCompletions(prog || [])
     }
 
+    if (tab === "tutorials") {
+      const { data: tut } = await supabase
+        .from("tutorials")
+        .select("*")
+        .order("created_at", { ascending: false })
+      setTutorials((tut as Tutorial[]) || [])
+    }
+
     setLoading(false)
+  }
+
+  // ── Tutorials CRUD (merged from admin/tutorials) ───────────────
+  function resetTutorialForm() {
+    setEditingTutorialId(null)
+    setTutTitle("")
+    setTutCategory("")
+    setTutYoutube("")
+    setTutExternal("")
+    setTutBody("")
+    setTutPublished(false)
+  }
+
+  async function handleSaveTutorial() {
+    const payload = {
+      title: tutTitle,
+      body_markdown: tutBody || null,
+      youtube_url: tutYoutube || null,
+      external_url: tutExternal || null,
+      category: tutCategory || null,
+      is_published: tutPublished,
+    }
+    if (editingTutorialId) {
+      await supabase.from("tutorials").update(payload).eq("id", editingTutorialId)
+    } else {
+      await supabase.from("tutorials").insert(payload)
+    }
+    setShowTutorialForm(false)
+    resetTutorialForm()
+    fetchData()
+  }
+
+  function handleEditTutorial(t: Tutorial) {
+    setEditingTutorialId(t.id)
+    setTutTitle(t.title)
+    setTutCategory(t.category ?? "")
+    setTutYoutube(t.youtube_url ?? "")
+    setTutExternal(t.external_url ?? "")
+    setTutBody(t.body_markdown ?? "")
+    setTutPublished(t.is_published)
+    setShowTutorialForm(true)
+  }
+
+  async function handleDeleteTutorial(id: string) {
+    if (!confirm("Delete this tutorial?")) return
+    await supabase.from("tutorials").delete().eq("id", id)
+    fetchData()
+  }
+
+  async function toggleTutorialPublish(id: string, current: boolean) {
+    await supabase.from("tutorials").update({ is_published: !current }).eq("id", id)
+    fetchData()
   }
 
   async function handleCreateFocusArea() {
@@ -143,25 +214,37 @@ export default function AdminTrainingPage() {
     { key: "assignments", label: "Assign Training" },
     { key: "focus_areas", label: "Focus Areas" },
     { key: "completions", label: "Review Completions" },
+    { key: "tutorials", label: "Tutorials" },
   ]
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Training Manager</h1>
+        <h1 className="text-2xl font-bold text-white">Training &amp; Tutorials</h1>
         <div className="flex gap-2">
-          <button
-            onClick={() => setShowFocusForm(true)}
-            className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
-          >
-            Add Focus Area
-          </button>
-          <button
-            onClick={() => setShowAssignForm(true)}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black hover:bg-amber-400 transition-colors"
-          >
-            Assign Training
-          </button>
+          {tab === "tutorials" ? (
+            <button
+              onClick={() => { resetTutorialForm(); setShowTutorialForm(true) }}
+              className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black hover:bg-amber-400 transition-colors"
+            >
+              Add Tutorial
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setShowFocusForm(true)}
+                className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+              >
+                Add Focus Area
+              </button>
+              <button
+                onClick={() => setShowAssignForm(true)}
+                className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black hover:bg-amber-400 transition-colors"
+              >
+                Assign Training
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -245,12 +328,152 @@ export default function AdminTrainingPage() {
             ))
           )}
         </div>
+      ) : tab === "tutorials" ? (
+        <div className="space-y-3">
+          {tutorials.length === 0 ? (
+            <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+              <p className="text-sm text-zinc-500">No tutorials yet.</p>
+            </div>
+          ) : (
+            tutorials.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-white">{t.title}</span>
+                    {t.category && (
+                      <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-400">
+                        {t.category}
+                      </span>
+                    )}
+                    <span
+                      className={`rounded px-1.5 py-0.5 text-[10px] ${
+                        t.is_published
+                          ? "bg-green-900/50 text-green-400"
+                          : "bg-zinc-800 text-zinc-500"
+                      }`}
+                    >
+                      {t.is_published ? "Published" : "Draft"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-600">
+                    {new Date(t.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => toggleTutorialPublish(t.id, t.is_published)}
+                    className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition-colors"
+                  >
+                    {t.is_published ? "Unpublish" : "Publish"}
+                  </button>
+                  <button
+                    onClick={() => handleEditTutorial(t)}
+                    className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTutorial(t.id)}
+                    className="rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       ) : (
         <div className="rounded-xl border border-white/10 bg-white/5 p-6">
           <p className="text-sm text-zinc-400">
             Use the &quot;Assign Training&quot; button above to create new assignments.
             Focus areas are the building blocks — create those first, then assign them to players or teams.
           </p>
+        </div>
+      )}
+
+      {/* Tutorial Form Modal */}
+      {showTutorialForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#0f0f0f] p-6 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-white mb-4">
+              {editingTutorialId ? "Edit Tutorial" : "Add Tutorial"}
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-1">Title</label>
+                <input
+                  type="text"
+                  value={tutTitle}
+                  onChange={(e) => setTutTitle(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-1">Category</label>
+                <input
+                  type="text"
+                  value={tutCategory}
+                  onChange={(e) => setTutCategory(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-1">YouTube URL</label>
+                <input
+                  type="text"
+                  value={tutYoutube}
+                  onChange={(e) => setTutYoutube(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-1">External URL</label>
+                <input
+                  type="text"
+                  value={tutExternal}
+                  onChange={(e) => setTutExternal(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-1">Body (Markdown)</label>
+                <textarea
+                  value={tutBody}
+                  onChange={(e) => setTutBody(e.target.value)}
+                  rows={6}
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 font-mono text-white focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={tutPublished}
+                  onChange={(e) => setTutPublished(e.target.checked)}
+                  className="rounded border-white/20"
+                />
+                <span className="text-sm text-zinc-300">Published</span>
+              </label>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={handleSaveTutorial}
+                  disabled={!tutTitle.trim()}
+                  className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
+                >
+                  {editingTutorialId ? "Update" : "Create"}
+                </button>
+                <button
+                  onClick={() => { setShowTutorialForm(false); resetTutorialForm() }}
+                  className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

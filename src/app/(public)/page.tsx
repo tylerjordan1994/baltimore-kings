@@ -1,12 +1,19 @@
 import Link from "next/link"
-import { ArrowRight, MapPin, Trophy, Users, Zap } from "lucide-react"
+import {
+  ArrowRight,
+  MapPin,
+  Trophy,
+  Users,
+  Zap,
+  Camera,
+} from "lucide-react"
+import { createClient } from "@/lib/supabase/server"
 import {
   Reveal,
   Parallax,
   CountUp,
   MagneticButton,
   TiltCard,
-  HeroParallax,
 } from "@/components/home-motion"
 
 const BP = "/project/football-team"
@@ -33,138 +40,191 @@ const PROGRAMS = [
     href: "/teams/masl3",
     league: "Major Arena Soccer League 3",
     name: "MASL3",
-    photo: `${BP}/photos/masl3-team.jpg`,
+    photo: `${BP}/photos/masl3-huddle.jpg`,
     copy: "Six-a-side walled arena. Off-season competition — faster, more physical, a different test.",
     feature: false,
   },
 ]
 
-/* ─── Sponsor placeholder slots ─── */
-const SPONSORS = [
-  "Your Brand Here",
-  "Partner Slot",
-  "Your Logo Here",
-  "Become a Backer",
-  "Sponsor Spot",
-  "Team Partner",
+/* ─── Sponsor tier presentation ─── */
+type Sponsor = {
+  id: string
+  name: string
+  logo_url: string | null
+  website_url: string | null
+  tier: string
+  description: string | null
+}
+
+const SPONSOR_TIERS: Array<{
+  key: string
+  label: string
+  badge: string
+  logoHeight: string
+}> = [
+  {
+    key: "platinum",
+    label: "Platinum Partners",
+    badge: "bg-accent text-ink",
+    logoHeight: "h-20",
+  },
+  {
+    key: "gold",
+    label: "Gold Sponsors",
+    badge: "bg-yellow-400 text-ink",
+    logoHeight: "h-16",
+  },
+  {
+    key: "silver",
+    label: "Silver Sponsors",
+    badge: "bg-slate-300 text-ink",
+    logoHeight: "h-14",
+  },
 ]
 
-export default function HomePage() {
+type SocialPost = {
+  id: string
+  source: string
+  caption: string | null
+  media_url: string | null
+  external_url: string | null
+  posted_at: string | null
+}
+
+function formatPostDate(value: string | null) {
+  if (!value) return ""
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return ""
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+}
+
+export default async function HomePage() {
+  const supabase = await createClient()
+
+  const [{ data: sponsorData }, { data: socialData }] = await Promise.all([
+    supabase
+      .from("sponsors")
+      .select("id, name, logo_url, website_url, tier, description")
+      .eq("is_active", true)
+      .order("order_index", { ascending: true }),
+    supabase
+      .from("social_posts")
+      .select("id, source, caption, media_url, external_url, posted_at")
+      .order("posted_at", { ascending: false, nullsFirst: false })
+      .limit(6),
+  ])
+
+  const sponsors = (sponsorData as Sponsor[] | null) ?? []
+  const socialPosts = (socialData as SocialPost[] | null) ?? []
+
+  const sponsorTiers = SPONSOR_TIERS.map((tier) => ({
+    ...tier,
+    items: sponsors.filter((s) => s.tier === tier.key),
+  })).filter((tier) => tier.items.length > 0)
+
   return (
     <>
-      {/* ═══════════════ 1. HERO ═══════════════ */}
-      <section className="relative overflow-hidden bg-paper pb-28 pt-10 sm:pb-36 lg:pt-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Hero image card */}
-          <Reveal variant="clip">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] sm:aspect-[16/10] lg:aspect-[16/8]">
-              <HeroParallax
-                src={`${BP}/photos/court-sunset.jpg`}
-                alt="Baltimore Kings indoor futsal court at sunset"
-              >
-                {/* Readability gradients */}
-                <div className="absolute inset-0 bg-gradient-to-t from-court/85 via-court/30 to-court/40" />
-                <div className="absolute inset-0 bg-gradient-to-r from-court/70 via-transparent to-transparent" />
-              </HeroParallax>
+      {/* ═══════════════ 1. CINEMATIC HERO ═══════════════ */}
+      <section className="relative isolate min-h-[88vh] overflow-hidden bg-court">
+        {/* Full-bleed background photo */}
+        <div className="absolute inset-0 -z-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`${BP}/photos/court-sunset.jpg`}
+            alt="Baltimore Kings indoor futsal court at sunset"
+            className="h-full w-full object-cover"
+          />
+          {/* Cinematic dark gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-court via-court/55 to-court/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-court/85 via-court/30 to-court/10" />
+        </div>
 
-              {/* Floating eyebrow badge — top left */}
-              <div className="drift absolute left-5 top-5 sm:left-8 sm:top-8">
-                <span className="inline-flex items-center gap-2 rounded-full border border-paper/25 bg-court/40 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-paper backdrop-blur-md">
+        <div className="mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 sm:pb-24 lg:px-8 lg:pb-28 lg:pt-36">
+          <div className="grid items-end gap-10 lg:grid-cols-12">
+            {/* Headline block */}
+            <div className="lg:col-span-7">
+              <Reveal variant="up">
+                <span className="inline-flex items-center gap-2 rounded-full border border-paper/20 bg-paper/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-paper backdrop-blur-md">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   Est. 2012 &middot; Baltimore, MD
                 </span>
-              </div>
-
-              {/* Hero copy — bottom left, over image */}
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 lg:p-14">
-                <div className="max-w-2xl">
-                  <Reveal variant="up" delay={150}>
-                    <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent">
-                      League 1 Futsal &middot; MASL3 Arena Soccer
-                    </p>
-                  </Reveal>
-                  <Reveal variant="up" delay={260}>
-                    <h1 className="mt-4 font-heading text-[2.6rem] leading-[0.95] tracking-tight text-paper sm:text-6xl lg:text-7xl xl:text-8xl">
-                      Master Your
-                      <br />
-                      Futsal Game.
-                    </h1>
-                  </Reveal>
-                  <Reveal variant="up" delay={380}>
-                    <p className="mt-5 max-w-lg text-base leading-relaxed text-paper/75 sm:text-lg">
-                      Year-round development through Pro-SA League 1 Futsal,
-                      plus MASL3 arena soccer when the lights come on. Train
-                      sharper. Compete higher. Built in Baltimore.
-                    </p>
-                  </Reveal>
-                  <Reveal variant="up" delay={500}>
-                    <div className="mt-8 flex flex-wrap items-center gap-4">
-                      <MagneticButton
-                        href={`${BP}/join/apply`}
-                        className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-ink shadow-lg shadow-accent/20 hover:bg-accent-light"
-                      >
-                        Apply for a tryout
-                        <ArrowRight className="h-4 w-4" />
-                      </MagneticButton>
-                      <Link
-                        href="/schedule"
-                        className="inline-flex items-center rounded-full border border-paper/35 bg-paper/5 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-paper backdrop-blur-md transition-colors hover:bg-paper/15"
-                      >
-                        See the schedule
-                      </Link>
-                    </div>
-                  </Reveal>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* Floating glass info card — overlaps hero bottom-right */}
-          <Reveal
-            variant="up"
-            delay={320}
-            className="relative z-20 -mt-16 ml-auto w-full max-w-sm sm:-mt-20 lg:-mt-24 lg:mr-6"
-          >
-            <div className="float-bob rounded-3xl border border-border bg-white/90 p-6 shadow-2xl shadow-court/20 backdrop-blur-xl sm:p-7">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
-                  Tryouts Open
+              </Reveal>
+              <Reveal variant="up" delay={140}>
+                <h1 className="mt-6 font-heading text-[3rem] leading-[0.92] tracking-tight text-paper sm:text-7xl lg:text-8xl xl:text-[8.5rem]">
+                  Baltimore&apos;s
+                  <br />
+                  <span className="text-accent">Futsal Club.</span>
+                </h1>
+              </Reveal>
+              <Reveal variant="up" delay={280}>
+                <p className="mt-7 max-w-xl text-base leading-relaxed text-paper/80 sm:text-lg">
+                  Year-round development through Pro-SA League 1 Futsal, plus
+                  MASL3 arena soccer when the lights come on. Train sharper,
+                  compete higher — built in Baltimore since 2012.
                 </p>
-                <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-dark">
-                  2026 Season
-                </span>
-              </div>
-              <p className="mt-3 font-heading text-3xl leading-tight text-ink">
-                Join the Kings.
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Open trials for all three squads. Outfield and goalkeepers
-                welcome — futsal experience a bonus, not a requirement.
-              </p>
-              <ul className="mt-4 space-y-2 border-t border-border pt-4 text-sm text-ink">
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                  League 1 Futsal &amp; MASL3 pathways
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                  Benfield Sports &amp; GOALS Baltimore
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                  Year-round structured development
-                </li>
-              </ul>
-              <MagneticButton
-                href={`${BP}/join/apply`}
-                strength={0.25}
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper hover:bg-brand-light"
-              >
-                Start application
-                <ArrowRight className="h-4 w-4" />
-              </MagneticButton>
+              </Reveal>
+              <Reveal variant="up" delay={420}>
+                <div className="mt-9 flex flex-wrap items-center gap-4">
+                  <MagneticButton
+                    href={`${BP}/join/apply`}
+                    className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-ink shadow-lg shadow-accent/25 hover:bg-accent-light"
+                  >
+                    Apply for a tryout
+                    <ArrowRight className="h-4 w-4" />
+                  </MagneticButton>
+                  <Link
+                    href="/schedule"
+                    className="inline-flex items-center rounded-full border border-paper/35 bg-paper/5 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-paper backdrop-blur-md transition-colors hover:bg-paper/15"
+                  >
+                    See the schedule
+                  </Link>
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
+
+            {/* Overlaid membership/tryout card — lower right */}
+            <div className="lg:col-span-5 lg:pb-2">
+              <Reveal variant="up" delay={360}>
+                <div className="float-bob ml-auto w-full max-w-sm rounded-3xl border border-paper/15 bg-white/95 p-7 shadow-2xl shadow-court/40 backdrop-blur-xl">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+                      Tryouts Open
+                    </p>
+                    <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-dark">
+                      2026 Season
+                    </span>
+                  </div>
+                  <p className="mt-3 font-heading text-3xl leading-tight text-ink">
+                    Join the Kings.
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    Open trials for all three squads. Outfield and goalkeepers
+                    welcome — futsal experience a bonus, not a requirement.
+                  </p>
+                  <ul className="mt-5 space-y-2.5 border-t border-border pt-5 text-sm text-ink">
+                    {[
+                      "League 1 Futsal & MASL3 pathways",
+                      "Benfield Sports & GOALS Baltimore",
+                      "Year-round structured development",
+                    ].map((line) => (
+                      <li key={line} className="flex items-center gap-2.5">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                  <MagneticButton
+                    href={`${BP}/join/apply`}
+                    strength={0.25}
+                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper hover:bg-brand-light"
+                  >
+                    Start application
+                    <ArrowRight className="h-4 w-4" />
+                  </MagneticButton>
+                </div>
+              </Reveal>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -558,8 +618,125 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ 8. SPONSORS ═══════════════ */}
-      <section className="border-y border-border bg-secondary py-20 sm:py-28">
+      {/* ═══════════════ 8. ON INSTAGRAM ═══════════════ */}
+      <section className="bg-secondary py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <Reveal variant="up">
+                <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-brand">
+                  <Camera className="h-4 w-4 text-accent" />
+                  On Instagram
+                </p>
+              </Reveal>
+              <Reveal variant="up" delay={110}>
+                <h2 className="mt-3 max-w-md font-heading text-3xl leading-tight text-ink sm:text-4xl">
+                  Straight from the court.
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal variant="up" delay={200}>
+              <a
+                href="https://www.instagram.com/baltimoreprofutsal/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-white px-6 py-3 text-sm font-bold uppercase tracking-wide text-ink transition-colors hover:border-accent hover:text-brand"
+              >
+                <Camera className="h-4 w-4" />
+                @baltimoreprofutsal
+              </a>
+            </Reveal>
+          </div>
+
+          {socialPosts.length > 0 ? (
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {socialPosts.map((post, i) => {
+                const Wrapper = post.external_url ? "a" : "div"
+                const wrapperProps = post.external_url
+                  ? {
+                      href: post.external_url,
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                    }
+                  : {}
+                return (
+                  <Reveal key={post.id} variant="up" delay={i * 90}>
+                    <Wrapper
+                      {...wrapperProps}
+                      className="lift-card group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white"
+                    >
+                      {/* Media */}
+                      <div className="zoom-frame relative aspect-square w-full overflow-hidden bg-court">
+                        {post.media_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={post.media_url}
+                            alt={post.caption ?? "Baltimore Kings social post"}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-brand via-court to-court">
+                            <Camera className="h-10 w-10 text-accent" />
+                            <span className="mt-3 font-heading text-sm uppercase tracking-widest text-paper/70">
+                              Baltimore Kings
+                            </span>
+                          </div>
+                        )}
+                        <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-court/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-paper backdrop-blur-sm">
+                          <Camera className="h-3 w-3" />
+                          {post.source}
+                        </span>
+                      </div>
+                      {/* Caption */}
+                      <div className="flex flex-1 flex-col justify-between p-5">
+                        <p className="line-clamp-3 text-sm leading-relaxed text-ink">
+                          {post.caption ?? "Baltimore Kings"}
+                        </p>
+                        <div className="mt-4 flex items-center justify-between">
+                          <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+                            {formatPostDate(post.posted_at)}
+                          </span>
+                          {post.external_url && (
+                            <span className="inline-flex items-center text-xs font-semibold text-brand">
+                              View post
+                              <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Wrapper>
+                  </Reveal>
+                )
+              })}
+            </div>
+          ) : (
+            <Reveal variant="up">
+              <div className="mt-12 flex flex-col items-center justify-center rounded-2xl border border-dashed border-ink/20 bg-white px-6 py-16 text-center">
+                <Camera className="h-10 w-10 text-accent" />
+                <p className="mt-4 font-heading text-xl text-ink">
+                  Follow the Kings on Instagram
+                </p>
+                <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                  New posts from matchday and training will show up here. In the
+                  meantime, catch the latest on our feed.
+                </p>
+                <a
+                  href="https://www.instagram.com/baltimoreprofutsal/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper transition-colors hover:bg-brand-light"
+                >
+                  <Camera className="h-4 w-4" />
+                  @baltimoreprofutsal
+                </a>
+              </div>
+            </Reveal>
+          )}
+        </div>
+      </section>
+
+      {/* ═══════════════ 9. SPONSORS — by tier ═══════════════ */}
+      <section className="border-y border-border bg-paper py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -570,7 +747,7 @@ export default function HomePage() {
               </Reveal>
               <Reveal variant="up" delay={110}>
                 <h2 className="mt-3 max-w-md font-heading text-3xl leading-tight text-ink sm:text-4xl">
-                  Put your brand on the court.
+                  The brands behind the Kings.
                 </h2>
               </Reveal>
             </div>
@@ -582,21 +759,90 @@ export default function HomePage() {
             </Reveal>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {SPONSORS.map((label, i) => (
-              <Reveal key={label} variant="up" delay={i * 80}>
-                <div className="group flex aspect-[3/2] flex-col items-center justify-center rounded-xl border border-dashed border-ink/20 bg-white grayscale transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:grayscale-0 hover:shadow-lg">
-                  <div className="h-8 w-8 rounded-full bg-ink/10 transition-colors group-hover:bg-accent/30" />
-                  <span className="mt-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors group-hover:text-ink">
-                    {label}
-                  </span>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          {sponsorTiers.length > 0 ? (
+            <div className="mt-12 space-y-12">
+              {sponsorTiers.map((tier) => (
+                <Reveal key={tier.key} variant="up">
+                  <div>
+                    <div className="mb-6 flex items-center gap-3">
+                      <span
+                        className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-widest ${tier.badge}`}
+                      >
+                        {tier.label}
+                      </span>
+                      <div className="h-px flex-1 bg-border" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                      {tier.items.map((sponsor) => {
+                        const Wrapper =
+                          sponsor.website_url && sponsor.website_url !== "#"
+                            ? "a"
+                            : "div"
+                        const wrapperProps =
+                          sponsor.website_url && sponsor.website_url !== "#"
+                            ? {
+                                href: sponsor.website_url,
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                              }
+                            : {}
+                        return (
+                          <Wrapper
+                            key={sponsor.id}
+                            {...wrapperProps}
+                            className="group flex flex-col items-center justify-center rounded-xl border border-border bg-white p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-lg"
+                          >
+                            <div
+                              className={`flex w-full items-center justify-center ${tier.logoHeight}`}
+                            >
+                              {sponsor.logo_url &&
+                              sponsor.logo_url !== "#" ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={sponsor.logo_url}
+                                  alt={sponsor.name}
+                                  className="max-h-full max-w-full object-contain grayscale transition-all duration-300 group-hover:grayscale-0"
+                                />
+                              ) : (
+                                <span className="font-heading text-sm font-bold uppercase tracking-wide text-muted-foreground transition-colors group-hover:text-ink">
+                                  {sponsor.name}
+                                </span>
+                              )}
+                            </div>
+                            {sponsor.logo_url &&
+                              sponsor.logo_url !== "#" && (
+                                <span className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                  {sponsor.name}
+                                </span>
+                              )}
+                          </Wrapper>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <Reveal variant="up">
+              <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex aspect-[3/2] flex-col items-center justify-center rounded-xl border border-dashed border-ink/20 bg-white"
+                  >
+                    <div className="h-8 w-8 rounded-full bg-ink/10" />
+                    <span className="mt-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Your Brand Here
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          )}
 
           <Reveal variant="up" delay={120}>
-            <div className="mt-10 flex justify-center">
+            <div className="mt-12 flex justify-center">
               <MagneticButton
                 href={`${BP}/club/sponsors`}
                 className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-white px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-ink transition-colors hover:border-accent hover:text-brand"
@@ -609,7 +855,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ 9. APPLY CTA (DARK) ═══════════════ */}
+      {/* ═══════════════ 10. APPLY CTA (DARK) ═══════════════ */}
       <section className="relative overflow-hidden bg-court py-28 sm:py-40">
         {/* Subtle background photo */}
         <div className="absolute inset-0 opacity-25">
@@ -637,7 +883,7 @@ export default function HomePage() {
           </Reveal>
           <Reveal variant="up" delay={260}>
             <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-paper/70">
-              Trials are open for all three squads. Bring your touch — we'll
+              Trials are open for all three squads. Bring your touch — we&apos;ll
               build the rest.
             </p>
           </Reveal>

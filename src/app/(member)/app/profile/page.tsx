@@ -38,14 +38,58 @@ export default function ProfilePage() {
     text: string
   } | null>(null)
 
+  const [uploading, setUploading] = useState(false)
+
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema) as any,
   })
+
+  const photoUrl = watch("photo_url")
+
+  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setMessage(null)
+    setUploading(true)
+
+    const supabase = createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) {
+      setUploading(false)
+      return
+    }
+
+    const ext = file.name.split(".").pop() || "jpg"
+    const path = `profile-photos/${user.id}-${Date.now()}.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from("media")
+      .upload(path, file, { contentType: file.type, upsert: true })
+
+    if (uploadError) {
+      setMessage({ type: "error", text: `Upload failed: ${uploadError.message}` })
+      setUploading(false)
+      return
+    }
+
+    const { data: urlData } = supabase.storage.from("media").getPublicUrl(path)
+    setValue("photo_url", urlData.publicUrl, { shouldValidate: true })
+    setMessage({
+      type: "success",
+      text: "Photo uploaded. Click Save Changes to apply.",
+    })
+    setUploading(false)
+  }
 
   useEffect(() => {
     async function loadProfile() {
@@ -242,13 +286,51 @@ export default function ProfilePage() {
           />
         </Field>
 
-        <Field label="Photo URL" error={errors.photo_url?.message}>
-          <input
-            {...register("photo_url")}
-            type="url"
-            placeholder="https://..."
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
-          />
+        <Field label="Profile Photo" error={errors.photo_url?.message}>
+          <div className="flex items-start gap-4">
+            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800">
+              {photoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={photoUrl}
+                  alt="Profile preview"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-xs text-zinc-500">
+                  No photo
+                </div>
+              )}
+            </div>
+            <div className="flex-1 space-y-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-zinc-400">
+                  Upload an image file
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  disabled={uploading}
+                  className="block w-full text-sm text-zinc-400 file:mr-3 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700 disabled:opacity-50"
+                />
+                {uploading && (
+                  <p className="mt-1 text-xs text-zinc-500">Uploading...</p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-zinc-400">
+                  Or paste an image URL
+                </label>
+                <input
+                  {...register("photo_url")}
+                  type="url"
+                  placeholder="https://..."
+                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
         </Field>
 
         {(userRole === "coach" || userRole === "superadmin") && (

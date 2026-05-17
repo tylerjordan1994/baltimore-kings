@@ -100,7 +100,7 @@ export default async function MASL3Page() {
       <section className="bg-paper py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="overflow-hidden rounded-2xl">
-            <img src="/project/football-team/photos/masl3-team.jpg" alt="Baltimore Kings MASL3 team photo" className="w-full h-auto max-h-[440px] object-cover" />
+            <img src="/project/football-team/photos/masl3-huddle.jpg" alt="Baltimore Kings MASL3 team photo" className="w-full h-auto max-h-[440px] object-cover" />
           </div>
         </div>
       </section>

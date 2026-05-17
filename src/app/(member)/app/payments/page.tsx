@@ -68,6 +68,12 @@ export default function PaymentsPage() {
     )
   }
 
+  const samplePayments = [
+    { id: "sample-1", date: "Mar 3, 2026", description: "Spring Dues", amount: "$150.00", status: "completed" },
+    { id: "sample-2", date: "Feb 12, 2026", description: "Tournament Fee", amount: "$40.00", status: "completed" },
+    { id: "sample-3", date: "Jan 8, 2026", description: "Uniform Kit", amount: "$65.00", status: "completed" },
+  ]
+
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-2xl font-bold text-white">Payments</h1>
@@ -120,7 +126,37 @@ export default function PaymentsPage() {
         </h2>
 
         {payments.length === 0 ? (
-          <p className="text-sm text-zinc-500">No payments found.</p>
+          <div>
+            <p className="mb-3 inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-300">
+              Sample data — your real payments will appear here
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-zinc-800 text-xs uppercase text-zinc-500">
+                  <tr>
+                    <th className="pb-3 pr-4">Date</th>
+                    <th className="pb-3 pr-4">Description</th>
+                    <th className="pb-3 pr-4">Amount</th>
+                    <th className="pb-3 pr-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800">
+                  {samplePayments.map((p) => (
+                    <tr key={p.id} className="italic text-zinc-500">
+                      <td className="py-3 pr-4">{p.date}</td>
+                      <td className="py-3 pr-4">{p.description}</td>
+                      <td className="py-3 pr-4">{p.amount}</td>
+                      <td className="py-3 pr-4">
+                        <span className="inline-block rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-medium not-italic text-green-400/80">
+                          {p.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">

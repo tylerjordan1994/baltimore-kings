@@ -169,9 +169,9 @@ export default async function FutsalKings1Page() {
               </p>
             </div>
             <div className="mt-8">
-              <Link href="/learn">
+              <Link href="/join/development">
                 <Button className="bg-accent font-heading font-semibold text-ink hover:bg-accent/90 rounded-full">
-                  Futsal tutorials
+                  Player development
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>

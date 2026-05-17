@@ -50,7 +50,7 @@ export default async function TacticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Team Tactics</h1>
+        <h1 className="text-2xl font-bold text-white">Play Builder</h1>
         <p className="mt-1 text-zinc-400">
           View formations, set pieces, and plays from your coaches.
         </p>

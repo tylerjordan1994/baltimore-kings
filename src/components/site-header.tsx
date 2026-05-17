@@ -78,8 +78,8 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden items-center gap-1 lg:flex">
+        {/* Desktop Nav — pill-shaped buttons */}
+        <nav className="hidden items-center gap-1.5 rounded-full border border-border bg-paper/70 p-1.5 lg:flex">
           {/* Teams dropdown */}
           <div
             className="relative"
@@ -88,7 +88,11 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           >
             <button
               onClick={() => setActiveDropdown(activeDropdown === "teams" ? null : "teams")}
-              className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
+              className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                activeDropdown === "teams"
+                  ? "bg-white text-ink shadow-sm"
+                  : "text-muted-foreground hover:bg-white hover:text-ink"
+              }`}
             >
               Teams
               <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === "teams" ? "rotate-180" : ""}`} />
@@ -98,7 +102,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           {/* Roster */}
           <Link
             href="/roster"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-white hover:text-ink"
           >
             Roster
           </Link>
@@ -111,25 +115,21 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           >
             <button
               onClick={() => setActiveDropdown(activeDropdown === "club" ? null : "club")}
-              className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
+              className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                activeDropdown === "club"
+                  ? "bg-white text-ink shadow-sm"
+                  : "text-muted-foreground hover:bg-white hover:text-ink"
+              }`}
             >
               Club
               <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === "club" ? "rotate-180" : ""}`} />
             </button>
           </div>
 
-          {/* Learn */}
-          <Link
-            href="/learn"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
-          >
-            Learn
-          </Link>
-
           {/* Tickets */}
           <Link
             href="/tickets"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-white hover:text-ink"
           >
             Tickets
           </Link>
@@ -139,25 +139,19 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
             href="https://baltimorekings.printify.me/"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-white hover:text-ink"
           >
             Merch
           </a>
         </nav>
 
-        {/* Right side: Sign In + Join CTA */}
+        {/* Right side: Log in CTA */}
         <div className="hidden items-center gap-3 lg:flex">
           <Link
             href="/sign-in"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-ink"
+            className="inline-flex items-center rounded-full bg-brand px-6 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
           >
-            Sign In
-          </Link>
-          <Link
-            href="/join/apply"
-            className="inline-flex items-center rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
-          >
-            Join
+            Log in
           </Link>
         </div>
 
@@ -317,13 +311,6 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
               <div className="my-3 border-t border-border" />
 
               <Link
-                href="/learn"
-                onClick={() => setMobileOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
-              >
-                Learn
-              </Link>
-              <Link
                 href="/tickets"
                 onClick={() => setMobileOpen(false)}
                 className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
@@ -345,16 +332,9 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
               <Link
                 href="/sign-in"
                 onClick={() => setMobileOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-paper"
+                className="mt-1 block rounded-full bg-brand px-4 py-2.5 text-center text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
               >
-                Sign In
-              </Link>
-              <Link
-                href="/join/apply"
-                onClick={() => setMobileOpen(false)}
-                className="mt-3 block rounded-full bg-brand px-4 py-2.5 text-center text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
-              >
-                Join
+                Log in
               </Link>
             </div>
           </nav>

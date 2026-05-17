@@ -2,22 +2,31 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import type { TrainingAssignment, TrainingProgress, TrainingPriority, TrainingStatus } from "@/types/database"
+import type {
+  TrainingProgress,
+  TrainingPriority,
+  TrainingStatus,
+  Tutorial,
+} from "@/types/database"
 
-export default function TrainingPage() {
+export default function TrainingAndTutorialsPage() {
   const [assignments, setAssignments] = useState<any[]>([])
   const [progress, setProgress] = useState<Record<string, TrainingProgress>>({})
+  const [tutorials, setTutorials] = useState<Tutorial[]>([])
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
+  const [filterCategory, setFilterCategory] = useState("")
 
   const supabase = createClient()
 
   useEffect(() => {
     load()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function load() {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) return
     setUserId(user.id)
 
@@ -51,8 +60,16 @@ export default function TrainingPage() {
     const unique = Array.from(uniqueMap.values())
 
     // Sort by priority
-    const priorityOrder: Record<TrainingPriority, number> = { high: 0, normal: 1, low: 2 }
-    unique.sort((a, b) => (priorityOrder[a.priority as TrainingPriority] || 1) - (priorityOrder[b.priority as TrainingPriority] || 1))
+    const priorityOrder: Record<TrainingPriority, number> = {
+      high: 0,
+      normal: 1,
+      low: 2,
+    }
+    unique.sort(
+      (a, b) =>
+        (priorityOrder[a.priority as TrainingPriority] || 1) -
+        (priorityOrder[b.priority as TrainingPriority] || 1)
+    )
     setAssignments(unique)
 
     // Fetch progress
@@ -65,9 +82,19 @@ export default function TrainingPage() {
         .in("assignment_id", ids)
 
       const progMap: Record<string, TrainingProgress> = {}
-      prog?.forEach((p: any) => { progMap[p.assignment_id] = p })
+      prog?.forEach((p: any) => {
+        progMap[p.assignment_id] = p
+      })
       setProgress(progMap)
     }
+
+    // Fetch tutorials
+    const { data: tutorialData } = await supabase
+      .from("tutorials")
+      .select("*")
+      .eq("is_published", true)
+      .order("created_at", { ascending: false })
+    setTutorials((tutorialData as Tutorial[]) || [])
 
     setLoading(false)
   }
@@ -106,90 +133,206 @@ export default function TrainingPage() {
     mental: "bg-amber-500/20 text-amber-400",
   }
 
+  const tutorialCategories = Array.from(
+    new Set(tutorials.map((t) => t.category).filter(Boolean))
+  ) as string[]
+
+  const filteredTutorials = filterCategory
+    ? tutorials.filter((t) => t.category === filterCategory)
+    : tutorials
+
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      <h1 className="text-2xl font-bold text-white">Training</h1>
+    <div className="mx-auto max-w-4xl space-y-10">
+      <h1 className="text-2xl font-bold text-white">Training &amp; Tutorials</h1>
 
       {loading ? (
         <p className="text-sm text-zinc-500">Loading...</p>
-      ) : assignments.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <p className="text-sm text-zinc-500">No training assignments yet.</p>
-        </div>
       ) : (
-        <div className="space-y-3">
-          {assignments.map((a) => {
-            const prog = progress[a.id]
-            const status = prog?.status || "not_started"
-            return (
-              <div
-                key={a.id}
-                className="rounded-xl border border-white/10 bg-white/5 p-5"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-medium text-white">
-                        {a.focus_areas?.name}
-                      </h3>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${categoryColors[a.focus_areas?.category] || ""}`}>
-                        {a.focus_areas?.category}
-                      </span>
-                      <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase ${priorityColors[a.priority]}`}>
-                        {a.priority}
-                      </span>
-                    </div>
-                    {a.notes_markdown && (
-                      <p className="mt-2 text-sm text-zinc-400">{a.notes_markdown}</p>
-                    )}
-                    <div className="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
-                      {a.due_by && <span>Due: {new Date(a.due_by).toLocaleDateString()}</span>}
-                      <span>Status: {status.replace(/_/g, " ")}</span>
-                    </div>
-                    {a.attached_youtube_url && (
-                      <a
-                        href={a.attached_youtube_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 inline-block text-xs text-amber-400 hover:text-amber-300"
-                      >
-                        Watch Video &rarr;
-                      </a>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    {status === "not_started" && (
-                      <button
-                        onClick={() => updateStatus(a.id, "in_progress")}
-                        className="rounded-lg bg-blue-500/20 px-3 py-1.5 text-xs font-medium text-blue-400 hover:bg-blue-500/30 transition-colors"
-                      >
-                        Mark In Progress
-                      </button>
-                    )}
-                    {(status === "not_started" || status === "in_progress") && (
-                      <button
-                        onClick={() => updateStatus(a.id, "player_marked_complete")}
-                        className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/30 transition-colors"
-                      >
-                        Mark Complete
-                      </button>
-                    )}
-                    {status === "player_marked_complete" && (
-                      <span className="rounded-lg bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-400">
-                        Awaiting Confirmation
-                      </span>
-                    )}
-                    {status === "coach_confirmed" && (
-                      <span className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400">
-                        Confirmed
-                      </span>
-                    )}
-                  </div>
-                </div>
+        <>
+          {/* Training Section */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-white">
+              Training Assignments
+            </h2>
+            {assignments.length === 0 ? (
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+                <p className="text-sm text-zinc-500">
+                  No training assignments yet.
+                </p>
               </div>
-            )
-          })}
-        </div>
+            ) : (
+              <div className="space-y-3">
+                {assignments.map((a) => {
+                  const prog = progress[a.id]
+                  const status = prog?.status || "not_started"
+                  return (
+                    <div
+                      key={a.id}
+                      className="rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="font-medium text-white">
+                              {a.focus_areas?.name}
+                            </h3>
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${categoryColors[a.focus_areas?.category] || ""}`}
+                            >
+                              {a.focus_areas?.category}
+                            </span>
+                            <span
+                              className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase ${priorityColors[a.priority]}`}
+                            >
+                              {a.priority}
+                            </span>
+                          </div>
+                          {a.notes_markdown && (
+                            <p className="mt-2 text-sm text-zinc-400">
+                              {a.notes_markdown}
+                            </p>
+                          )}
+                          <div className="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
+                            {a.due_by && (
+                              <span>
+                                Due:{" "}
+                                {new Date(a.due_by).toLocaleDateString()}
+                              </span>
+                            )}
+                            <span>
+                              Status: {status.replace(/_/g, " ")}
+                            </span>
+                          </div>
+                          {a.attached_youtube_url && (
+                            <a
+                              href={a.attached_youtube_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-2 inline-block text-xs text-amber-400 hover:text-amber-300"
+                            >
+                              Watch Video &rarr;
+                            </a>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          {status === "not_started" && (
+                            <button
+                              onClick={() =>
+                                updateStatus(a.id, "in_progress")
+                              }
+                              className="rounded-lg bg-blue-500/20 px-3 py-1.5 text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/30"
+                            >
+                              Mark In Progress
+                            </button>
+                          )}
+                          {(status === "not_started" ||
+                            status === "in_progress") && (
+                            <button
+                              onClick={() =>
+                                updateStatus(a.id, "player_marked_complete")
+                              }
+                              className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 transition-colors hover:bg-green-500/30"
+                            >
+                              Mark Complete
+                            </button>
+                          )}
+                          {status === "player_marked_complete" && (
+                            <span className="rounded-lg bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-400">
+                              Awaiting Confirmation
+                            </span>
+                          )}
+                          {status === "coach_confirmed" && (
+                            <span className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400">
+                              Confirmed
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </section>
+
+          {/* Tutorials Section */}
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">Tutorials</h2>
+              {tutorialCategories.length > 0 && (
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white focus:border-amber-500 focus:outline-none"
+                >
+                  <option value="">All Categories</option>
+                  {tutorialCategories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+            {filteredTutorials.length === 0 ? (
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+                <p className="text-sm text-zinc-500">
+                  No tutorials available yet.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredTutorials.map((t) => (
+                  <div
+                    key={t.id}
+                    className="rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+                  >
+                    <div className="mb-2 flex items-center gap-2">
+                      <h3 className="text-lg font-semibold text-white">
+                        {t.title}
+                      </h3>
+                      {t.category && (
+                        <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-400">
+                          {t.category}
+                        </span>
+                      )}
+                    </div>
+                    {t.body_markdown && (
+                      <p className="mb-3 whitespace-pre-wrap text-sm text-zinc-300">
+                        {t.body_markdown}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-3">
+                      {t.youtube_url && (
+                        <a
+                          href={t.youtube_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/20"
+                        >
+                          Watch on YouTube
+                        </a>
+                      )}
+                      {t.external_url && (
+                        <a
+                          href={t.external_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/20 bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+                        >
+                          External Resource
+                        </a>
+                      )}
+                    </div>
+                    <p className="mt-3 text-[10px] text-zinc-600">
+                      {new Date(t.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </>
       )}
     </div>
   )

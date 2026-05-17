@@ -47,7 +47,7 @@ export default async function EditTacticsPage({
   if (id === "new") {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-white">New Team Tactics Board</h1>
+        <h1 className="text-2xl font-bold text-white">New Play Builder Board</h1>
         <TacticsBoardEditor
           board={null}
           boardTeamIds={[]}

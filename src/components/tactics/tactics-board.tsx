@@ -61,31 +61,57 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
       try {
         const supabase = createClient()
         const s = useTacticsStore.getState()
-        const payload = {
-          name: s.name,
-          kind: s.kind,
-          field_type: s.fieldType,
-          team_id: s.teamIds[0] ?? null,
-          is_published: s.isPublished,
-          state_json: s.getStateJson(),
-          preview_image_url: s.previewImageUrl,
+
+        // Mint the board id up front so the preview file path is known even
+        // on the very first save. The same id is used for the DB insert.
+        const isFirstSave = !s.boardId
+        const boardId = s.boardId ?? crypto.randomUUID()
+
+        // Generate the preview BEFORE writing rows so the very first save can
+        // persist preview_image_url immediately. Autosave also refreshes the
+        // preview so a snapshot always exists after any save.
+        let previewUrl = s.previewImageUrl
+        const dataUrl = await exportPng()
+        if (dataUrl) {
+          const blob = await (await fetch(dataUrl)).blob()
+          const path = `tactics/${boardId}.png`
+          const { error: upErr } = await supabase.storage
+            .from("media")
+            .upload(path, blob, {
+              upsert: true,
+              contentType: "image/png",
+            })
+          if (!upErr) {
+            const { data: pub } = supabase.storage
+              .from("media")
+              .getPublicUrl(path)
+            previewUrl = `${pub.publicUrl}?v=${Date.now()}`
+            store.setPreviewImageUrl(previewUrl)
+          }
         }
 
-        let boardId = s.boardId
-        if (boardId) {
+        const latest = useTacticsStore.getState()
+        const payload = {
+          name: latest.name,
+          kind: latest.kind,
+          field_type: latest.fieldType,
+          team_id: latest.teamIds[0] ?? null,
+          is_published: latest.isPublished,
+          state_json: latest.getStateJson(),
+          preview_image_url: previewUrl,
+        }
+
+        if (isFirstSave) {
+          const { error } = await supabase
+            .from("tactics_boards")
+            .insert({ id: boardId, ...payload })
+          if (error) throw error
+          store.setBoardId(boardId)
+        } else {
           await supabase
             .from("tactics_boards")
             .update(payload)
             .eq("id", boardId)
-        } else {
-          const { data, error } = await supabase
-            .from("tactics_boards")
-            .insert(payload)
-            .select("id")
-            .single()
-          if (error || !data) throw error ?? new Error("Insert failed")
-          boardId = data.id
-          store.setBoardId(boardId)
         }
 
         // Sync the multi-team join table
@@ -93,36 +119,10 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
           .from("tactics_board_teams")
           .delete()
           .eq("board_id", boardId)
-        if (s.teamIds.length > 0) {
+        if (latest.teamIds.length > 0) {
           await supabase.from("tactics_board_teams").insert(
-            s.teamIds.map((team_id) => ({ board_id: boardId!, team_id }))
+            latest.teamIds.map((team_id) => ({ board_id: boardId, team_id }))
           )
-        }
-
-        // Generate + upload a preview snapshot
-        if (withSnapshot) {
-          const dataUrl = await exportPng()
-          if (dataUrl) {
-            const blob = await (await fetch(dataUrl)).blob()
-            const path = `tactics/${boardId}.png`
-            const { error: upErr } = await supabase.storage
-              .from("media")
-              .upload(path, blob, {
-                upsert: true,
-                contentType: "image/png",
-              })
-            if (!upErr) {
-              const { data: pub } = supabase.storage
-                .from("media")
-                .getPublicUrl(path)
-              const previewUrl = `${pub.publicUrl}?v=${Date.now()}`
-              await supabase
-                .from("tactics_boards")
-                .update({ preview_image_url: previewUrl })
-                .eq("id", boardId)
-              store.setPreviewImageUrl(previewUrl)
-            }
-          }
         }
 
         store.markClean()

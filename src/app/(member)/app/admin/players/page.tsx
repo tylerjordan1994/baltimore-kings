@@ -22,6 +22,7 @@ const editPlayerSchema = z.object({
   jersey_number: z.coerce.number().nullable().optional(),
   years_in_club: z.coerce.number().nullable().optional(),
   is_minor: z.boolean().optional(),
+  also_plays: z.boolean().optional(),
   status: z.enum(['pending', 'active', 'inactive', 'archived', 'injured']),
   role: z.enum(['pending', 'player', 'coach', 'superadmin']),
 })
@@ -59,12 +60,47 @@ const INACTIVE_REASON_LABELS: Record<string, string> = {
 const FUTSAL_POSITIONS = ['GK', 'Fixo', 'Ala', 'Piv\u00f4'] as const
 const MASL_POSITIONS = ['Target Forward', 'Second Forward', 'Midfielder', 'Defender', 'GK'] as const
 
+// Renders all applicable role/tag chips for a profile. A coach can also be a
+// player (also_plays), so we surface every relevant tag.
+function RoleTags({ profile }: { profile: Profile }) {
+  const tags: { label: string; className: string }[] = []
+  if (profile.role === 'superadmin') {
+    tags.push({ label: 'Super Admin', className: 'bg-purple-900/50 text-purple-300' })
+  } else if (profile.role === 'coach') {
+    tags.push({ label: 'Coach', className: 'bg-blue-900/50 text-blue-300' })
+  } else if (profile.role === 'player') {
+    tags.push({ label: 'Player', className: 'bg-green-900/50 text-green-300' })
+  } else {
+    tags.push({ label: profile.role, className: 'bg-zinc-800 text-zinc-400' })
+  }
+  // Coaches/superadmins who also play get an extra Player tag.
+  if (profile.also_plays && profile.role !== 'player') {
+    tags.push({ label: 'Player', className: 'bg-green-900/50 text-green-300' })
+  }
+  return (
+    <div className="flex flex-wrap gap-1">
+      {tags.map((t, i) => (
+        <span
+          key={i}
+          className={`rounded px-1.5 py-0.5 text-[10px] uppercase ${t.className}`}
+        >
+          {t.label}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 export default function PlayersPage() {
   const [players, setPlayers] = useState<Profile[]>([])
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [currentUserRole, setCurrentUserRole] = useState<UserRole>('player')
   const [editingPlayer, setEditingPlayer] = useState<Profile | null>(null)
   const [photoFile, setPhotoFile] = useState<File | null>(null)
+  // When the saved position isn't one of the preset options, treat it as a
+  // custom player type and show a free-text field instead of the dropdown.
+  const [customFutsal, setCustomFutsal] = useState(false)
+  const [customMasl, setCustomMasl] = useState(false)
   const [activeTab, setActiveTab] = useState<TabKey>('active')
   const [inactiveModal, setInactiveModal] = useState<Profile | null>(null)
   const [inactiveReasons, setInactiveReasons] = useState<string[]>([])
@@ -121,11 +157,20 @@ export default function PlayersPage() {
     setValue('school', player.school ?? '')
     setValue('position_primary', player.position_primary ?? '')
     setValue('position_secondary', player.position_secondary ?? '')
+    setCustomFutsal(
+      !!player.position_primary &&
+        !(FUTSAL_POSITIONS as readonly string[]).includes(player.position_primary)
+    )
+    setCustomMasl(
+      !!player.position_secondary &&
+        !(MASL_POSITIONS as readonly string[]).includes(player.position_secondary)
+    )
     setValue('bio', player.bio ?? '')
     setValue('photo_url', player.photo_url ?? '')
     setValue('jersey_number', player.jersey_number)
     setValue('years_in_club', player.years_in_club)
     setValue('is_minor', player.is_minor)
+    setValue('also_plays', player.also_plays)
     setValue('status', player.status)
     setValue('role', player.role)
 
@@ -227,6 +272,7 @@ export default function PlayersPage() {
       jersey_number: data.jersey_number ?? null,
       years_in_club: data.years_in_club ?? null,
       is_minor: data.is_minor ?? false,
+      also_plays: data.also_plays ?? false,
       status: data.status,
       role: data.role,
     }
@@ -364,7 +410,12 @@ export default function PlayersPage() {
           <div className="my-8 w-full max-w-2xl rounded-xl border border-zinc-700 bg-zinc-900 p-6">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Edit {editingPlayer.full_name}</h2>
-              <Button size="sm" variant="ghost" onClick={() => setEditingPlayer(null)}>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setEditingPlayer(null)}
+                className="text-zinc-200 hover:text-white"
+              >
                 Close
               </Button>
             </div>
@@ -430,28 +481,62 @@ export default function PlayersPage() {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Futsal Position</label>
-                  <select
-                    {...register('position_primary')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
-                  >
-                    <option value="">None</option>
-                    {FUTSAL_POSITIONS.map((pos) => (
-                      <option key={pos} value={pos}>{pos}</option>
-                    ))}
-                  </select>
+                  <label className="mb-1 block text-xs text-zinc-400">Futsal Position / Type</label>
+                  {customFutsal ? (
+                    <input
+                      {...register('position_primary')}
+                      placeholder="Custom player type..."
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
+                    />
+                  ) : (
+                    <select
+                      {...register('position_primary')}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          setCustomFutsal(true)
+                          setValue('position_primary', '')
+                        } else {
+                          setValue('position_primary', e.target.value)
+                        }
+                      }}
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    >
+                      <option value="">None</option>
+                      {FUTSAL_POSITIONS.map((pos) => (
+                        <option key={pos} value={pos}>{pos}</option>
+                      ))}
+                      <option value="__custom__">Custom type...</option>
+                    </select>
+                  )}
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">MASL Position</label>
-                  <select
-                    {...register('position_secondary')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
-                  >
-                    <option value="">None</option>
-                    {MASL_POSITIONS.map((pos) => (
-                      <option key={pos} value={pos}>{pos}</option>
-                    ))}
-                  </select>
+                  <label className="mb-1 block text-xs text-zinc-400">MASL Position / Type</label>
+                  {customMasl ? (
+                    <input
+                      {...register('position_secondary')}
+                      placeholder="Custom player type..."
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
+                    />
+                  ) : (
+                    <select
+                      {...register('position_secondary')}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          setCustomMasl(true)
+                          setValue('position_secondary', '')
+                        } else {
+                          setValue('position_secondary', e.target.value)
+                        }
+                      }}
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    >
+                      <option value="">None</option>
+                      {MASL_POSITIONS.map((pos) => (
+                        <option key={pos} value={pos}>{pos}</option>
+                      ))}
+                      <option value="__custom__">Custom type...</option>
+                    </select>
+                  )}
                 </div>
                 <div>
                   <label className="mb-1 block text-xs text-zinc-400">Status</label>
@@ -497,7 +582,7 @@ export default function PlayersPage() {
                     className="w-full text-xs text-zinc-400"
                   />
                 </div>
-                <div className="flex items-center gap-2 sm:col-span-2">
+                <div className="flex items-center gap-2">
                   <input
                     id="is_minor"
                     type="checkbox"
@@ -506,6 +591,17 @@ export default function PlayersPage() {
                   />
                   <label htmlFor="is_minor" className="text-sm text-zinc-300">
                     Player is a minor
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    id="also_plays"
+                    type="checkbox"
+                    {...register('also_plays')}
+                    className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 accent-[#C9A94E]"
+                  />
+                  <label htmlFor="also_plays" className="text-sm text-zinc-300">
+                    Also plays (e.g. coach who also plays)
                   </label>
                 </div>
               </div>
@@ -622,7 +718,12 @@ export default function PlayersPage() {
               </div>
 
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="ghost" onClick={() => setEditingPlayer(null)}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setEditingPlayer(null)}
+                  className="text-zinc-200 hover:text-white"
+                >
                   Cancel
                 </Button>
                 <Button type="submit">Save Changes</Button>
@@ -815,14 +916,7 @@ export default function PlayersPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`rounded px-1.5 py-0.5 text-[10px] uppercase ${
-                      p.role === 'superadmin' ? 'bg-purple-900/50 text-purple-300' :
-                      p.role === 'coach' ? 'bg-blue-900/50 text-blue-300' :
-                      p.role === 'player' ? 'bg-green-900/50 text-green-300' :
-                      'bg-zinc-800 text-zinc-500'
-                    }`}>
-                      {p.role}
-                    </span>
+                    <RoleTags profile={p} />
                   </td>
                   <td className="px-4 py-3 text-zinc-400">{p.position_primary ?? '\u2014'}</td>
                   <td className="px-4 py-3 text-zinc-400">{p.position_secondary ?? '\u2014'}</td>
@@ -833,7 +927,12 @@ export default function PlayersPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => openEdit(p)}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => openEdit(p)}
+                        className="text-zinc-200 hover:text-white"
+                      >
                         Edit
                       </Button>
                       {p.status === 'active' && (
