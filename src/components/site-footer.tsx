@@ -10,7 +10,7 @@ export function SiteFooter() {
           <div>
             <h3 className="font-heading text-lg font-bold">Baltimore Kings</h3>
             <p className="mt-2 text-sm opacity-80">
-              Pro indoor soccer and futsal in Baltimore. MASL3 arena soccer, League 1 Futsal, and more.
+              Futsal and arena soccer in Baltimore. League 1 Futsal, MASL3 arena soccer, and more.
             </p>
             <div className="mt-4 flex gap-3">
               <a
@@ -27,8 +27,8 @@ export function SiteFooter() {
           <div>
             <h4 className="font-heading text-sm font-semibold uppercase tracking-wider opacity-60">Teams</h4>
             <ul className="mt-3 space-y-2">
-              <li><Link href={`/teams/masl3`} className="text-sm opacity-80 hover:opacity-100">MASL3 Kings</Link></li>
               <li><Link href={`/teams/futsal-l1`} className="text-sm opacity-80 hover:opacity-100">Futsal League 1</Link></li>
+              <li><Link href={`/teams/masl3`} className="text-sm opacity-80 hover:opacity-100">MASL3 Kings</Link></li>
               <li><a href="https://www.masl3.com/" target="_blank" rel="noopener noreferrer" className="text-sm opacity-80 hover:opacity-100">MASL3 League</a></li>
               <li><a href="http://www.prosocceralliance.com/" target="_blank" rel="noopener noreferrer" className="text-sm opacity-80 hover:opacity-100">Pro-SA</a></li>
             </ul>

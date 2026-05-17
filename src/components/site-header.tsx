@@ -10,11 +10,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/teams/masl3", label: "MASL3" },
   { href: "/teams/futsal-l1", label: "Futsal L1" },
+  { href: "/teams/masl3", label: "MASL3" },
   { href: "/roster", label: "Roster" },
   { href: "/schedule", label: "Schedule" },
-  { href: "/achievements", label: "Achievements" },
+  { href: "/club/expectations", label: "Club" },
   { href: "/media", label: "Media" },
   { href: "/learn", label: "Learn" },
   { href: "/merch", label: "Merch" },

@@ -13,13 +13,14 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <h1 className="font-heading text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
-              Indoor soccer and futsal, played seriously, in Baltimore.
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/60" style={{ fontVariant: "small-caps" }}>
+              League 1 Futsal &middot; MASL3 &middot; Baltimore
+            </p>
+            <h1 className="mt-3 font-heading text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+              Baltimore&rsquo;s futsal club. Arena soccer when the court&rsquo;s dark.
             </h1>
             <p className="mt-6 text-lg text-primary-foreground/80">
-              The Baltimore Kings compete in MASL3 arena soccer and Pro-SA League 1 Futsal.
-              We run year-round programs out of GOALS Baltimore and Benfield Sports — training players
-              who want to compete at the highest level of indoor play on the East Coast.
+              The Baltimore Kings run year-round futsal development through Pro-SA League 1, plus MASL3 arena soccer in the off-season. We train at Benfield Sportscenter and play home games at GOALS Baltimore.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href={`/apply`}>
@@ -42,20 +43,18 @@ export default function HomePage() {
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="font-heading text-2xl font-bold sm:text-3xl">Our Programs</h2>
-          <p className="mt-2 text-muted-foreground">Three competitive tracks. One pathway up.</p>
+          <p className="mt-2 text-muted-foreground">Two competitions. Two pathways up.</p>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href={`/teams/masl3`}>
+            <Link href={`/teams/futsal-l1`}>
               <Card className="group h-full transition-shadow hover:shadow-lg">
                 <CardContent className="p-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary">
-                    <Users className="h-6 w-6 text-primary-foreground" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-gold">
+                    <Users className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="mt-4 font-heading text-xl font-bold group-hover:text-gold-dark">MASL3 Arena Soccer</h3>
+                  <h3 className="mt-4 font-heading text-xl font-bold group-hover:text-gold-dark">Futsal League 1</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Six-a-side on a walled arena pitch. Fast, physical, technical.
-                    The Kings compete in the Major Arena Soccer League 3 — the third tier of
-                    professional arena soccer in the US.
+                    Five-a-side on a regulation court. The core of what we do. Year-round development, League 1 competition, and the technical foundation everything else builds on.
                   </p>
                   <span className="mt-4 inline-flex items-center text-sm font-medium text-gold-dark">
                     View team <ArrowRight className="ml-1 h-3 w-3" />
@@ -64,16 +63,15 @@ export default function HomePage() {
               </Card>
             </Link>
 
-            <Link href={`/teams/futsal-l1`}>
+            <Link href={`/teams/masl3`}>
               <Card className="group h-full transition-shadow hover:shadow-lg">
                 <CardContent className="p-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-gold">
-                    <Users className="h-6 w-6 text-primary" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary">
+                    <Users className="h-6 w-6 text-primary-foreground" />
                   </div>
-                  <h3 className="mt-4 font-heading text-xl font-bold group-hover:text-gold-dark">League 1 Futsal</h3>
+                  <h3 className="mt-4 font-heading text-xl font-bold group-hover:text-gold-dark">MASL3 Arena Soccer</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Five-a-side on a regulation futsal court. Technical precision,
-                    tight rotations, rapid decision-making. Pro-SA League 1 competition.
+                    Six-a-side on a walled arena pitch. Off-season competition in Major Arena Soccer League 3. Faster, more physical — a different test for the same players.
                   </p>
                   <span className="mt-4 inline-flex items-center text-sm font-medium text-gold-dark">
                     View team <ArrowRight className="ml-1 h-3 w-3" />
@@ -87,16 +85,15 @@ export default function HomePage() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/30">
                   <ArrowRight className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <h3 className="mt-4 font-heading text-xl font-bold">Pathway to MASL2</h3>
+                <h3 className="mt-4 font-heading text-xl font-bold">Two Pathways Up</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  The Salisbury Steaks — same ownership, one tier up. Stand-out Kings players
-                  get promoted to the MASL2 roster. This is how you move up.
+                  Futsal: Kings L1F → national-level futsal, professional clubs domestically/internationally. Arena: Kings MASL3 → Salisbury Steaks (MASL2) → MASL1 / Baltimore Blast.
                 </p>
                 <Link
                   href={`/teams/masl3#pathway`}
                   className="mt-4 inline-flex items-center text-sm font-medium text-gold-dark"
                 >
-                  Learn about the pathway <ArrowRight className="ml-1 h-3 w-3" />
+                  Learn about the pathways <ArrowRight className="ml-1 h-3 w-3" />
                 </Link>
               </CardContent>
             </Card>

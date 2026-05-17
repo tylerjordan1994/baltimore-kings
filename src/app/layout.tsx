@@ -16,20 +16,20 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Baltimore Kings | Pro Indoor Soccer & Futsal",
+    default: "Baltimore Kings | Futsal & Arena Soccer",
     template: "%s | Baltimore Kings",
   },
-  description: "MASL3 arena soccer and League 1 Futsal in Baltimore. Apply for tryouts, view schedules, and follow the Kings.",
+  description: "League 1 Futsal and MASL3 arena soccer in Baltimore. Apply for tryouts, view schedules, and follow the Kings.",
   metadataBase: new URL("https://tylerjordandesigns.com/project/football-team"),
   openGraph: {
     title: "Baltimore Kings",
-    description: "Pro indoor soccer and futsal, played seriously, in Baltimore.",
+    description: "Futsal and arena soccer, played seriously, in Baltimore.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Baltimore Kings",
-    description: "Pro indoor soccer and futsal, played seriously, in Baltimore.",
+    description: "Futsal and arena soccer, played seriously, in Baltimore.",
   },
 }
 
