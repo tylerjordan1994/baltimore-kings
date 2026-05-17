@@ -28,6 +28,8 @@ type ProfileFormValues = z.infer<typeof profileSchema>
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [userRole, setUserRole] = useState<string>("player")
+  const [alsoPlays, setAlsoPlays] = useState(false)
   const [message, setMessage] = useState<{
     type: "success" | "error"
     text: string
@@ -57,6 +59,8 @@ export default function ProfilePage() {
         .single()
 
       if (profile) {
+        setUserRole(profile.role)
+        setAlsoPlays(profile.also_plays)
         reset({
           full_name: profile.full_name,
           phone: profile.phone,
@@ -83,18 +87,24 @@ export default function ProfilePage() {
     } = await supabase.auth.getUser()
     if (!user) return
 
+    const updatePayload: Record<string, unknown> = {
+      full_name: values.full_name,
+      phone: values.phone || null,
+      date_of_birth: values.date_of_birth || null,
+      position_primary: values.position_primary || null,
+      position_secondary: values.position_secondary || null,
+      bio: values.bio || null,
+      photo_url: values.photo_url || null,
+      jersey_number: values.jersey_number,
+    }
+
+    if (userRole === "coach" || userRole === "superadmin") {
+      updatePayload.also_plays = alsoPlays
+    }
+
     const { error } = await supabase
       .from("profiles")
-      .update({
-        full_name: values.full_name,
-        phone: values.phone || null,
-        date_of_birth: values.date_of_birth || null,
-        position_primary: values.position_primary || null,
-        position_secondary: values.position_secondary || null,
-        bio: values.bio || null,
-        photo_url: values.photo_url || null,
-        jersey_number: values.jersey_number,
-      })
+      .update(updatePayload)
       .eq("id", user.id)
 
     if (error) {
@@ -206,6 +216,21 @@ export default function ProfilePage() {
             className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
           />
         </Field>
+
+        {(userRole === "coach" || userRole === "superadmin") && (
+          <div className="flex items-center gap-3">
+            <input
+              id="also_plays"
+              type="checkbox"
+              checked={alsoPlays}
+              onChange={(e) => setAlsoPlays(e.target.checked)}
+              className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 text-blue-600 focus:ring-blue-500"
+            />
+            <label htmlFor="also_plays" className="text-sm font-medium text-zinc-300">
+              Also rostered as a player
+            </label>
+          </div>
+        )}
 
         <button
           type="submit"

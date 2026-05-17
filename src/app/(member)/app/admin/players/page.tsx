@@ -212,6 +212,7 @@ export default function PlayersPage() {
             <tr>
               <th className="px-4 py-3 font-medium text-zinc-300">Name</th>
               <th className="px-4 py-3 font-medium text-zinc-300">Role</th>
+              <th className="px-4 py-3 font-medium text-zinc-300">Also Plays</th>
               <th className="px-4 py-3 font-medium text-zinc-300">Position</th>
               <th className="px-4 py-3 font-medium text-zinc-300">#</th>
               <th className="px-4 py-3 font-medium text-zinc-300">Phone</th>
@@ -231,6 +232,25 @@ export default function PlayersPage() {
                   }`}>
                     {p.role}
                   </span>
+                </td>
+                <td className="px-4 py-3">
+                  {(p.role === 'coach' || p.role === 'superadmin') ? (
+                    <button
+                      onClick={async () => {
+                        await supabase.from('profiles').update({ also_plays: !p.also_plays }).eq('id', p.id)
+                        loadData()
+                      }}
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                        p.also_plays ? 'bg-green-600' : 'bg-zinc-700'
+                      }`}
+                    >
+                      <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
+                        p.also_plays ? 'translate-x-4.5' : 'translate-x-0.5'
+                      }`} />
+                    </button>
+                  ) : (
+                    <span className="text-xs text-zinc-500">—</span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-zinc-400">{p.position_primary ?? '—'}</td>
                 <td className="px-4 py-3 text-zinc-400">{p.jersey_number ?? '—'}</td>

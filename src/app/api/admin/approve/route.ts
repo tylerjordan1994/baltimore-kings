@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
       .from('profiles')
       .update({
         role: 'player',
+        also_plays: true,
         approved_at: new Date().toISOString(),
         approved_by: profile.id,
       })

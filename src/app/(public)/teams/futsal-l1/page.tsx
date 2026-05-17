@@ -1,31 +1,38 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Calendar, Users } from "lucide-react"
 
-// basePath handled by next.config.ts
-
 export const metadata = {
-  title: "Futsal League 1 | Baltimore Kings",
-  description: "Baltimore Kings Pro-SA Futsal League 1 roster, schedule, and team info.",
+  title: "Futsal League 1",
+  description: "Baltimore Kings Pro-SA Futsal League 1 — the core of the club. Year-round development, technical precision, League 1 competition.",
 }
 
 export default async function FutsalL1Page() {
   const supabase = await createClient()
 
-  const { data: roster } = await supabase
-    .from("team_members")
-    .select("*, profiles(*)")
-    .eq("team_slug", "baltimore-kings-futsal-l1")
-    .eq("status", "active")
-    .order("jersey_number", { ascending: true })
+  const { data: team } = await supabase
+    .from("teams")
+    .select("id")
+    .eq("slug", "baltimore-kings-futsal-l1")
+    .single()
 
-  const { data: games } = await supabase
-    .from("games")
-    .select("*")
-    .eq("team_slug", "baltimore-kings-futsal-l1")
-    .order("game_date", { ascending: true })
+  const teamId = team?.id
+
+  const { data: roster } = teamId
+    ? await supabase
+        .from("team_members")
+        .select("*, profiles(full_name, photo_url, position_primary, jersey_number, role, also_plays)")
+        .eq("team_id", teamId)
+    : { data: null }
+
+  const { data: games } = teamId
+    ? await supabase
+        .from("games")
+        .select("*")
+        .eq("team_id", teamId)
+        .order("starts_at", { ascending: true })
+    : { data: null }
 
   return (
     <>
@@ -40,11 +47,12 @@ export default async function FutsalL1Page() {
               Baltimore Kings Futsal
             </h1>
             <p className="mt-4 text-lg text-primary-foreground/80">
-              Five-a-side, low-bounce ball, flat court. Pure technique and decision-making at speed.
-              We compete in Pro-SA League 1 — the top tier of organized futsal in the Mid-Atlantic.
+              This is the core of the club. Five-a-side, low-bounce ball, flat court.
+              Pure technique and decision-making at speed. Year-round development,
+              League 1 competition, and the technical foundation everything else builds on.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href={`/apply`}>
+              <Link href="/apply">
                 <Button size="lg" variant="secondary" className="font-heading font-semibold">
                   Try out
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -68,18 +76,16 @@ export default async function FutsalL1Page() {
 
           {roster && roster.length > 0 ? (
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {roster.map((member) => (
+              {roster.map((member: any) => (
                 <div
                   key={member.id}
                   className="group relative overflow-hidden rounded-lg border border-border bg-card p-4 transition-colors hover:border-gold/50"
                 >
-                  <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-muted mx-auto">
-                    {member.profiles?.avatar_url ? (
-                      <Image
-                        src={member.profiles.avatar_url}
+                  <div className="mb-3 mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+                    {member.profiles?.photo_url ? (
+                      <img
+                        src={member.profiles.photo_url}
                         alt={member.profiles.full_name || "Player"}
-                        width={80}
-                        height={80}
                         className="h-20 w-20 rounded-full object-cover"
                       />
                     ) : (
@@ -87,16 +93,16 @@ export default async function FutsalL1Page() {
                     )}
                   </div>
                   <div className="text-center">
-                    {member.jersey_number && (
+                    {member.jersey_number_for_team != null && (
                       <span className="font-heading text-xs font-bold text-gold">
-                        #{member.jersey_number}
+                        #{member.jersey_number_for_team}
                       </span>
                     )}
                     <p className="font-heading text-sm font-semibold leading-tight">
                       {member.profiles?.full_name || "TBA"}
                     </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      {member.position || "—"}
+                      {member.profiles?.position_primary || "—"}
                     </p>
                   </div>
                 </div>
@@ -122,7 +128,7 @@ export default async function FutsalL1Page() {
 
           {games && games.length > 0 ? (
             <div className="mt-8 space-y-3">
-              {games.map((game) => (
+              {games.map((game: any) => (
                 <div
                   key={game.id}
                   className="flex items-center justify-between rounded-lg border border-border bg-card p-4"
@@ -130,28 +136,28 @@ export default async function FutsalL1Page() {
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center rounded bg-muted px-3 py-1.5">
                       <span className="text-xs font-medium text-muted-foreground">
-                        {new Date(game.game_date).toLocaleDateString("en-US", { month: "short" })}
+                        {new Date(game.starts_at).toLocaleDateString("en-US", { month: "short" })}
                       </span>
                       <span className="font-heading text-lg font-bold">
-                        {new Date(game.game_date).getDate()}
+                        {new Date(game.starts_at).getDate()}
                       </span>
                     </div>
                     <div>
                       <p className="font-heading font-semibold">
-                        {game.home_team === "baltimore-kings-futsal-l1" ? "vs" : "@"} {game.opponent || "TBA"}
+                        {game.home_or_away === "home" ? "vs" : "@"} {game.opponent}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {game.venue || "Benfield Sports"} &middot;{" "}
-                        {new Date(game.game_date).toLocaleTimeString("en-US", {
+                        {game.location || "Benfield Sportscenter"} &middot;{" "}
+                        {new Date(game.starts_at).toLocaleTimeString("en-US", {
                           hour: "numeric",
                           minute: "2-digit",
                         })}
                       </p>
                     </div>
                   </div>
-                  {game.score_home != null && game.score_away != null && (
+                  {game.score_for != null && game.score_against != null && (
                     <div className="font-heading text-lg font-bold">
-                      {game.score_home}–{game.score_away}
+                      {game.score_for}–{game.score_against}
                     </div>
                   )}
                 </div>
@@ -169,7 +175,7 @@ export default async function FutsalL1Page() {
         </div>
       </section>
 
-      {/* About Futsal */}
+      {/* Why Futsal */}
       <section className="border-t border-border bg-muted/30 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
@@ -183,15 +189,20 @@ export default async function FutsalL1Page() {
                 wall to bail you out.
               </p>
               <p>
-                Our L1 program runs parallel to the MASL3 team. Many players compete on both
-                rosters — futsal sharpens the technical edge that wins arena matches.
+                This is the primary program. Arena (MASL3) runs in the off-season for players
+                who want both formats — but the technical foundation is built here, on the futsal court.
               </p>
               <p>
-                Training sessions run year-round at Benfield Sports in Millersville.
+                The futsal pathway goes further than arena: Kings L1F → national-level futsal competitions,
+                professional futsal clubs domestically and internationally. The club develops players
+                for that trajectory.
+              </p>
+              <p>
+                Training sessions run year-round at Benfield Sportscenter in Severna Park.
               </p>
             </div>
             <div className="mt-8">
-              <Link href={`/learn`}>
+              <Link href="/learn">
                 <Button variant="default" className="font-heading font-semibold">
                   Futsal tutorials
                   <ArrowRight className="ml-2 h-4 w-4" />

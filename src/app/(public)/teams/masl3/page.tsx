@@ -1,31 +1,39 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Calendar, MapPin, Users } from "lucide-react"
-
-// basePath handled by next.config.ts
+import { ArrowRight, Calendar, ExternalLink, Users } from "lucide-react"
 
 export const metadata = {
-  title: "MASL3 Team | Baltimore Kings",
-  description: "Baltimore Kings MASL3 arena soccer team roster, schedule, and pathway to MASL2.",
+  title: "MASL3 Arena Soccer",
+  description: "Baltimore Kings MASL3 arena soccer — off-season competition in Major Arena Soccer League 3.",
 }
 
 export default async function MASL3Page() {
   const supabase = await createClient()
 
-  const { data: roster } = await supabase
-    .from("team_members")
-    .select("*, profiles(*)")
-    .eq("team_slug", "baltimore-kings-masl3")
-    .eq("status", "active")
-    .order("jersey_number", { ascending: true })
+  // Get the MASL3 team
+  const { data: team } = await supabase
+    .from("teams")
+    .select("id")
+    .eq("slug", "baltimore-kings-masl3")
+    .single()
 
-  const { data: games } = await supabase
-    .from("games")
-    .select("*")
-    .eq("team_slug", "baltimore-kings-masl3")
-    .order("game_date", { ascending: true })
+  const teamId = team?.id
+
+  const { data: roster } = teamId
+    ? await supabase
+        .from("team_members")
+        .select("*, profiles(full_name, photo_url, position_primary, jersey_number, role, also_plays)")
+        .eq("team_id", teamId)
+    : { data: null }
+
+  const { data: games } = teamId
+    ? await supabase
+        .from("games")
+        .select("*")
+        .eq("team_id", teamId)
+        .order("starts_at", { ascending: true })
+    : { data: null }
 
   return (
     <>
@@ -41,10 +49,11 @@ export default async function MASL3Page() {
             </h1>
             <p className="mt-4 text-lg text-primary-foreground/80">
               Arena soccer at full speed. Six-a-side, boards, unlimited subs, 60-minute matches.
+              The off-season arm of the club — same players, different format.
               We play in the Eastern Conference out of GOALS Baltimore.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href={`/apply`}>
+              <Link href="/apply">
                 <Button size="lg" variant="secondary" className="font-heading font-semibold">
                   Try out
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -68,18 +77,16 @@ export default async function MASL3Page() {
 
           {roster && roster.length > 0 ? (
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {roster.map((member) => (
+              {roster.map((member: any) => (
                 <div
                   key={member.id}
                   className="group relative overflow-hidden rounded-lg border border-border bg-card p-4 transition-colors hover:border-gold/50"
                 >
-                  <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-muted mx-auto">
-                    {member.profiles?.avatar_url ? (
-                      <Image
-                        src={member.profiles.avatar_url}
+                  <div className="mb-3 mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+                    {member.profiles?.photo_url ? (
+                      <img
+                        src={member.profiles.photo_url}
                         alt={member.profiles.full_name || "Player"}
-                        width={80}
-                        height={80}
                         className="h-20 w-20 rounded-full object-cover"
                       />
                     ) : (
@@ -87,16 +94,16 @@ export default async function MASL3Page() {
                     )}
                   </div>
                   <div className="text-center">
-                    {member.jersey_number && (
+                    {member.jersey_number_for_team != null && (
                       <span className="font-heading text-xs font-bold text-gold">
-                        #{member.jersey_number}
+                        #{member.jersey_number_for_team}
                       </span>
                     )}
                     <p className="font-heading text-sm font-semibold leading-tight">
                       {member.profiles?.full_name || "TBA"}
                     </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      {member.position || "—"}
+                      {member.profiles?.position_primary || "—"}
                     </p>
                   </div>
                 </div>
@@ -114,6 +121,30 @@ export default async function MASL3Page() {
         </div>
       </section>
 
+      {/* Last Season Stats — link to MASL3.com */}
+      <section className="border-t border-border py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">Last Season</h2>
+          <div className="mt-6 max-w-lg rounded-lg border border-border bg-card p-6">
+            <p className="text-muted-foreground">
+              Past MASL3 season stats and standings live on masl3.com. Full box scores,
+              player leaderboards, and game logs from the previous season.
+            </p>
+            <a
+              href="https://www.masl3.com/stats#/1396/team/593222"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex"
+            >
+              <Button variant="default" className="font-heading font-semibold">
+                View Last Season on MASL3
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Schedule */}
       <section id="schedule" className="border-t border-border py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -122,7 +153,7 @@ export default async function MASL3Page() {
 
           {games && games.length > 0 ? (
             <div className="mt-8 space-y-3">
-              {games.map((game) => (
+              {games.map((game: any) => (
                 <div
                   key={game.id}
                   className="flex items-center justify-between rounded-lg border border-border bg-card p-4"
@@ -130,28 +161,28 @@ export default async function MASL3Page() {
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center rounded bg-muted px-3 py-1.5">
                       <span className="text-xs font-medium text-muted-foreground">
-                        {new Date(game.game_date).toLocaleDateString("en-US", { month: "short" })}
+                        {new Date(game.starts_at).toLocaleDateString("en-US", { month: "short" })}
                       </span>
                       <span className="font-heading text-lg font-bold">
-                        {new Date(game.game_date).getDate()}
+                        {new Date(game.starts_at).getDate()}
                       </span>
                     </div>
                     <div>
                       <p className="font-heading font-semibold">
-                        {game.home_team === "baltimore-kings-masl3" ? "vs" : "@"} {game.opponent || "TBA"}
+                        {game.home_or_away === "home" ? "vs" : "@"} {game.opponent}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {game.venue || "GOALS Baltimore"} &middot;{" "}
-                        {new Date(game.game_date).toLocaleTimeString("en-US", {
+                        {game.location || "GOALS Baltimore"} &middot;{" "}
+                        {new Date(game.starts_at).toLocaleTimeString("en-US", {
                           hour: "numeric",
                           minute: "2-digit",
                         })}
                       </p>
                     </div>
                   </div>
-                  {game.score_home != null && game.score_away != null && (
+                  {game.score_for != null && game.score_against != null && (
                     <div className="font-heading text-lg font-bold">
-                      {game.score_home}–{game.score_away}
+                      {game.score_for}–{game.score_against}
                     </div>
                   )}
                 </div>
@@ -169,12 +200,12 @@ export default async function MASL3Page() {
         </div>
       </section>
 
-      {/* Pathway to MASL2 */}
+      {/* Arena Pathway */}
       <section id="pathway" className="border-t border-border bg-muted/30 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
-              Pathway to MASL2
+              Arena Pathway
             </h2>
             <div className="mt-6 space-y-4 text-foreground/80">
               <p>
@@ -187,12 +218,11 @@ export default async function MASL3Page() {
                 game, every practice.
               </p>
               <p>
-                This is the fastest route to professional arena soccer on the East Coast.
-                Most MASL2 rosters pull from their own M3 programs first.
+                The arena ladder: Kings MASL3 → Salisbury Steaks (MASL2) → MASL1 / Baltimore Blast.
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href={`/apply`}>
+              <Link href="/apply">
                 <Button variant="default" className="font-heading font-semibold">
                   Apply now
                   <ArrowRight className="ml-2 h-4 w-4" />

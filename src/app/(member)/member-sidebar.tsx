@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import type { Profile } from "@/types/database"
+import { useViewMode } from "@/lib/stores/view-mode-store"
 
 // basePath handled by next.config.ts
 
@@ -26,10 +27,18 @@ const adminLinks = [
   { href: "/app/admin/media", label: "Media Manager" },
 ]
 
-export function MemberSidebar({ profile }: { profile: Profile }) {
+const superadminLinks = [
+  { href: "/app/admin/brand", label: "Brand Assets" },
+]
+
+export function MemberSidebar({ profile, brandUploaded = true }: { profile: Profile; brandUploaded?: boolean }) {
   const pathname = usePathname()
   const router = useRouter()
   const isAdmin = profile.role === "coach" || profile.role === "superadmin"
+  const isSuperadmin = profile.role === "superadmin"
+  const canSwitchView = isAdmin && profile.also_plays
+  const { viewAs, setViewAs } = useViewMode()
+  const showAdmin = isAdmin && (!canSwitchView || viewAs === "admin")
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -56,6 +65,36 @@ export function MemberSidebar({ profile }: { profile: Profile }) {
         >
           {profile.role}
         </span>
+
+        {canSwitchView && (
+          <div className="mt-3">
+            <p className="mb-1 text-[10px] font-medium uppercase tracking-wider text-zinc-500">
+              Viewing as
+            </p>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setViewAs("admin")}
+                className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                  viewAs === "admin"
+                    ? "bg-blue-600 text-white"
+                    : "bg-zinc-800 text-zinc-400 hover:text-white"
+                }`}
+              >
+                {profile.role === "superadmin" ? "Admin" : "Coach"}
+              </button>
+              <button
+                onClick={() => setViewAs("player")}
+                className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                  viewAs === "player"
+                    ? "bg-green-600 text-white"
+                    : "bg-zinc-800 text-zinc-400 hover:text-white"
+                }`}
+              >
+                Player
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
@@ -81,7 +120,7 @@ export function MemberSidebar({ profile }: { profile: Profile }) {
           })}
         </ul>
 
-        {isAdmin && (
+        {showAdmin && (
           <>
             <div className="my-3 border-t border-zinc-800" />
             <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
@@ -106,8 +145,38 @@ export function MemberSidebar({ profile }: { profile: Profile }) {
                   </li>
                 )
               })}
+              {isSuperadmin &&
+                superadminLinks.map((link) => {
+                  const fullHref = `/${link.href}`
+                  const isActive = pathname === fullHref
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={fullHref}
+                        className={`block rounded-md px-3 py-2 text-sm transition-colors ${
+                          isActive
+                            ? "bg-zinc-800 font-medium text-white"
+                            : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  )
+                })}
             </ul>
           </>
+        )}
+
+        {isSuperadmin && !brandUploaded && (
+          <div className="mx-3 mt-3 rounded-lg border border-amber-800/50 bg-amber-950/30 px-3 py-2">
+            <p className="text-xs text-amber-400">
+              Brand assets pending upload.{" "}
+              <Link href="/app/admin/brand" className="underline hover:text-amber-300">
+                Go to Brand Assets
+              </Link>
+            </p>
+          </div>
         )}
       </nav>
 

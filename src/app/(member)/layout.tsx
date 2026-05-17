@@ -45,9 +45,21 @@ export default async function MemberLayout({
     )
   }
 
+  // Check brand assets for superadmins
+  let brandUploaded = true
+  if (profile.role === "superadmin") {
+    const { data: brand } = await supabase
+      .from("brand_assets")
+      .select("logo_full_url, logo_mark_url, logo_white_url")
+      .limit(1)
+      .single()
+
+    brandUploaded = !!(brand?.logo_full_url && brand?.logo_mark_url && brand?.logo_white_url)
+  }
+
   return (
     <div className="flex min-h-screen bg-zinc-950">
-      <MemberSidebar profile={profile} />
+      <MemberSidebar profile={profile} brandUploaded={brandUploaded} />
       <main className="flex-1 overflow-y-auto p-6 lg:p-8">{children}</main>
     </div>
   )

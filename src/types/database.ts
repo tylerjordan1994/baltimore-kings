@@ -24,6 +24,7 @@ export interface Profile {
   jersey_number: number | null
   years_in_club: number
   role: UserRole
+  also_plays: boolean
   approved_at: string | null
   approved_by: string | null
   created_at: string
@@ -257,4 +258,15 @@ export interface FeeItem {
   due_date: string | null
   created_by: string | null
   created_at: string
+}
+
+export interface BrandAssets {
+  id: string
+  logo_full_url: string | null
+  logo_mark_url: string | null
+  logo_white_url: string | null
+  logo_mono_url: string | null
+  og_image_url: string | null
+  updated_at: string
+  updated_by: string | null
 }

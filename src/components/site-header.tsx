@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { HeaderLogo } from "@/components/header-logo"
 
 // basePath handled by next.config.ts
 
@@ -21,16 +22,14 @@ const navLinks = [
   { href: "/apply", label: "Apply" },
 ]
 
-export function SiteHeader() {
+export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
   const [open, setOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary">
-            <span className="font-heading text-lg font-bold text-primary-foreground">BK</span>
-          </div>
+          <HeaderLogo logoUrl={logoUrl ?? null} />
           <span className="hidden font-heading text-lg font-bold tracking-tight sm:inline-block">
             Baltimore Kings
           </span>
