@@ -31,7 +31,7 @@ function parseMarkdownSections(markdown: string): Section[] {
 
 function markdownToHtml(text: string): string {
   return text
-    .replace(/### (.+)/g, '<h4 class="mt-4 mb-2 text-base font-semibold text-white">$1</h4>')
+    .replace(/### (.+)/g, '<h4 class="mt-4 mb-2 text-base font-semibold text-ink">$1</h4>')
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
     .replace(/^- (.+)/gm, '<li class="ml-4 list-disc">$1</li>')
@@ -61,23 +61,23 @@ export function AccordionSections({ markdown }: { markdown: string }) {
   if (sections.length === 0) {
     return (
       <div
-        className="prose prose-invert max-w-none"
+        className="prose max-w-none text-ink/80"
         dangerouslySetInnerHTML={{ __html: markdownToHtml(markdown) }}
       />
     )
   }
 
   return (
-    <div className="divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
+    <div className="divide-y divide-border rounded-xl border border-border bg-white">
       {sections.map((section, i) => (
         <div key={i}>
           <button
             onClick={() => toggle(i)}
-            className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-white/[0.07]"
+            className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-paper"
           >
-            <h3 className="text-lg font-semibold text-white">{section.heading}</h3>
+            <h3 className="text-lg font-semibold text-ink">{section.heading}</h3>
             <svg
-              className={`h-5 w-5 shrink-0 text-gold transition-transform ${
+              className={`h-5 w-5 shrink-0 text-accent transition-transform ${
                 openSections.has(i) ? "rotate-180" : ""
               }`}
               fill="none"
@@ -91,7 +91,7 @@ export function AccordionSections({ markdown }: { markdown: string }) {
           {openSections.has(i) && (
             <div className="px-6 pb-6">
               <div
-                className="prose prose-invert prose-sm max-w-none text-white/70"
+                className="prose prose-sm max-w-none text-ink/70"
                 dangerouslySetInnerHTML={{ __html: markdownToHtml(section.body) }}
               />
             </div>

@@ -71,18 +71,18 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-[#0a0a0a] px-4">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-paper px-4">
+      <div className="w-full max-w-md rounded-xl border border-border bg-white p-8">
         <div className="text-center">
-          <h1 className="font-heading text-2xl font-bold text-white">Sign In</h1>
-          <p className="mt-1 text-sm text-white/60">
+          <h1 className="font-heading text-2xl font-bold text-ink">Sign In</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Welcome back. Sign in to your account.
           </p>
         </div>
 
         <div className="mt-6">
           {error && (
-            <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/5 p-3 text-sm text-red-400">
+            <div className="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </div>
           )}
@@ -90,32 +90,32 @@ export default function SignInPage() {
           {mode === "password" ? (
             <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
+                <label htmlFor="email" className="block text-sm font-medium text-ink">Email</label>
                 <input
                   id="email"
                   type="email"
                   placeholder="you@example.com"
                   {...passwordForm.register("email")}
-                  className="block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-white/30 focus:border-gold focus:ring-1 focus:ring-gold"
+                  className="block w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
                 />
                 {passwordForm.formState.errors.email && (
-                  <p className="text-sm text-red-400">
+                  <p className="text-sm text-red-600">
                     {passwordForm.formState.errors.email.message}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-white">Password</label>
+                <label htmlFor="password" className="block text-sm font-medium text-ink">Password</label>
                 <input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   {...passwordForm.register("password")}
-                  className="block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-white/30 focus:border-gold focus:ring-1 focus:ring-gold"
+                  className="block w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
                 />
                 {passwordForm.formState.errors.password && (
-                  <p className="text-sm text-red-400">
+                  <p className="text-sm text-red-600">
                     {passwordForm.formState.errors.password.message}
                   </p>
                 )}
@@ -123,7 +123,7 @@ export default function SignInPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gold font-heading font-semibold text-black hover:bg-gold/90"
+                className="w-full bg-brand font-heading font-semibold text-paper hover:bg-brand/90 rounded-full"
                 disabled={passwordForm.formState.isSubmitting}
               >
                 {passwordForm.formState.isSubmitting ? "Signing in..." : "Sign In"}
@@ -131,26 +131,26 @@ export default function SignInPage() {
             </form>
           ) : magicLinkSent ? (
             <div className="text-center space-y-2">
-              <p className="text-sm text-white/60">
+              <p className="text-sm text-muted-foreground">
                 Check your email for a magic link to sign in.
               </p>
-              <Button variant="ghost" onClick={() => setMagicLinkSent(false)} className="text-white/70 hover:text-white hover:bg-white/5">
+              <Button variant="ghost" onClick={() => setMagicLinkSent(false)} className="text-ink/70 hover:text-ink hover:bg-paper">
                 Try again
               </Button>
             </div>
           ) : (
             <form onSubmit={magicLinkForm.handleSubmit(onMagicLinkSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="magic-email" className="block text-sm font-medium text-white">Email</label>
+                <label htmlFor="magic-email" className="block text-sm font-medium text-ink">Email</label>
                 <input
                   id="magic-email"
                   type="email"
                   placeholder="you@example.com"
                   {...magicLinkForm.register("email")}
-                  className="block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-white/30 focus:border-gold focus:ring-1 focus:ring-gold"
+                  className="block w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
                 />
                 {magicLinkForm.formState.errors.email && (
-                  <p className="text-sm text-red-400">
+                  <p className="text-sm text-red-600">
                     {magicLinkForm.formState.errors.email.message}
                   </p>
                 )}
@@ -158,7 +158,7 @@ export default function SignInPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gold font-heading font-semibold text-black hover:bg-gold/90"
+                className="w-full bg-brand font-heading font-semibold text-paper hover:bg-brand/90 rounded-full"
                 disabled={magicLinkForm.formState.isSubmitting}
               >
                 {magicLinkForm.formState.isSubmitting ? "Sending..." : "Send Magic Link"}
@@ -173,15 +173,15 @@ export default function SignInPage() {
                 setError(null)
                 setMagicLinkSent(false)
               }}
-              className="text-sm text-gold hover:text-gold/80"
+              className="text-sm text-accent hover:text-accent/80"
             >
               {mode === "password" ? "Use magic link instead" : "Use password instead"}
             </button>
           </div>
 
-          <div className="mt-4 text-center text-sm text-white/60">
+          <div className="mt-4 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href={`/sign-up`} className="text-gold hover:text-gold/80">
+            <Link href={`/sign-up`} className="text-accent hover:text-accent/80">
               Sign up
             </Link>
           </div>

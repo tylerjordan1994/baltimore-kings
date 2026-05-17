@@ -54,13 +54,13 @@ export default function SignUpPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-[#0a0a0a] px-4">
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm text-center">
-          <h1 className="font-heading text-2xl font-bold text-white">Check Your Email</h1>
-          <p className="mt-2 text-sm text-white/60">
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-paper px-4">
+        <div className="w-full max-w-md rounded-xl border border-border bg-white p-8 text-center">
+          <h1 className="font-heading text-2xl font-bold text-ink">Check Your Email</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
             We&apos;ve sent a confirmation link to your email address. Please click the link to verify your account.
           </p>
-          <Link href={`/sign-in`} className="mt-4 inline-block text-sm text-gold hover:text-gold/80">
+          <Link href={`/sign-in`} className="mt-4 inline-block text-sm text-accent hover:text-accent/80">
             Back to sign in
           </Link>
         </div>
@@ -69,82 +69,82 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-[#0a0a0a] px-4">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-paper px-4">
+      <div className="w-full max-w-md rounded-xl border border-border bg-white p-8">
         <div className="text-center">
-          <h1 className="font-heading text-2xl font-bold text-white">Create Account</h1>
-          <p className="mt-1 text-sm text-white/60">
+          <h1 className="font-heading text-2xl font-bold text-ink">Create Account</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Sign up to join Baltimore Kings.
           </p>
         </div>
 
         <div className="mt-6">
           {error && (
-            <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/5 p-3 text-sm text-red-400">
+            <div className="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </div>
           )}
 
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="full_name" className="block text-sm font-medium text-white">Full Name</label>
+              <label htmlFor="full_name" className="block text-sm font-medium text-ink">Full Name</label>
               <input
                 id="full_name"
                 type="text"
                 placeholder="John Doe"
                 {...form.register("full_name")}
-                className="block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-white/30 focus:border-gold focus:ring-1 focus:ring-gold"
+                className="block w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
               />
               {form.formState.errors.full_name && (
-                <p className="text-sm text-red-400">
+                <p className="text-sm text-red-600">
                   {form.formState.errors.full_name.message}
                 </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium text-ink">Email</label>
               <input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
                 {...form.register("email")}
-                className="block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-white/30 focus:border-gold focus:ring-1 focus:ring-gold"
+                className="block w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
               />
               {form.formState.errors.email && (
-                <p className="text-sm text-red-400">
+                <p className="text-sm text-red-600">
                   {form.formState.errors.email.message}
                 </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="phone" className="block text-sm font-medium text-white">Phone</label>
+              <label htmlFor="phone" className="block text-sm font-medium text-ink">Phone</label>
               <input
                 id="phone"
                 type="tel"
                 placeholder="+14155551234"
                 {...form.register("phone")}
-                className="block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-white/30 focus:border-gold focus:ring-1 focus:ring-gold"
+                className="block w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
               />
               {form.formState.errors.phone && (
-                <p className="text-sm text-red-400">
+                <p className="text-sm text-red-600">
                   {form.formState.errors.phone.message}
                 </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-white">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium text-ink">Password</label>
               <input
                 id="password"
                 type="password"
                 placeholder="••••••••"
                 {...form.register("password")}
-                className="block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-white/30 focus:border-gold focus:ring-1 focus:ring-gold"
+                className="block w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
               />
               {form.formState.errors.password && (
-                <p className="text-sm text-red-400">
+                <p className="text-sm text-red-600">
                   {form.formState.errors.password.message}
                 </p>
               )}
@@ -152,16 +152,16 @@ export default function SignUpPage() {
 
             <Button
               type="submit"
-              className="w-full bg-gold font-heading font-semibold text-black hover:bg-gold/90"
+              className="w-full bg-brand font-heading font-semibold text-paper hover:bg-brand/90 rounded-full"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting ? "Creating account..." : "Create Account"}
             </Button>
           </form>
 
-          <div className="mt-4 text-center text-sm text-white/60">
+          <div className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href={`/sign-in`} className="text-gold hover:text-gold/80">
+            <Link href={`/sign-in`} className="text-accent hover:text-accent/80">
               Sign in
             </Link>
           </div>

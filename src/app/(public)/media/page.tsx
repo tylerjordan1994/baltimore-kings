@@ -50,18 +50,18 @@ export default function MediaPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-[#0a0a0a] to-[#141414] py-16 sm:py-20">
+      <section className="bg-paper py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             Media
           </h1>
-          <p className="mt-2 text-white/60">
+          <p className="mt-2 text-muted-foreground">
             Match footage, training clips, and game day photos.
           </p>
         </div>
       </section>
 
-      <section className="bg-[#0a0a0a] py-12 sm:py-16">
+      <section className="bg-paper py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Filter */}
           <div className="flex flex-wrap gap-2">
@@ -71,8 +71,8 @@ export default function MediaPage() {
                 onClick={() => setFilter(f.value)}
                 className={`rounded-full px-4 py-1.5 font-heading text-sm font-semibold transition-all ${
                   filter === f.value
-                    ? "bg-gold text-black"
-                    : "border border-white/10 bg-white/5 text-white/70 hover:border-gold/30 hover:text-white"
+                    ? "bg-brand text-paper"
+                    : "border border-border bg-white text-ink/70 hover:border-accent/30 hover:text-ink"
                 }`}
               >
                 {f.label}
@@ -81,7 +81,7 @@ export default function MediaPage() {
           </div>
 
           {loading ? (
-            <div className="mt-12 text-center text-white/60">Loading media...</div>
+            <div className="mt-12 text-center text-muted-foreground">Loading media...</div>
           ) : filtered.length > 0 ? (
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {filtered.map((item) => (
@@ -90,7 +90,7 @@ export default function MediaPage() {
                   onClick={() => {
                     if (item.media_type === "photo") setLightbox(item)
                   }}
-                  className="group relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-white/5"
+                  className="group relative aspect-square overflow-hidden rounded-xl border border-border bg-white"
                 >
                   {item.thumbnail_url || (item.media_type === "photo" && item.url) ? (
                     <Image
@@ -101,7 +101,7 @@ export default function MediaPage() {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <Film className="h-8 w-8 text-white/30" />
+                      <Film className="h-8 w-8 text-muted-foreground" />
                     </div>
                   )}
                   {/* Glass overlay on hover */}
@@ -121,10 +121,10 @@ export default function MediaPage() {
               ))}
             </div>
           ) : (
-            <div className="mt-12 rounded-2xl border border-dashed border-white/10 p-12 text-center">
-              <ImageIcon className="mx-auto h-10 w-10 text-white/30" />
-              <p className="mt-3 font-heading text-lg font-semibold text-white">No media yet</p>
-              <p className="mt-1 text-sm text-white/60">
+            <div className="mt-12 rounded-xl border border-dashed border-border p-12 text-center">
+              <ImageIcon className="mx-auto h-10 w-10 text-muted-foreground" />
+              <p className="mt-3 font-heading text-lg font-semibold text-ink">No media yet</p>
+              <p className="mt-1 text-sm text-muted-foreground">
                 Photos and videos will be posted here after match days.
               </p>
             </div>
@@ -133,13 +133,13 @@ export default function MediaPage() {
           {/* Inline video players */}
           {filter !== "photo" && filtered.filter((i) => i.media_type === "video").length > 0 && (
             <div className="mt-12 space-y-6">
-              <h2 className="font-heading text-xl font-bold text-white">Videos</h2>
+              <h2 className="font-heading text-xl font-bold text-ink">Videos</h2>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered
                   .filter((i) => i.media_type === "video")
                   .map((video) => (
-                    <div key={video.id} className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-                      <div className="aspect-video bg-black">
+                    <div key={video.id} className="overflow-hidden rounded-xl border border-border bg-white">
+                      <div className="aspect-video bg-paper">
                         {video.url.includes("youtube.com") || video.url.includes("youtu.be") ? (
                           <iframe
                             src={video.url.replace("watch?v=", "embed/")}
@@ -157,7 +157,7 @@ export default function MediaPage() {
                       </div>
                       {video.title && (
                         <div className="p-3">
-                          <p className="font-heading text-sm font-semibold text-white">{video.title}</p>
+                          <p className="font-heading text-sm font-semibold text-ink">{video.title}</p>
                         </div>
                       )}
                     </div>
