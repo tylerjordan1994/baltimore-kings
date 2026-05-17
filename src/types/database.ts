@@ -1,4 +1,5 @@
 export type UserRole = 'pending' | 'player' | 'coach' | 'superadmin'
+export type ProfileStatus = 'pending' | 'active' | 'inactive' | 'archived'
 export type LeagueType = 'masl3' | 'masl2' | 'futsal_l1' | 'futsal_other'
 export type FieldType = 'futsal_rounded' | 'masl_rounded_extra_player'
 export type RosterPosition = 'starter' | 'sub' | 'reserve'
@@ -24,7 +25,13 @@ export interface Profile {
   jersey_number: number | null
   years_in_club: number
   role: UserRole
+  status: ProfileStatus
   also_plays: boolean
+  also_plays_for_steaks: boolean
+  inactive_reasons: string[] | null
+  made_inactive_at: string | null
+  made_inactive_by: string | null
+  inactive_notes: string | null
   approved_at: string | null
   approved_by: string | null
   created_at: string
@@ -269,4 +276,169 @@ export interface BrandAssets {
   og_image_url: string | null
   updated_at: string
   updated_by: string | null
+}
+
+// Contracts
+export type ContractKind = 'player_agreement' | 'coach_agreement' | 'tryout_waiver' | 'tournament_release' | 'code_of_conduct' | 'other'
+export type ContractAppliesTo = 'individual' | 'team' | 'all_active'
+export type ContractAssignmentStatus = 'pending' | 'signed' | 'expired' | 'voided'
+
+export interface Contract {
+  id: string
+  title: string
+  body_markdown: string
+  kind: ContractKind
+  applies_to: ContractAppliesTo
+  team_id: string | null
+  effective_date: string
+  expiration_date: string | null
+  created_by: string | null
+  is_active: boolean
+  created_at: string
+}
+
+export interface ContractAssignment {
+  id: string
+  contract_id: string
+  profile_id: string
+  assigned_at: string
+  status: ContractAssignmentStatus
+  contracts?: Contract
+  profiles?: Profile
+}
+
+export interface ContractSignature {
+  id: string
+  contract_assignment_id: string
+  signed_at: string
+  signature_text: string
+  ip_address: string | null
+  pdf_storage_path: string | null
+}
+
+// Training
+export type FocusCategory = 'technical' | 'tactical' | 'physical' | 'mental'
+export type TrainingPriority = 'low' | 'normal' | 'high'
+export type TrainingStatus = 'not_started' | 'in_progress' | 'player_marked_complete' | 'coach_confirmed'
+
+export interface FocusArea {
+  id: string
+  name: string
+  description: string | null
+  category: FocusCategory
+  default_for_positions: string[]
+  created_at: string
+}
+
+export interface TrainingAssignment {
+  id: string
+  focus_area_id: string
+  assigned_to_profile_id: string | null
+  assigned_to_team_id: string | null
+  assigned_by: string | null
+  notes_markdown: string | null
+  due_by: string | null
+  priority: TrainingPriority
+  attached_youtube_url: string | null
+  attached_document_path: string | null
+  is_auto_assigned: boolean
+  created_at: string
+  focus_areas?: FocusArea
+}
+
+export interface TrainingProgress {
+  id: string
+  assignment_id: string
+  profile_id: string
+  status: TrainingStatus
+  player_notes: string | null
+  coach_notes: string | null
+  updated_at: string
+}
+
+// Orientation
+export interface Orientation {
+  id: string
+  profile_id: string
+  started_at: string
+  completed_at: string | null
+  current_step: number
+  steps_completed: Record<string, boolean>
+  coach_approved_at: string | null
+  coach_approved_by: string | null
+}
+
+// Alumni
+export type AlumniStatus = 'playing_pro_futsal' | 'playing_pro_indoor' | 'playing_pro_outdoor' | 'coaching' | 'college_level' | 'national_team' | 'retired' | 'other'
+
+export interface Alumni {
+  id: string
+  full_name: string
+  years_at_kings: string | null
+  current_status: AlumniStatus
+  current_team: string | null
+  current_country: string | null
+  notable_history: string | null
+  photo_url: string | null
+  linked_profile_id: string | null
+  display_order: number
+  is_published: boolean
+  created_at: string
+}
+
+// Scouting
+export type ProspectPriority = 'watch' | 'target' | 'actively_recruiting' | 'signed' | 'passed'
+
+export interface Prospect {
+  id: string
+  full_name: string
+  contact: string | null
+  current_team: string | null
+  position: string | null
+  scouted_at: string | null
+  scouted_by: string | null
+  event: string | null
+  assessment: string | null
+  priority: ProspectPriority
+  created_at: string
+}
+
+// Evaluations
+export interface Evaluation {
+  id: string
+  profile_id: string
+  evaluator_id: string
+  evaluation_date: string
+  period: string | null
+  technical_rating: number | null
+  tactical_rating: number | null
+  physical_rating: number | null
+  mental_rating: number | null
+  strengths: string | null
+  areas_for_growth: string | null
+  notes: string | null
+  is_shared_with_player: boolean
+  created_at: string
+}
+
+// Player Goals
+export type GoalStatus = 'proposed' | 'approved' | 'in_progress' | 'achieved' | 'revised' | 'dropped'
+
+export interface PlayerGoal {
+  id: string
+  profile_id: string
+  season: string | null
+  goal_text: string
+  coach_feedback: string | null
+  status: GoalStatus
+  set_at: string
+  updated_at: string
+}
+
+// Newsletter
+export interface NewsletterSignup {
+  id: string
+  email: string
+  audience: string
+  subscribed_at: string
 }

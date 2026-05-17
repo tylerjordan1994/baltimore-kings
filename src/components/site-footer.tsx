@@ -71,11 +71,11 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-4">
               <li>
                 <p className="text-sm font-medium text-foreground">GOALS Baltimore</p>
-                <p className="text-xs text-muted-foreground">Home games</p>
+                <p className="text-xs text-muted-foreground">6159 Edmondson Ave, Catonsville, MD 21228</p>
               </li>
               <li>
-                <p className="text-sm font-medium text-foreground">Benfield Sports</p>
-                <p className="text-xs text-muted-foreground">Practice facility</p>
+                <p className="text-sm font-medium text-foreground">Benfield Sportscenter</p>
+                <p className="text-xs text-muted-foreground">1031 Benfield Blvd, Millersville, MD 21108</p>
               </li>
             </ul>
           </div>

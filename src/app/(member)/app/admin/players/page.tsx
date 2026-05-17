@@ -21,11 +21,43 @@ const editPlayerSchema = z.object({
 
 type EditPlayerForm = z.infer<typeof editPlayerSchema>
 
+type TabKey = 'active' | 'pending' | 'inactive' | 'all'
+
+const INACTIVE_REASONS = [
+  'moved_away',
+  'injury',
+  'personal_reasons',
+  'schedule_conflict',
+  'non_payment',
+  'conduct',
+  'retired',
+  'promoted_out',
+  'other',
+] as const
+
+const INACTIVE_REASON_LABELS: Record<string, string> = {
+  moved_away: 'Moved Away',
+  injury: 'Injury',
+  personal_reasons: 'Personal Reasons',
+  schedule_conflict: 'Schedule Conflict',
+  non_payment: 'Non-Payment',
+  conduct: 'Conduct',
+  retired: 'Retired',
+  promoted_out: 'Promoted Out',
+  other: 'Other',
+}
+
 export default function PlayersPage() {
   const [players, setPlayers] = useState<Profile[]>([])
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [currentUserRole, setCurrentUserRole] = useState<UserRole>('player')
   const [editingPlayer, setEditingPlayer] = useState<Profile | null>(null)
   const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [activeTab, setActiveTab] = useState<TabKey>('active')
+  const [inactiveModal, setInactiveModal] = useState<Profile | null>(null)
+  const [inactiveReasons, setInactiveReasons] = useState<string[]>([])
+  const [inactiveNotes, setInactiveNotes] = useState('')
+  const [processing, setProcessing] = useState(false)
 
   const supabase = createClient()
 
@@ -36,6 +68,7 @@ export default function PlayersPage() {
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
+      setCurrentUserId(user.id)
       const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
       if (profile) setCurrentUserRole(profile.role as UserRole)
     }
@@ -98,11 +131,92 @@ export default function PlayersPage() {
     loadData()
   }
 
+  async function markInactive() {
+    if (!inactiveModal || inactiveReasons.length === 0) return
+    if (inactiveReasons.includes('other') && !inactiveNotes.trim()) return
+
+    setProcessing(true)
+    try {
+      // 1. Update profile
+      await supabase.from('profiles').update({
+        status: 'inactive',
+        inactive_reasons: inactiveReasons,
+        made_inactive_at: new Date().toISOString(),
+        made_inactive_by: currentUserId,
+        inactive_notes: inactiveNotes.trim() || null,
+      }).eq('id', inactiveModal.id)
+
+      // 2. Deactivate all team_members rows
+      await supabase.from('team_members').update({
+        is_active: false,
+      }).eq('profile_id', inactiveModal.id)
+
+      setInactiveModal(null)
+      setInactiveReasons([])
+      setInactiveNotes('')
+      loadData()
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  async function reactivatePlayer(player: Profile) {
+    setProcessing(true)
+    try {
+      await supabase.from('profiles').update({
+        status: 'active',
+        inactive_reasons: null,
+        made_inactive_at: null,
+        made_inactive_by: null,
+        inactive_notes: null,
+      }).eq('id', player.id)
+      loadData()
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  function toggleReason(reason: string) {
+    setInactiveReasons((prev) =>
+      prev.includes(reason) ? prev.filter((r) => r !== reason) : [...prev, reason]
+    )
+  }
+
+  const filteredPlayers = players.filter((p) => {
+    if (activeTab === 'all') return true
+    return p.status === activeTab
+  })
+
+  const tabs: { key: TabKey; label: string; count: number }[] = [
+    { key: 'active', label: 'Active', count: players.filter((p) => p.status === 'active').length },
+    { key: 'pending', label: 'Pending', count: players.filter((p) => p.status === 'pending').length },
+    { key: 'inactive', label: 'Inactive', count: players.filter((p) => p.status === 'inactive').length },
+    { key: 'all', label: 'All', count: players.length },
+  ]
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Player Management</h1>
         <p className="text-zinc-400">View and edit all player profiles.</p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              activeTab === tab.key
+                ? 'bg-gold/20 text-gold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+            }`}
+          >
+            {tab.label}
+            <span className="ml-1.5 text-xs opacity-60">({tab.count})</span>
+          </button>
+        ))}
       </div>
 
       {/* Edit Dialog/Sheet */}
@@ -206,67 +320,226 @@ export default function PlayersPage() {
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-xl border border-zinc-800">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-zinc-800 bg-zinc-900/50">
-            <tr>
-              <th className="px-4 py-3 font-medium text-zinc-300">Name</th>
-              <th className="px-4 py-3 font-medium text-zinc-300">Role</th>
-              <th className="px-4 py-3 font-medium text-zinc-300">Also Plays</th>
-              <th className="px-4 py-3 font-medium text-zinc-300">Position</th>
-              <th className="px-4 py-3 font-medium text-zinc-300">#</th>
-              <th className="px-4 py-3 font-medium text-zinc-300">Phone</th>
-              <th className="px-4 py-3 font-medium text-zinc-300">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-800">
-            {players.map((p) => (
-              <tr key={p.id} className="bg-zinc-900 hover:bg-zinc-800/50">
-                <td className="px-4 py-3 text-white">{p.full_name}</td>
-                <td className="px-4 py-3">
-                  <span className={`rounded px-1.5 py-0.5 text-[10px] uppercase ${
-                    p.role === 'superadmin' ? 'bg-purple-900/50 text-purple-300' :
-                    p.role === 'coach' ? 'bg-blue-900/50 text-blue-300' :
-                    p.role === 'player' ? 'bg-green-900/50 text-green-300' :
-                    'bg-zinc-800 text-zinc-500'
-                  }`}>
-                    {p.role}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  {(p.role === 'coach' || p.role === 'superadmin') ? (
-                    <button
-                      onClick={async () => {
-                        await supabase.from('profiles').update({ also_plays: !p.also_plays }).eq('id', p.id)
-                        loadData()
-                      }}
-                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                        p.also_plays ? 'bg-green-600' : 'bg-zinc-700'
-                      }`}
-                    >
-                      <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
-                        p.also_plays ? 'translate-x-4.5' : 'translate-x-0.5'
-                      }`} />
-                    </button>
-                  ) : (
-                    <span className="text-xs text-zinc-500">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-zinc-400">{p.position_primary ?? '—'}</td>
-                <td className="px-4 py-3 text-zinc-400">{p.jersey_number ?? '—'}</td>
-                <td className="px-4 py-3 text-zinc-400">{p.phone ?? '—'}</td>
-                <td className="px-4 py-3">
-                  <Button size="sm" variant="ghost" onClick={() => openEdit(p)}>
-                    Edit
-                  </Button>
-                </td>
+      {/* Mark Inactive Modal */}
+      {inactiveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-xl border border-zinc-700 bg-zinc-900 p-6">
+            <h2 className="text-lg font-semibold text-white">
+              Mark {inactiveModal.full_name} Inactive
+            </h2>
+            <p className="mt-1 text-sm text-zinc-400">
+              Select reason(s) and add optional notes.
+            </p>
+
+            <div className="mt-4 space-y-2">
+              {INACTIVE_REASONS.map((reason) => (
+                <label
+                  key={reason}
+                  className="flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm text-white hover:bg-zinc-800 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={inactiveReasons.includes(reason)}
+                    onChange={() => toggleReason(reason)}
+                    className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 text-gold accent-[#C9A94E]"
+                  />
+                  {INACTIVE_REASON_LABELS[reason]}
+                </label>
+              ))}
+            </div>
+
+            <div className="mt-4">
+              <label className="mb-1 block text-xs text-zinc-400">
+                Notes {inactiveReasons.includes('other') && <span className="text-red-400">(required)</span>}
+              </label>
+              <textarea
+                value={inactiveNotes}
+                onChange={(e) => setInactiveNotes(e.target.value)}
+                rows={3}
+                placeholder="Additional context..."
+                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-600"
+              />
+            </div>
+
+            <div className="mt-5 flex justify-end gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setInactiveModal(null)
+                  setInactiveReasons([])
+                  setInactiveNotes('')
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={markInactive}
+                disabled={
+                  processing ||
+                  inactiveReasons.length === 0 ||
+                  (inactiveReasons.includes('other') && !inactiveNotes.trim())
+                }
+                className="bg-red-600 text-white hover:bg-red-700"
+              >
+                {processing ? 'Processing...' : 'Confirm'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inactive tab: denser table */}
+      {activeTab === 'inactive' ? (
+        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-zinc-800 bg-zinc-900/50">
+              <tr>
+                <th className="px-4 py-3 font-medium text-zinc-300">Player</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Date Inactivated</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Reasons</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Notes</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {players.length === 0 && (
-        <p className="text-center text-sm text-zinc-500">No players found.</p>
+            </thead>
+            <tbody className="divide-y divide-zinc-800">
+              {filteredPlayers.map((p) => (
+                <tr key={p.id} className="bg-zinc-900 hover:bg-zinc-800/50">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      {p.photo_url ? (
+                        <img src={p.photo_url} alt="" className="h-7 w-7 rounded-full object-cover" />
+                      ) : (
+                        <div className="h-7 w-7 rounded-full bg-zinc-700" />
+                      )}
+                      <span className="text-white">{p.full_name}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-zinc-400 text-xs">
+                    {p.made_inactive_at
+                      ? new Date(p.made_inactive_at).toLocaleDateString()
+                      : '—'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-wrap gap-1">
+                      {p.inactive_reasons?.map((r) => (
+                        <span
+                          key={r}
+                          className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300"
+                        >
+                          {INACTIVE_REASON_LABELS[r] || r}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-zinc-500 max-w-[200px] truncate">
+                    {p.inactive_notes || '—'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => reactivatePlayer(p)}
+                      disabled={processing}
+                      className="text-green-400 hover:text-green-300"
+                    >
+                      Reactivate
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filteredPlayers.length === 0 && (
+            <p className="py-8 text-center text-sm text-zinc-500">No inactive players.</p>
+          )}
+        </div>
+      ) : (
+        /* Standard table for active/pending/all */
+        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-zinc-800 bg-zinc-900/50">
+              <tr>
+                <th className="px-4 py-3 font-medium text-zinc-300">Name</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Role</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Also Plays</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Position</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">#</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Phone</th>
+                <th className="px-4 py-3 font-medium text-zinc-300">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800">
+              {filteredPlayers.map((p) => (
+                <tr key={p.id} className="bg-zinc-900 hover:bg-zinc-800/50">
+                  <td className="px-4 py-3 text-white">{p.full_name}</td>
+                  <td className="px-4 py-3">
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] uppercase ${
+                      p.role === 'superadmin' ? 'bg-purple-900/50 text-purple-300' :
+                      p.role === 'coach' ? 'bg-blue-900/50 text-blue-300' :
+                      p.role === 'player' ? 'bg-green-900/50 text-green-300' :
+                      'bg-zinc-800 text-zinc-500'
+                    }`}>
+                      {p.role}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    {(p.role === 'coach' || p.role === 'superadmin') ? (
+                      <button
+                        onClick={async () => {
+                          await supabase.from('profiles').update({ also_plays: !p.also_plays }).eq('id', p.id)
+                          loadData()
+                        }}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                          p.also_plays ? 'bg-green-600' : 'bg-zinc-700'
+                        }`}
+                      >
+                        <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
+                          p.also_plays ? 'translate-x-4.5' : 'translate-x-0.5'
+                        }`} />
+                      </button>
+                    ) : (
+                      <span className="text-xs text-zinc-500">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-zinc-400">{p.position_primary ?? '—'}</td>
+                  <td className="px-4 py-3 text-zinc-400">{p.jersey_number ?? '—'}</td>
+                  <td className="px-4 py-3 text-zinc-400">{p.phone ?? '—'}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-1">
+                      <Button size="sm" variant="ghost" onClick={() => openEdit(p)}>
+                        Edit
+                      </Button>
+                      {p.status === 'active' && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setInactiveModal(p)}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          Mark Inactive
+                        </Button>
+                      )}
+                      {p.status === 'inactive' && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => reactivatePlayer(p)}
+                          disabled={processing}
+                          className="text-green-400 hover:text-green-300"
+                        >
+                          Reactivate
+                        </Button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filteredPlayers.length === 0 && (
+            <p className="py-8 text-center text-sm text-zinc-500">No players found.</p>
+          )}
+        </div>
       )}
     </div>
   )

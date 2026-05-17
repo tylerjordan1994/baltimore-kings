@@ -15,7 +15,7 @@ export default async function MASL3Page() {
   const { data: team } = await supabase
     .from("teams")
     .select("id")
-    .eq("slug", "baltimore-kings-masl3")
+    .eq("slug", "kings-masl3")
     .single()
 
   const teamId = team?.id

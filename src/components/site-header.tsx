@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
-import { Menu, ChevronDown, X } from "lucide-react"
+import { Menu, ChevronDown, X, ArrowRight } from "lucide-react"
 import { HeaderLogo } from "@/components/header-logo"
 
 // basePath handled by next.config.ts
@@ -21,7 +21,26 @@ const clubDropdown = [
   { href: "/media", label: "Media", description: "Photos, videos, and press" },
 ]
 
-type DropdownId = "teams" | "club" | null
+const joinDropdown = {
+  pathway: [
+    { href: "/join/why-kings", label: "Why the Kings" },
+    { href: "/join/pathway", label: "The Pathway" },
+    { href: "/join/development", label: "Development" },
+    { href: "/join/coaches", label: "Coaches" },
+  ],
+  logistics: [
+    { href: "/join/facilities", label: "Facilities" },
+    { href: "/schedule", label: "Schedule" },
+    { href: "/join/costs", label: "Costs" },
+  ],
+  outcomes: [
+    { href: "/join/alumni", label: "Alumni" },
+    { href: "/achievements", label: "Achievements" },
+    { href: "/join/stories", label: "Stories" },
+  ],
+}
+
+type DropdownId = "teams" | "club" | "join" | null
 
 export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -119,7 +138,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           </Link>
         </nav>
 
-        {/* Right side: Sign In + Apply CTA */}
+        {/* Right side: Sign In + Join CTA */}
         <div className="hidden items-center gap-3 lg:flex">
           <Link
             href="/sign-in"
@@ -127,12 +146,19 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           >
             Sign In
           </Link>
-          <Link
-            href="/apply"
-            className="rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-gold-light"
+          <div
+            className="relative"
+            onMouseEnter={() => handleDropdownEnter("join")}
+            onMouseLeave={handleDropdownLeave}
           >
-            Apply
-          </Link>
+            <button
+              onClick={() => setActiveDropdown(activeDropdown === "join" ? null : "join")}
+              className="inline-flex items-center gap-1 rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-gold-light"
+            >
+              Join
+              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === "join" ? "rotate-180" : ""}`} />
+            </button>
+          </div>
         </div>
 
         {/* Mobile hamburger */}
@@ -148,7 +174,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
       {/* Mega Menu Dropdown Panels */}
       <div
         className={`absolute left-0 right-0 top-full overflow-hidden transition-all duration-200 ease-out ${
-          activeDropdown ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          activeDropdown ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
         onMouseEnter={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }}
         onMouseLeave={handleDropdownLeave}
@@ -191,6 +217,75 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                     </div>
                   </Link>
                 ))}
+              </div>
+            )}
+            {activeDropdown === "join" && (
+              <div className="grid gap-6 lg:grid-cols-4">
+                {/* Column 1: Pathway */}
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gold">Pathway</p>
+                  <div className="space-y-1">
+                    {joinDropdown.pathway.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setActiveDropdown(null)}
+                        className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5 hover:text-gold"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                {/* Column 2: Logistics */}
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gold">Logistics</p>
+                  <div className="space-y-1">
+                    {joinDropdown.logistics.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setActiveDropdown(null)}
+                        className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5 hover:text-gold"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                {/* Column 3: Outcomes */}
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gold">Outcomes</p>
+                  <div className="space-y-1">
+                    {joinDropdown.outcomes.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setActiveDropdown(null)}
+                        className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5 hover:text-gold"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                {/* Feature card */}
+                <div className="rounded-xl border border-gold/20 bg-gold/5 p-5 flex flex-col justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Start your application</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Fill out the form and a coach will reach out within a week.
+                    </p>
+                  </div>
+                  <Link
+                    href="/join/apply"
+                    onClick={() => setActiveDropdown(null)}
+                    className="mt-4 inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-sm font-semibold text-background transition-colors hover:bg-gold-light"
+                  >
+                    Apply Now
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
               </div>
             )}
           </div>
@@ -265,11 +360,11 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                 Sign In
               </Link>
               <Link
-                href="/apply"
+                href="/join"
                 onClick={() => setMobileOpen(false)}
                 className="mt-3 block rounded-full bg-gold px-4 py-2.5 text-center text-sm font-semibold text-background transition-colors hover:bg-gold-light"
               >
-                Apply
+                Join
               </Link>
             </div>
           </nav>

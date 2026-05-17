@@ -134,7 +134,7 @@ export default function HomePage() {
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]">
               <div className="aspect-video w-full bg-black/50">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3087.5!2d-76.6!3d39.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sGOALS+Baltimore!5e0!3m2!1sen!2sus!4v1"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3087.5!2d-76.731!3d39.272!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c81f8a0c0e7b7d%3A0x0!2zNjE1OSBFZG1vbmRzb24gQXZl!5e0!3m2!1sen!2sus"
                   className="h-full w-full border-0"
                   loading="lazy"
                   title="GOALS Baltimore location"
@@ -147,7 +147,7 @@ export default function HomePage() {
                     <h3 className="font-heading text-lg font-bold text-white">GOALS Baltimore</h3>
                     <p className="mt-1 text-sm text-white/60">Home games — MASL3 match days</p>
                     <p className="mt-1 text-xs text-white/40">
-                      [NEEDS CONFIRMATION] Exact address. Parking available on-site.
+                      6159 Edmondson Ave, Catonsville, MD 21228
                     </p>
                   </div>
                 </div>
@@ -157,10 +157,10 @@ export default function HomePage() {
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]">
               <div className="aspect-video w-full bg-black/50">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3087.5!2d-76.6!3d39.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sBenfield+Sportscenter!5e0!3m2!1sen!2sus!4v1"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3090.5!2d-76.624!3d39.121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7f8a0c0e7b7d%3A0x0!2zMTAzMSBCZW5maWVsZCBCbHZk!5e0!3m2!1sen!2sus"
                   className="h-full w-full border-0"
                   loading="lazy"
-                  title="Benfield Sports location"
+                  title="Benfield Sportscenter location"
                 />
               </div>
               <div className="p-5">
@@ -170,7 +170,7 @@ export default function HomePage() {
                     <h3 className="font-heading text-lg font-bold text-white">Benfield Sportscenter</h3>
                     <p className="mt-1 text-sm text-white/60">Practice facility — weekly training sessions</p>
                     <p className="mt-1 text-xs text-white/40">
-                      903 Benfield Rd, Severna Park, MD 21146
+                      1031 Benfield Blvd, Millersville, MD 21108
                     </p>
                   </div>
                 </div>

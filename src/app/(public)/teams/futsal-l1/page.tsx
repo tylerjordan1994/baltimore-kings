@@ -14,7 +14,7 @@ export default async function FutsalL1Page() {
   const { data: team } = await supabase
     .from("teams")
     .select("id")
-    .eq("slug", "baltimore-kings-futsal-l1")
+    .eq("slug", "futsal-kings-1")
     .single()
 
   const teamId = team?.id
