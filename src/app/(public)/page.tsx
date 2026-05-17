@@ -1,138 +1,214 @@
 import Link from "next/link"
-import { ArrowRight, MapPin, Calendar, Users, ChevronDown, Zap } from "lucide-react"
-
-// basePath handled by next.config.ts
+import { ChevronDown, ArrowRight, MapPin } from "lucide-react"
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden bg-[#0a0a0a]">
-        {/* Radial glow background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,_rgba(201,169,78,0.15),_transparent)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,_rgba(201,169,78,0.05),_transparent)]" />
-
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p
-              className="text-xs font-semibold uppercase tracking-widest text-gold"
-              style={{ fontVariant: "small-caps" }}
-            >
+      {/* ─── 1. HERO ─── */}
+      <section className="relative min-h-screen bg-paper">
+        <div className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 lg:flex-row lg:items-center lg:gap-12 lg:px-8">
+          {/* Left — copy */}
+          <div className="relative z-10 w-full shrink-0 py-24 lg:w-[40%] lg:py-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">
               League 1 Futsal &middot; MASL3 &middot; Baltimore
             </p>
 
-            <h1 className="mt-6 font-heading text-5xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
-              Baltimore&rsquo;s futsal club.
+            <h1 className="mt-6 font-heading text-5xl leading-[1.05] tracking-tight text-ink sm:text-6xl md:text-7xl lg:text-8xl">
+              Baltimore&rsquo;s
               <br />
-              <span className="text-white/80">Arena soccer when the court&rsquo;s dark.</span>
+              futsal club.
             </h1>
 
-            <p className="mt-8 max-w-xl text-lg leading-relaxed text-white/70">
-              The Baltimore Kings run year-round futsal development through Pro-SA League 1, plus MASL3 arena soccer in the off-season. We train at Benfield Sportscenter and play home games at GOALS Baltimore.
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+              Year-round futsal development through Pro-SA League 1, plus MASL3 arena soccer when the lights come on.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 href="/apply"
-                className="inline-flex items-center rounded-full bg-gold px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-[#0a0a0a] transition-all hover:bg-gold-light hover:shadow-[0_0_24px_rgba(201,169,78,0.3)]"
+                className="inline-flex items-center rounded-full bg-brand px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-paper transition-opacity hover:opacity-90"
               >
-                Apply for a Tryout
-                <ArrowRight className="ml-2 h-4 w-4" />
+                Apply for a tryout
               </Link>
               <Link
                 href="/schedule"
-                className="inline-flex items-center rounded-full border border-white/30 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-white transition-all hover:border-white/60 hover:bg-white/5"
+                className="inline-flex items-center rounded-full border border-ink/20 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-ink transition-colors hover:border-ink/40"
               >
-                See the Schedule
+                See the schedule
               </Link>
+            </div>
+          </div>
+
+          {/* Right — photo placeholder */}
+          <div className="relative hidden w-full lg:block lg:w-[60%]">
+            <div className="aspect-[3/4] max-h-[85vh] w-full rounded-2xl bg-gradient-to-b from-brand/10 to-paper">
+              {/* TODO: Replace with futsal court action photo */}
             </div>
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="h-6 w-6 text-white/40" />
+        <div className="absolute bottom-8 left-6 animate-bounce lg:left-8">
+          <ChevronDown className="h-5 w-5 text-ink/40" />
         </div>
       </section>
 
-      {/* Programs */}
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            <h2 className="font-heading text-3xl font-bold text-white sm:text-4xl">Our Programs</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-gold/40 to-transparent" />
-          </div>
-          <p className="mt-3 text-white/50">Two competitions. Two pathways up.</p>
-
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Card 1 — Futsal (gold top accent) */}
-            <Link href="/teams/futsal-l1" className="group">
-              <div className="relative h-full rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold/10">
-                  <Users className="h-6 w-6 text-gold" />
-                </div>
-                <h3 className="mt-5 font-heading text-xl font-bold text-white group-hover:text-gold">
-                  Futsal League 1
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">
-                  Five-a-side on a regulation court. The core of what we do. Year-round development, League 1 competition, and the technical foundation everything else builds on.
-                </p>
-                <span className="mt-5 inline-flex items-center text-sm font-medium text-gold">
-                  View team <ArrowRight className="ml-1.5 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </span>
-              </div>
-            </Link>
-
-            {/* Card 2 — MASL3 */}
-            <Link href="/teams/masl3" className="group">
-              <div className="h-full rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
-                  <Zap className="h-6 w-6 text-gold" />
-                </div>
-                <h3 className="mt-5 font-heading text-xl font-bold text-white group-hover:text-gold">
-                  MASL3 Arena Soccer
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">
-                  Six-a-side on a walled arena pitch. Off-season competition in Major Arena Soccer League 3. Faster, more physical — a different test for the same players.
-                </p>
-                <span className="mt-5 inline-flex items-center text-sm font-medium text-gold">
-                  View team <ArrowRight className="ml-1.5 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </span>
-              </div>
-            </Link>
-
-            {/* Card 3 — Pathways (dashed) */}
-            <div className="h-full rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-white/20">
-                <ArrowRight className="h-6 w-6 text-white/50" />
-              </div>
-              <h3 className="mt-5 font-heading text-xl font-bold text-white">Two Pathways Up</h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/60">
-                Futsal: Kings L1F &rarr; national-level futsal, professional clubs domestically/internationally. Arena: Kings MASL3 &rarr; Salisbury Steaks (MASL2) &rarr; MASL1 / Baltimore Blast.
-              </p>
-              <Link
-                href="/teams/masl3#pathway"
-                className="mt-5 inline-flex items-center text-sm font-medium text-gold hover:text-gold-light"
+      {/* ─── 2. KINETIC MARQUEE ─── */}
+      <section className="overflow-hidden bg-brand py-8 md:py-10">
+        <div className="group flex whitespace-nowrap">
+          <div className="animate-marquee flex shrink-0 items-center gap-8 group-hover:[animation-play-state:paused]">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <span
+                key={i}
+                className="font-heading text-6xl uppercase text-paper/20 md:text-8xl"
               >
-                Learn about the pathways <ArrowRight className="ml-1.5 h-3 w-3" />
+                League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2024 &middot;&nbsp;
+              </span>
+            ))}
+          </div>
+          <div className="animate-marquee flex shrink-0 items-center gap-8 group-hover:[animation-play-state:paused]" aria-hidden>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <span
+                key={i}
+                className="font-heading text-6xl uppercase text-paper/20 md:text-8xl"
+              >
+                League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2024 &middot;&nbsp;
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 3. TEAMS / PROGRAMS ─── */}
+      <section className="bg-paper py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">Our Programs</p>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-5">
+            {/* Large card — Futsal Kings 1 */}
+            <Link href="/teams/futsal-l1" className="group lg:col-span-3">
+              <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-8 transition-colors hover:border-brand/30">
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pro-SA League 1 Futsal</span>
+                  <h3 className="mt-3 font-heading text-3xl text-ink sm:text-4xl">Futsal Kings 1</h3>
+                  <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
+                    Five-a-side on a regulation court. The core of what we do — year-round development, national-level competition, and the technical foundation everything else builds on.
+                  </p>
+                </div>
+                <span className="mt-8 inline-flex items-center text-sm font-semibold text-brand">
+                  See team <ArrowRight className="ml-1.5 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                </span>
+              </div>
+            </Link>
+
+            {/* Stacked smaller cards */}
+            <div className="flex flex-col gap-6 lg:col-span-2">
+              <Link href="/teams/futsal-l1" className="group flex-1">
+                <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-6 transition-colors hover:border-brand/30">
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pro-SA League 1 Futsal</span>
+                    <h3 className="mt-2 font-heading text-xl text-ink">Kings 2</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      Development squad feeding into the first team. Same methodology, same pitch.
+                    </p>
+                  </div>
+                  <span className="mt-4 inline-flex items-center text-sm font-semibold text-brand">
+                    See team <ArrowRight className="ml-1.5 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </div>
+              </Link>
+
+              <Link href="/teams/masl3" className="group flex-1">
+                <div className="flex h-full flex-col justify-between rounded-xl border border-border bg-white p-6 transition-colors hover:border-brand/30">
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Major Arena Soccer League 3</span>
+                    <h3 className="mt-2 font-heading text-xl text-ink">MASL3</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      Six-a-side walled arena. Off-season competition — faster, more physical, a different test.
+                    </p>
+                  </div>
+                  <span className="mt-4 inline-flex items-center text-sm font-semibold text-brand">
+                    See team <ArrowRight className="ml-1.5 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </div>
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Venues */}
-      <section className="bg-[#080808] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            <h2 className="font-heading text-3xl font-bold text-white sm:text-4xl">Where We Play</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-gold/40 to-transparent" />
-          </div>
+      {/* ─── 4. ABOUT THE CLUB ─── */}
+      <section className="bg-paper py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Photo placeholder — slight negative margin for editorial overlap */}
+            <div className="relative lg:-ml-8">
+              <div className="aspect-[4/5] w-full rounded-2xl bg-gradient-to-br from-brand/10 via-accent/5 to-paper">
+                {/* TODO: Replace with club photo */}
+              </div>
+            </div>
 
-          <div className="mt-14 grid gap-8 lg:grid-cols-2">
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]">
-              <div className="aspect-video w-full bg-black/50">
+            {/* Text */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">The Club</p>
+              <h2 className="mt-4 font-heading text-3xl text-ink sm:text-4xl">
+                Futsal-first. Baltimore-built.
+              </h2>
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground">
+                The Baltimore Kings exist to run elite futsal programming in a city that deserves it. Founded through Pro-SA and affiliated with the Salisbury Steaks organization, we field multiple teams across League 1 Futsal and MASL3 — giving players a genuine pathway from local courts to professional contracts.
+              </p>
+
+              {/* Stat blocks */}
+              <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
+                <div>
+                  <p className="font-heading text-3xl text-ink">2024</p>
+                  <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">Founded</p>
+                </div>
+                <div>
+                  <p className="font-heading text-3xl text-ink">30+</p>
+                  <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">Active Players</p>
+                </div>
+                <div>
+                  <p className="font-heading text-3xl text-ink">3</p>
+                  <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">Teams Fielded</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 5. WHERE WE PLAY ─── */}
+      <section className="bg-paper py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">Where We Play</p>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-9">
+            {/* Benfield — 55% */}
+            <div className="overflow-hidden rounded-xl border border-border bg-white lg:col-span-5">
+              <div className="aspect-video w-full">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3090.5!2d-76.624!3d39.121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7f8a0c0e7b7d%3A0x0!2zMTAzMSBCZW5maWVsZCBCbHZk!5e0!3m2!1sen!2sus"
+                  className="h-full w-full border-0"
+                  loading="lazy"
+                  title="Benfield Sports location"
+                />
+              </div>
+              <div className="p-6">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  Home Pitch — Futsal
+                </p>
+                <h3 className="mt-2 font-heading text-xl text-ink">Benfield Sports</h3>
+                <div className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>1031 Benfield Blvd, Millersville, MD 21108</span>
+                </div>
+              </div>
+            </div>
+
+            {/* GOALS — 45% */}
+            <div className="overflow-hidden rounded-xl border border-border bg-white lg:col-span-4">
+              <div className="aspect-video w-full">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3087.5!2d-76.731!3d39.272!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c81f8a0c0e7b7d%3A0x0!2zNjE1OSBFZG1vbmRzb24gQXZl!5e0!3m2!1sen!2sus"
                   className="h-full w-full border-0"
@@ -140,39 +216,14 @@ export default function HomePage() {
                   title="GOALS Baltimore location"
                 />
               </div>
-              <div className="p-5">
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
-                  <div>
-                    <h3 className="font-heading text-lg font-bold text-white">GOALS Baltimore</h3>
-                    <p className="mt-1 text-sm text-white/60">Home games — MASL3 match days</p>
-                    <p className="mt-1 text-xs text-white/40">
-                      6159 Edmondson Ave, Catonsville, MD 21228
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all hover:border-gold/30 hover:bg-white/[0.07]">
-              <div className="aspect-video w-full bg-black/50">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3090.5!2d-76.624!3d39.121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7f8a0c0e7b7d%3A0x0!2zMTAzMSBCZW5maWVsZCBCbHZk!5e0!3m2!1sen!2sus"
-                  className="h-full w-full border-0"
-                  loading="lazy"
-                  title="Benfield Sportscenter location"
-                />
-              </div>
-              <div className="p-5">
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
-                  <div>
-                    <h3 className="font-heading text-lg font-bold text-white">Benfield Sportscenter</h3>
-                    <p className="mt-1 text-sm text-white/60">Practice facility — weekly training sessions</p>
-                    <p className="mt-1 text-xs text-white/40">
-                      1031 Benfield Blvd, Millersville, MD 21108
-                    </p>
-                  </div>
+              <div className="p-6">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  Home Arena — MASL3
+                </p>
+                <h3 className="mt-2 font-heading text-xl text-ink">GOALS Baltimore</h3>
+                <div className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>6159 Edmondson Ave, Catonsville, MD 21228</span>
                 </div>
               </div>
             </div>
@@ -180,56 +231,75 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Upcoming */}
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <h2 className="font-heading text-3xl font-bold text-white sm:text-4xl">Upcoming</h2>
+      {/* ─── 6. APPLY CTA (DARK) ─── */}
+      <section className="bg-court py-28 sm:py-36">
+        <div className="mx-auto max-w-4xl px-6 text-center lg:px-8">
+          <h2 className="font-heading text-4xl text-paper sm:text-5xl lg:text-6xl">
+            Think you can play here?
+          </h2>
+          <div className="mt-10">
             <Link
-              href="/schedule"
-              className="text-sm font-medium text-gold transition-colors hover:text-gold-light"
+              href="/apply"
+              className="inline-flex items-center rounded-full bg-accent px-10 py-4 text-sm font-bold uppercase tracking-wide text-ink transition-opacity hover:opacity-90"
             >
-              Full schedule <ArrowRight className="ml-1 inline h-3 w-3" />
+              Start your application
             </Link>
           </div>
-          <div className="mt-10 rounded-2xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-sm">
-            <Calendar className="mx-auto h-10 w-10 text-white/30" />
-            <p className="mt-4 text-white/60">
-              Schedule updates coming soon. Check back for the 2025-2026 season fixtures.
+        </div>
+      </section>
+
+      {/* ─── 7. FOOTER ─── */}
+      <footer className="bg-paper py-16">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Logo / identity */}
+            <div>
+              <p className="font-heading text-xl text-ink">Baltimore Kings</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Futsal-first. Baltimore-built.
+              </p>
+            </div>
+
+            {/* Nav */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink">Navigate</p>
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                <li><Link href="/teams/futsal-l1" className="hover:text-brand">Futsal L1</Link></li>
+                <li><Link href="/teams/masl3" className="hover:text-brand">MASL3</Link></li>
+                <li><Link href="/schedule" className="hover:text-brand">Schedule</Link></li>
+                <li><Link href="/apply" className="hover:text-brand">Apply</Link></li>
+              </ul>
+            </div>
+
+            {/* Social */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink">Social</p>
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                <li><a href="https://www.instagram.com/baltimorekingsfc" target="_blank" rel="noopener noreferrer" className="hover:text-brand">Instagram</a></li>
+              </ul>
+            </div>
+
+            {/* Addresses */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink">Venues</p>
+              <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+                <li>Benfield Sports<br />1031 Benfield Blvd, Millersville, MD 21108</li>
+                <li>GOALS Baltimore<br />6159 Edmondson Ave, Catonsville, MD 21228</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Affiliations + copyright */}
+          <div className="mt-14 border-t border-border pt-8">
+            <p className="text-xs text-muted-foreground">
+              Affiliated with PRO-SA &middot; League 1 Futsal &middot; Salisbury Steaks
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              &copy; {new Date().getFullYear()} Baltimore Kings FC. All rights reserved.
             </p>
           </div>
         </div>
-      </section>
-
-      {/* Sponsors / Affiliations */}
-      <section className="border-t border-white/5 bg-[#080808] py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-medium uppercase tracking-widest text-white/40">
-            Affiliated with
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-10">
-            <a
-              href="https://www.masl3.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium text-white/40 transition-colors hover:text-gold"
-            >
-              MASL3
-            </a>
-            <a
-              href="http://www.prosocceralliance.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium text-white/40 transition-colors hover:text-gold"
-            >
-              Pro-SA
-            </a>
-            <span className="text-sm text-white/40 transition-colors hover:text-gold">
-              Salisbury Steaks (MASL2)
-            </span>
-          </div>
-        </div>
-      </section>
+      </footer>
     </>
   )
 }
