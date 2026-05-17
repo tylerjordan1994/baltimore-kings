@@ -1,0 +1,88 @@
+"use client"
+
+import Link from "next/link"
+import { useState } from "react"
+import { Menu, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+
+const basePath = "/project/football-team"
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/teams/masl3", label: "MASL3" },
+  { href: "/teams/futsal-l1", label: "Futsal L1" },
+  { href: "/roster", label: "Roster" },
+  { href: "/schedule", label: "Schedule" },
+  { href: "/achievements", label: "Achievements" },
+  { href: "/media", label: "Media" },
+  { href: "/learn", label: "Learn" },
+  { href: "/merch", label: "Merch" },
+  { href: "/apply", label: "Apply" },
+]
+
+export function SiteHeader() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href={basePath} className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary">
+            <span className="font-heading text-lg font-bold text-primary-foreground">BK</span>
+          </div>
+          <span className="hidden font-heading text-lg font-bold tracking-tight sm:inline-block">
+            Baltimore Kings
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 md:flex">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={`${basePath}${link.href === "/" ? "" : link.href}`}
+              className="px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Link href={`${basePath}/sign-in`}>
+            <Button variant="outline" size="sm" className="ml-2">
+              Sign In
+            </Button>
+          </Link>
+        </nav>
+
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild className="md:hidden">
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[280px]">
+            <nav className="flex flex-col gap-1 pt-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={`${basePath}${link.href === "/" ? "" : link.href}`}
+                  onClick={() => setOpen(false)}
+                  className="rounded-md px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <Link
+                href={`${basePath}/sign-in`}
+                onClick={() => setOpen(false)}
+                className="mt-4 rounded-md bg-primary px-3 py-2 text-center text-base font-medium text-primary-foreground"
+              >
+                Sign In
+              </Link>
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </header>
+  )
+}
