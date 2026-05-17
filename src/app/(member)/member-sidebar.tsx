@@ -23,6 +23,8 @@ const playerLinks = [
   { href: "/app/games", label: "Game History", icon: "▶" },
   { href: "/app/tactics", label: "Tactics", icon: "⬡" },
   { href: "/app/videos", label: "VEO Videos", icon: "▷" },
+  { href: "/app/goals", label: "My Goals", icon: "◎" },
+  { href: "/app/tutorials", label: "Tutorials", icon: "▣" },
   { href: "/app/achievements", label: "Achievements", icon: "★" },
   { href: "/app/contracts", label: "Contracts", icon: "◫" },
   { href: "/app/training", label: "Training", icon: "◭" },
