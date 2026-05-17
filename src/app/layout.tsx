@@ -1,14 +1,15 @@
 import type { Metadata } from "next"
-import { Space_Grotesk, Inter } from "next/font/google"
+import { Archivo_Black, Plus_Jakarta_Sans } from "next/font/google"
 import "./globals.css"
 
-const spaceGrotesk = Space_Grotesk({
+const archivoBlack = Archivo_Black({
+  weight: "400",
   subsets: ["latin"],
   variable: "--font-heading",
   display: "swap",
 })
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
@@ -23,13 +24,13 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://tylerjordandesigns.com/project/football-team"),
   openGraph: {
     title: "Baltimore Kings",
-    description: "Futsal and arena soccer, played seriously, in Baltimore.",
+    description: "Baltimore's futsal club. League 1 Futsal, MASL3 arena soccer, and a pathway up.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Baltimore Kings",
-    description: "Futsal and arena soccer, played seriously, in Baltimore.",
+    description: "Baltimore's futsal club. League 1 Futsal, MASL3 arena soccer, and a pathway up.",
   },
 }
 
@@ -39,8 +40,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} style={{ colorScheme: "dark" }}>
-      <body className="min-h-screen bg-[#0a0a0a] text-white antialiased">
+    <html lang="en" className={`${plusJakarta.variable} ${archivoBlack.variable}`}>
+      <body className="min-h-screen bg-paper text-ink antialiased">
         {children}
       </body>
     </html>

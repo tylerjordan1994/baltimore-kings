@@ -58,7 +58,7 @@ export default async function MemberLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a]">
+    <div className="dark flex min-h-screen bg-court">
       <MemberSidebar profile={profile} brandUploaded={brandUploaded} />
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-7xl p-6 lg:p-8">

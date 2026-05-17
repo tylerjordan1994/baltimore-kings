@@ -1,9 +1,23 @@
 import { z } from 'zod'
 
-export const phoneSchema = z.string().regex(
-  /^\+[1-9]\d{1,14}$/,
-  'Phone must be in E.164 format (e.g., +14155551234)'
-)
+// Accept natural US phone formats: (410) 555-1234, 410-555-1234, 410.555.1234, 4105551234
+// Normalize to E.164 (+1XXXXXXXXXX) before storing
+export const phoneSchema = z.string()
+  .min(10, 'Phone number is required')
+  .transform((val) => {
+    // Strip everything except digits
+    const digits = val.replace(/\D/g, '')
+    // If it starts with 1 and has 11 digits, it already has country code
+    if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`
+    // If 10 digits, prepend +1
+    if (digits.length === 10) return `+1${digits}`
+    // If already in E.164 format
+    if (val.startsWith('+') && digits.length >= 11) return `+${digits}`
+    return val // let validation catch bad input
+  })
+  .refine((val) => /^\+[1-9]\d{10,14}$/.test(val), {
+    message: 'Enter a valid phone number (e.g., (410) 555-1234)',
+  })
 
 export const applicationSchema = z.object({
   full_name: z.string().min(2, 'Name is required').max(100),
