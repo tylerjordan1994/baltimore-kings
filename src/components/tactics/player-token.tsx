@@ -41,7 +41,7 @@ export function PlayerToken({
 
   return (
     <g
-      ref={setNodeRef}
+      ref={setNodeRef as any}
       {...listeners}
       {...attributes}
       style={{
