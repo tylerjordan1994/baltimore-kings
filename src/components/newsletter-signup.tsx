@@ -14,7 +14,7 @@ export function NewsletterSignup() {
     setStatus("loading")
     setErrorMsg("")
 
-    const res = await fetch("/api/newsletter", {
+    const res = await fetch("/project/football-team/api/newsletter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email.trim() }),
@@ -32,17 +32,17 @@ export function NewsletterSignup() {
 
   if (status === "success") {
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-        <p className="text-lg font-semibold text-amber-400">You&apos;re in.</p>
-        <p className="mt-1 text-sm text-zinc-400">Check your inbox for updates from Baltimore Kings.</p>
+      <div className="rounded-xl border border-border bg-white p-6">
+        <p className="text-lg font-semibold text-brand">You&apos;re in.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Check your inbox for updates from Baltimore Kings.</p>
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-      <h3 className="text-lg font-semibold text-white">Stay in the loop</h3>
-      <p className="mt-1 text-sm text-zinc-400">Get news, match updates, and announcements.</p>
+    <div className="rounded-xl border border-border bg-white p-6">
+      <h3 className="text-lg font-semibold text-ink">Stay in the loop</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Get news, match updates, and announcements.</p>
       <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
         <input
           type="email"
@@ -50,18 +50,18 @@ export function NewsletterSignup() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@email.com"
           required
-          className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+          className="flex-1 rounded-lg border border-border bg-white px-4 py-2 text-sm text-ink placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
+          className="rounded-lg bg-brand px-5 py-2 text-sm font-medium text-paper hover:opacity-90 disabled:opacity-50 transition-opacity"
         >
           {status === "loading" ? "..." : "Subscribe"}
         </button>
       </form>
       {status === "error" && (
-        <p className="mt-2 text-xs text-red-400">{errorMsg}</p>
+        <p className="mt-2 text-xs text-destructive">{errorMsg}</p>
       )}
     </div>
   )

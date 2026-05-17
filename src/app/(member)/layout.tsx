@@ -28,16 +28,16 @@ export default async function MemberLayout({
     redirect(`/login`)
   }
 
-  if (profile.role === "pending") {
+  if (profile.status === "pending" || profile.role === "pending") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] p-8">
-        <div className="mx-auto max-w-md rounded-xl border border-white/10 bg-white/5 p-8 text-center">
+      <div className="flex min-h-screen items-center justify-center bg-paper p-8">
+        <div className="mx-auto max-w-md rounded-xl border border-border bg-white p-8 text-center">
           <div className="mb-4 text-4xl">⏳</div>
-          <h1 className="mb-2 text-xl font-bold text-white">
+          <h1 className="mb-2 text-xl font-bold text-ink">
             Account Pending Approval
           </h1>
-          <p className="text-white/50">
-            Your account is awaiting coach approval. You will receive an email
+          <p className="text-muted-foreground">
+            Your account is awaiting coach approval. You&apos;ll receive an email
             once your account has been activated.
           </p>
         </div>
