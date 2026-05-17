@@ -126,6 +126,14 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
             Learn
           </Link>
 
+          {/* Tickets */}
+          <Link
+            href="/tickets"
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
+          >
+            Tickets
+          </Link>
+
           {/* Merch */}
           <a
             href="https://baltimorekings.printify.me/"
@@ -314,6 +322,13 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                 className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
               >
                 Learn
+              </Link>
+              <Link
+                href="/tickets"
+                onClick={() => setMobileOpen(false)}
+                className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
+              >
+                Tickets
               </Link>
               <a
                 href="https://baltimorekings.printify.me/"

@@ -48,6 +48,8 @@ const adminLinks = [
   { href: "/app/admin/requirements", label: "Requirements", icon: "▢" },
   { href: "/app/admin/scouting", label: "Scouting", icon: "◬" },
   { href: "/app/admin/evaluations", label: "Evaluations", icon: "◮" },
+  { href: "/app/admin/tickets", label: "Ticketed Events", icon: "◈" },
+  { href: "/app/admin/social", label: "Social Studio", icon: "◕" },
 ]
 
 const superadminLinks = [
