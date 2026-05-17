@@ -178,7 +178,7 @@ export default function LearnPage() {
             className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-accent/30"
           >
             <Video className="h-4 w-4 text-red-600" />
-            Coach Dan on YouTube
+            Coach Josh on YouTube
             <ExternalLink className="h-3 w-3 text-muted-foreground" />
           </a>
         </div>

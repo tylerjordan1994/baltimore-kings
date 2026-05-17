@@ -37,7 +37,7 @@ export default async function AchievementsPage() {
       title: "League 1 Futsal Founding Club",
       description: "Founding member of League 1 Futsal — the premier futsal competition in the Mid-Atlantic.",
       category: "club",
-      date: "2024-01-01",
+      date: "2012-01-01",
       player_name: null,
     },
     {
@@ -45,7 +45,7 @@ export default async function AchievementsPage() {
       title: "PRO-SA Founding Club",
       description: "Founding member of the Pro Soccer Alliance, building the infrastructure for professional indoor soccer in America.",
       category: "club",
-      date: "2024-01-01",
+      date: "2012-01-01",
       player_name: null,
     },
   ]

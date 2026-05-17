@@ -67,7 +67,7 @@ export default function HomePage() {
                 key={i}
                 className="font-heading text-7xl uppercase text-paper/20 md:text-9xl"
               >
-                League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2024 &middot;&nbsp;
+                League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2012 &middot;&nbsp;
               </span>
             ))}
           </div>
@@ -77,7 +77,7 @@ export default function HomePage() {
                 key={i}
                 className="font-heading text-7xl uppercase text-paper/20 md:text-9xl"
               >
-                League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2024 &middot;&nbsp;
+                League 1 Futsal &middot; MASL3 &middot; Baltimore Kings &middot; Est. 2012 &middot;&nbsp;
               </span>
             ))}
           </div>
@@ -169,7 +169,7 @@ export default function HomePage() {
               {/* Stat blocks */}
               <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
                 <div>
-                  <p className="font-heading text-5xl text-ink">2024</p>
+                  <p className="font-heading text-5xl text-ink">2012</p>
                   <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">Founded</p>
                 </div>
                 <div>
