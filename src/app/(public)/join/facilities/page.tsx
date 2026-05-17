@@ -37,26 +37,26 @@ const venues = [
 export default function FacilitiesPage() {
   return (
     <>
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
+      <section className="bg-paper py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
             Facilities
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/60">
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
             Two venues. One for futsal, one for arena. Both purpose-built for the sport.
           </p>
         </div>
       </section>
 
-      <section className="bg-[#0a0a0a] pb-24">
+      <section className="bg-paper pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
           {venues.map((venue) => (
             <div
               key={venue.name}
-              className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden"
+              className="rounded-xl border border-border bg-white overflow-hidden"
             >
               {/* Map */}
-              <div className="aspect-video w-full bg-white/[0.02]">
+              <div className="aspect-video w-full bg-paper">
                 <iframe
                   src={venue.mapEmbed}
                   className="h-full w-full border-0"
@@ -70,32 +70,32 @@ export default function FacilitiesPage() {
               {/* Info */}
               <div className="p-6 sm:p-8">
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
-                  <h2 className="font-heading text-xl font-semibold text-white">{venue.name}</h2>
-                  <span className="text-sm text-gold">{venue.role}</span>
+                  <h2 className="font-heading text-xl font-semibold text-ink">{venue.name}</h2>
+                  <span className="text-sm text-accent">{venue.role}</span>
                 </div>
-                <p className="mt-2 text-sm text-white/60">{venue.address}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{venue.address}</p>
 
                 <div className="mt-6 grid gap-6 sm:grid-cols-2">
                   <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-3">Features</h3>
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Features</h3>
                     <ul className="space-y-2">
                       {venue.features.map((f) => (
-                        <li key={f} className="text-sm text-white/60 flex items-start gap-2">
-                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-gold flex-shrink-0" />
+                        <li key={f} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-accent flex-shrink-0" />
                           {f}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-3">Parking</h3>
-                    <p className="text-sm text-white/60">{venue.parking}</p>
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Parking</h3>
+                    <p className="text-sm text-muted-foreground">{venue.parking}</p>
                   </div>
                 </div>
 
                 {/* Photos placeholder */}
-                <div className="mt-6 rounded-xl border border-white/5 bg-white/[0.02] p-4">
-                  <p className="text-sm text-white/40 italic">[Photos to be added]</p>
+                <div className="mt-6 rounded-xl border border-border bg-paper p-4">
+                  <p className="text-sm text-muted-foreground italic">[Photos to be added]</p>
                 </div>
               </div>
             </div>

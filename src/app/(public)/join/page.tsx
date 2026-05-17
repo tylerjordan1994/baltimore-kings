@@ -39,34 +39,34 @@ export default function JoinPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
+      <section className="bg-paper py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
             This is what a serious futsal club looks like.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-white/60">
+          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
             Competitive adults. Structured seasons. A real pathway from development to professional indoor soccer.
           </p>
         </div>
       </section>
 
       {/* Sections */}
-      <section className="bg-[#0a0a0a] pb-24">
+      <section className="bg-paper pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sections.map((section) => (
               <Link
                 key={section.href}
                 href={section.href}
-                className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:border-gold/30 hover:bg-white/[0.07]"
+                className="group rounded-xl border border-border bg-white p-6 transition-colors hover:border-accent/30"
               >
-                <h2 className="font-heading text-lg font-semibold text-white group-hover:text-gold transition-colors">
+                <h2 className="font-heading text-lg font-semibold text-ink group-hover:text-accent transition-colors">
                   {section.title}
                 </h2>
-                <p className="mt-2 text-sm text-white/60">
+                <p className="mt-2 text-sm text-muted-foreground">
                   {section.description}
                 </p>
-                <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-gold">
+                <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
                   Learn more
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </div>
@@ -78,7 +78,7 @@ export default function JoinPage() {
           <div className="mt-16 text-center">
             <Link
               href="/join/apply"
-              className="inline-flex items-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-background transition-colors hover:bg-gold-light"
+              className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-4 text-base font-semibold text-paper transition-colors hover:bg-brand/90"
             >
               Apply Now
               <ArrowRight className="h-4 w-4" />

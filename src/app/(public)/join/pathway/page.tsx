@@ -8,28 +8,28 @@ export const metadata: Metadata = {
 export default function PathwayPage() {
   return (
     <>
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
+      <section className="bg-paper py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
             The Pathway
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/60">
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
             Two ladders. One system. Development to professional, in both futsal and arena soccer.
           </p>
         </div>
       </section>
 
-      <section className="bg-[#0a0a0a] pb-24">
+      <section className="bg-paper pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2">
             {/* Futsal Ladder */}
             <div>
-              <h2 className="mb-8 text-xs font-semibold uppercase tracking-wider text-gold">
+              <h2 className="mb-8 text-xs font-semibold uppercase tracking-wider text-brand">
                 Futsal Ladder
               </h2>
               <div className="relative space-y-4 pl-6">
                 {/* Vertical line */}
-                <div className="absolute left-[11px] top-4 bottom-4 w-px bg-white/10" />
+                <div className="absolute left-[11px] top-4 bottom-4 w-px bg-border" />
 
                 <PathwayStep
                   label="Futsal Kings 2"
@@ -51,11 +51,11 @@ export default function PathwayPage() {
 
             {/* Arena Ladder */}
             <div>
-              <h2 className="mb-8 text-xs font-semibold uppercase tracking-wider text-gold">
+              <h2 className="mb-8 text-xs font-semibold uppercase tracking-wider text-brand">
                 Arena Ladder
               </h2>
               <div className="relative space-y-4 pl-6">
-                <div className="absolute left-[11px] top-4 bottom-4 w-px bg-white/10" />
+                <div className="absolute left-[11px] top-4 bottom-4 w-px bg-border" />
 
                 <PathwayStep
                   label="Kings MASL3"
@@ -77,8 +77,8 @@ export default function PathwayPage() {
           </div>
 
           {/* Alumni proof points placeholder */}
-          <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-8">
-            <p className="text-sm text-white/40 italic">
+          <div className="mt-16 rounded-xl border border-border bg-white p-8">
+            <p className="text-sm text-muted-foreground italic">
               [NEEDS CONTENT] - Alumni proof points to be added
             </p>
           </div>
@@ -103,15 +103,15 @@ function PathwayStep({
       <div
         className={`absolute -left-6 top-1.5 h-3 w-3 rounded-full border-2 ${
           active
-            ? "border-gold bg-gold/20"
-            : "border-white/30 bg-white/5"
+            ? "border-accent bg-accent/20"
+            : "border-muted-foreground/30 bg-paper"
         }`}
       />
       <div className="min-w-0">
-        <p className={`text-base font-semibold ${active ? "text-gold" : "text-white/50"}`}>
+        <p className={`text-base font-semibold ${active ? "text-accent" : "text-muted-foreground"}`}>
           {label}
         </p>
-        <p className="mt-0.5 text-sm text-white/60">{description}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
       </div>
     </div>
   )

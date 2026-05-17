@@ -70,13 +70,13 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-xl border-b border-white/5"
+      className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl border-b border-border"
     >
       <div className="mx-auto flex h-16 md:h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <HeaderLogo logoUrl={logoUrl ?? null} />
-          <span className="hidden font-heading text-lg font-bold tracking-tight sm:inline-block text-foreground">
+          <span className="hidden font-heading text-lg font-bold tracking-tight sm:inline-block text-ink">
             Baltimore Kings
           </span>
         </Link>
@@ -91,7 +91,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           >
             <button
               onClick={() => setActiveDropdown(activeDropdown === "teams" ? null : "teams")}
-              className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-white/5"
+              className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
             >
               Teams
               <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === "teams" ? "rotate-180" : ""}`} />
@@ -101,7 +101,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           {/* Roster */}
           <Link
             href="/roster"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-white/5"
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
           >
             Roster
           </Link>
@@ -114,7 +114,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           >
             <button
               onClick={() => setActiveDropdown(activeDropdown === "club" ? null : "club")}
-              className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-white/5"
+              className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
             >
               Club
               <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === "club" ? "rotate-180" : ""}`} />
@@ -124,7 +124,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           {/* Learn */}
           <Link
             href="/learn"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-white/5"
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
           >
             Learn
           </Link>
@@ -132,7 +132,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           {/* Merch */}
           <Link
             href="/merch"
-            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-white/5"
+            className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
           >
             Merch
           </Link>
@@ -142,7 +142,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
         <div className="hidden items-center gap-3 lg:flex">
           <Link
             href="/sign-in"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-ink"
           >
             Sign In
           </Link>
@@ -153,7 +153,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           >
             <button
               onClick={() => setActiveDropdown(activeDropdown === "join" ? null : "join")}
-              className="inline-flex items-center gap-1 rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-gold-light"
+              className="inline-flex items-center gap-1 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
             >
               Join
               <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === "join" ? "rotate-180" : ""}`} />
@@ -164,7 +164,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-white/5 hover:text-foreground"
+          className="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-paper hover:text-ink"
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           <span className="sr-only">Toggle menu</span>
@@ -179,7 +179,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
         onMouseEnter={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }}
         onMouseLeave={handleDropdownLeave}
       >
-        <div className="border-b border-white/5 bg-background/95 backdrop-blur-xl">
+        <div className="border-b border-border bg-white/95 backdrop-blur-xl">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             {activeDropdown === "teams" && (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -188,9 +188,9 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setActiveDropdown(null)}
-                    className="group rounded-xl border border-white/5 bg-white/[0.02] p-4 transition-colors hover:border-gold/30 hover:bg-white/[0.04]"
+                    className="group rounded-xl border border-border bg-white p-4 transition-colors hover:border-accent/30 hover:bg-paper"
                   >
-                    <div className="text-sm font-semibold text-foreground group-hover:text-gold transition-colors">
+                    <div className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">
                       {item.label}
                     </div>
                     <div className="mt-1 text-xs text-muted-foreground">
@@ -207,9 +207,9 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setActiveDropdown(null)}
-                    className="group rounded-xl border border-white/5 bg-white/[0.02] p-4 transition-colors hover:border-gold/30 hover:bg-white/[0.04]"
+                    className="group rounded-xl border border-border bg-white p-4 transition-colors hover:border-accent/30 hover:bg-paper"
                   >
-                    <div className="text-sm font-semibold text-foreground group-hover:text-gold transition-colors">
+                    <div className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">
                       {item.label}
                     </div>
                     <div className="mt-1 text-xs text-muted-foreground">
@@ -223,14 +223,14 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
               <div className="grid gap-6 lg:grid-cols-4">
                 {/* Column 1: Pathway */}
                 <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gold">Pathway</p>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">Pathway</p>
                   <div className="space-y-1">
                     {joinDropdown.pathway.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setActiveDropdown(null)}
-                        className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5 hover:text-gold"
+                        className="block rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper hover:text-accent"
                       >
                         {item.label}
                       </Link>
@@ -239,14 +239,14 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                 </div>
                 {/* Column 2: Logistics */}
                 <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gold">Logistics</p>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">Logistics</p>
                   <div className="space-y-1">
                     {joinDropdown.logistics.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setActiveDropdown(null)}
-                        className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5 hover:text-gold"
+                        className="block rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper hover:text-accent"
                       >
                         {item.label}
                       </Link>
@@ -255,14 +255,14 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                 </div>
                 {/* Column 3: Outcomes */}
                 <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gold">Outcomes</p>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">Outcomes</p>
                   <div className="space-y-1">
                     {joinDropdown.outcomes.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setActiveDropdown(null)}
-                        className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5 hover:text-gold"
+                        className="block rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper hover:text-accent"
                       >
                         {item.label}
                       </Link>
@@ -270,9 +270,9 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                   </div>
                 </div>
                 {/* Feature card */}
-                <div className="rounded-xl border border-gold/20 bg-gold/5 p-5 flex flex-col justify-between">
+                <div className="rounded-xl border border-accent/20 bg-accent/5 p-5 flex flex-col justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-foreground">Start your application</p>
+                    <p className="text-sm font-semibold text-ink">Start your application</p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       Fill out the form and a coach will reach out within a week.
                     </p>
@@ -280,7 +280,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
                   <Link
                     href="/join/apply"
                     onClick={() => setActiveDropdown(null)}
-                    className="mt-4 inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-sm font-semibold text-background transition-colors hover:bg-gold-light"
+                    className="mt-4 inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
                   >
                     Apply Now
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -294,75 +294,75 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-white/5 bg-background/95 backdrop-blur-xl">
+        <div className="lg:hidden border-t border-border bg-white/95 backdrop-blur-xl">
           <nav className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
             <div className="space-y-1">
-              <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gold">Teams</p>
+              <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-brand">Teams</p>
               {teamsDropdown.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5"
+                  className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
                 >
                   {item.label}
                 </Link>
               ))}
 
-              <div className="my-3 border-t border-white/5" />
+              <div className="my-3 border-t border-border" />
 
               <Link
                 href="/roster"
                 onClick={() => setMobileOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
               >
                 Roster
               </Link>
 
-              <div className="my-3 border-t border-white/5" />
+              <div className="my-3 border-t border-border" />
 
-              <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gold">Club</p>
+              <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-brand">Club</p>
               {clubDropdown.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5"
+                  className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
                 >
                   {item.label}
                 </Link>
               ))}
 
-              <div className="my-3 border-t border-white/5" />
+              <div className="my-3 border-t border-border" />
 
               <Link
                 href="/learn"
                 onClick={() => setMobileOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
               >
                 Learn
               </Link>
               <Link
                 href="/merch"
                 onClick={() => setMobileOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-white/5"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
               >
                 Merch
               </Link>
 
-              <div className="my-3 border-t border-white/5" />
+              <div className="my-3 border-t border-border" />
 
               <Link
                 href="/sign-in"
                 onClick={() => setMobileOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/5"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-paper"
               >
                 Sign In
               </Link>
               <Link
                 href="/join"
                 onClick={() => setMobileOpen(false)}
-                className="mt-3 block rounded-full bg-gold px-4 py-2.5 text-center text-sm font-semibold text-background transition-colors hover:bg-gold-light"
+                className="mt-3 block rounded-full bg-brand px-4 py-2.5 text-center text-sm font-semibold text-paper transition-colors hover:bg-brand/90"
               >
                 Join
               </Link>

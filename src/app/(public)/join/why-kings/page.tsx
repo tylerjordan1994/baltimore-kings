@@ -35,29 +35,29 @@ const differentiators = [
 export default function WhyKingsPage() {
   return (
     <>
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
+      <section className="bg-paper py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
             Why the Kings
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/60">
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
             There are rec leagues. There are college clubs. There are adult leagues that play once a week and call it competitive. This is not that.
           </p>
         </div>
       </section>
 
-      <section className="bg-[#0a0a0a] pb-24">
+      <section className="bg-paper pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {differentiators.map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/5 p-6"
+                className="rounded-xl border border-border bg-white p-6"
               >
-                <h2 className="font-heading text-lg font-semibold text-gold">
+                <h2 className="font-heading text-lg font-semibold text-accent">
                   {item.title}
                 </h2>
-                <p className="mt-3 text-sm text-white/60">
+                <p className="mt-3 text-sm text-muted-foreground">
                   {item.description}
                 </p>
               </div>

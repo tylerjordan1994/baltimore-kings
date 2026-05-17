@@ -4,15 +4,15 @@ import Link from "next/link"
 
 export function SiteFooter() {
   return (
-    <footer className="relative bg-[#0a0a0a]">
-      {/* Top gold gradient line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
+    <footer className="relative bg-paper">
+      {/* Top accent gradient line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
 
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Club Info */}
           <div>
-            <h3 className="font-heading text-lg font-bold text-foreground">Baltimore Kings</h3>
+            <h3 className="font-heading text-lg font-bold text-ink">Baltimore Kings</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Futsal and arena soccer in Baltimore. League 1 Futsal, MASL3 arena soccer, and a pathway to the top of American indoor soccer.
             </p>
@@ -21,7 +21,7 @@ export function SiteFooter() {
                 href="https://www.instagram.com/baltimoreprofutsal/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground transition-colors hover:text-gold"
+                className="text-muted-foreground transition-colors hover:text-accent"
                 aria-label="Instagram"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@ export function SiteFooter() {
                 href="https://twitter.com/BaltimoreKings"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground transition-colors hover:text-gold"
+                className="text-muted-foreground transition-colors hover:text-accent"
                 aria-label="X / Twitter"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -44,37 +44,37 @@ export function SiteFooter() {
 
           {/* Teams */}
           <div>
-            <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-gold">Teams</h4>
+            <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">Teams</h4>
             <ul className="mt-4 space-y-3">
-              <li><Link href="/teams/futsal-l1" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Futsal League 1</Link></li>
-              <li><Link href="/teams/masl3" className="text-sm text-muted-foreground transition-colors hover:text-foreground">MASL3 Arena Soccer</Link></li>
-              <li><a href="https://www.masl3.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-foreground">MASL3 League</a></li>
-              <li><a href="http://www.prosocceralliance.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Pro-SA</a></li>
+              <li><Link href="/teams/futsal-l1" className="text-sm text-muted-foreground transition-colors hover:text-ink">Futsal League 1</Link></li>
+              <li><Link href="/teams/masl3" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL3 Arena Soccer</Link></li>
+              <li><a href="https://www.masl3.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL3 League</a></li>
+              <li><a href="http://www.prosocceralliance.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">Pro-SA</a></li>
             </ul>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-gold">Quick Links</h4>
+            <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">Quick Links</h4>
             <ul className="mt-4 space-y-3">
-              <li><Link href="/apply" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Apply for Tryout</Link></li>
-              <li><Link href="/roster" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Roster</Link></li>
-              <li><Link href="/schedule" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Full Schedule</Link></li>
-              <li><a href="https://baltimorekings.printify.me/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Merch Store</a></li>
-              <li><Link href="/sign-in" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Member Login</Link></li>
+              <li><Link href="/apply" className="text-sm text-muted-foreground transition-colors hover:text-ink">Apply for Tryout</Link></li>
+              <li><Link href="/roster" className="text-sm text-muted-foreground transition-colors hover:text-ink">Roster</Link></li>
+              <li><Link href="/schedule" className="text-sm text-muted-foreground transition-colors hover:text-ink">Full Schedule</Link></li>
+              <li><a href="https://baltimorekings.printify.me/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">Merch Store</a></li>
+              <li><Link href="/sign-in" className="text-sm text-muted-foreground transition-colors hover:text-ink">Member Login</Link></li>
             </ul>
           </div>
 
           {/* Venues */}
           <div>
-            <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-gold">Venues</h4>
+            <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">Venues</h4>
             <ul className="mt-4 space-y-4">
               <li>
-                <p className="text-sm font-medium text-foreground">GOALS Baltimore</p>
+                <p className="text-sm font-medium text-ink">GOALS Baltimore</p>
                 <p className="text-xs text-muted-foreground">6159 Edmondson Ave, Catonsville, MD 21228</p>
               </li>
               <li>
-                <p className="text-sm font-medium text-foreground">Benfield Sportscenter</p>
+                <p className="text-sm font-medium text-ink">Benfield Sportscenter</p>
                 <p className="text-xs text-muted-foreground">1031 Benfield Blvd, Millersville, MD 21108</p>
               </li>
             </ul>
@@ -82,7 +82,7 @@ export function SiteFooter() {
         </div>
 
         {/* Copyright bar */}
-        <div className="mt-14 border-t border-white/5 pt-6 text-center text-xs text-muted-foreground">
+        <div className="mt-14 border-t border-border pt-6 text-center text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} Baltimore Kings / Pro-Soccer Alliance. All rights reserved.
         </div>
       </div>

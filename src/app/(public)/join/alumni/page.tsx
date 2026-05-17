@@ -19,28 +19,28 @@ export default async function AlumniPage() {
 
   return (
     <>
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
+      <section className="bg-paper py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
             Where Kings Go
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/60">
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
             Players who came through the system and moved up.
           </p>
         </div>
       </section>
 
-      <section className="bg-[#0a0a0a] pb-24">
+      <section className="bg-paper pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {hasAlumni ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {alumni.map((person: any) => (
                 <div
                   key={person.id}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-6"
+                  className="rounded-xl border border-border bg-white p-6"
                 >
                   {person.photo_url && (
-                    <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border border-white/10">
+                    <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border border-border">
                       <img
                         src={person.photo_url}
                         alt={person.name}
@@ -48,24 +48,24 @@ export default async function AlumniPage() {
                       />
                     </div>
                   )}
-                  <h2 className="font-heading text-lg font-semibold text-white">{person.name}</h2>
+                  <h2 className="font-heading text-lg font-semibold text-ink">{person.name}</h2>
                   {person.years && (
-                    <p className="mt-1 text-xs text-white/40">{person.years}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{person.years}</p>
                   )}
                   {person.status && (
-                    <span className="mt-2 inline-block rounded-full bg-gold/10 px-3 py-0.5 text-xs font-medium text-gold">
+                    <span className="mt-2 inline-block rounded-full bg-accent/10 px-3 py-0.5 text-xs font-medium text-accent">
                       {person.status}
                     </span>
                   )}
                   {person.current_team && (
-                    <p className="mt-2 text-sm text-white/60">{person.current_team}</p>
+                    <p className="mt-2 text-sm text-muted-foreground">{person.current_team}</p>
                   )}
                 </div>
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
-              <p className="text-sm text-white/40 italic">
+            <div className="rounded-xl border border-border bg-white p-8 text-center">
+              <p className="text-sm text-muted-foreground italic">
                 [NEEDS CONTENT] - Alumni profiles to be added
               </p>
             </div>
