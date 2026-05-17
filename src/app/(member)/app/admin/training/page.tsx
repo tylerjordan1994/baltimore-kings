@@ -198,7 +198,7 @@ export default function AdminTrainingPage() {
                   </span>
                 </div>
                 {fa.description && <p className="mt-1 text-sm text-zinc-400">{fa.description}</p>}
-                {fa.default_for_positions.length > 0 && (
+                {fa.default_for_positions && fa.default_for_positions.length > 0 && (
                   <p className="mt-1 text-xs text-zinc-500">
                     Positions: {fa.default_for_positions.join(", ")}
                   </p>

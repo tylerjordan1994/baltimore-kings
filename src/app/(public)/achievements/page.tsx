@@ -59,12 +59,17 @@ export default async function AchievementsPage() {
 
   return (
     <>
-      <section className="bg-paper py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+      <section className="relative overflow-hidden bg-court py-20 sm:py-24">
+        <img
+          src="/project/football-team/photos/futsal-kings-combined.jpg"
+          alt="Baltimore Kings"
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Achievements
           </h1>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-2 text-white/80">
             What the club and its players have earned.
           </p>
         </div>
@@ -102,6 +107,18 @@ export default async function AchievementsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Photo strip */}
+      <section className="bg-paper px-4 pb-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <img src="/project/football-team/photos/player-arena.jpg" alt="Player in arena" className="h-32 w-full rounded-xl object-cover sm:h-44" />
+            <img src="/project/football-team/photos/masl3-team.jpg" alt="MASL3 team" className="h-32 w-full rounded-xl object-cover sm:h-44" />
+            <img src="/project/football-team/photos/futsal-kings-1-alt.jpg" alt="Futsal Kings" className="h-32 w-full rounded-xl object-cover sm:h-44" />
+            <img src="/project/football-team/photos/ball-red-goal.jpg" alt="Goal moment" className="h-32 w-full rounded-xl object-cover sm:h-44" />
           </div>
         </div>
       </section>

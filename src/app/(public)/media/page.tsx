@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import { ImageIcon, Play, X, Film, ExternalLink } from "lucide-react"
 import { createBrowserClient } from "@supabase/ssr"
+import { SponsorStrip } from "@/components/sponsor-strip"
 
 type MediaItem = {
   id: string
@@ -146,6 +147,8 @@ export default function MediaPage() {
           )}
         </div>
       </section>
+
+      <SponsorStrip />
 
       {/* Lightbox */}
       {lightbox && (

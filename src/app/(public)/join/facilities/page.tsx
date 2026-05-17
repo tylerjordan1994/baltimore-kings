@@ -37,12 +37,17 @@ const venues = [
 export default function FacilitiesPage() {
   return (
     <>
-      <section className="bg-paper py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+      <section className="relative overflow-hidden bg-court py-28 sm:py-36">
+        <img
+          src="/project/football-team/photos/court-aerial-1.jpg"
+          alt="Aerial view of the court"
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Facilities
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-lg text-white/80">
             Two venues. One for futsal, one for arena. Both purpose-built for the sport.
           </p>
         </div>
@@ -93,9 +98,11 @@ export default function FacilitiesPage() {
                   </div>
                 </div>
 
-                {/* Photos placeholder */}
-                <div className="mt-6 rounded-xl border border-border bg-paper p-4">
-                  <p className="text-sm text-muted-foreground italic">[Photos to be added]</p>
+                {/* Venue photos */}
+                <div className="mt-6 grid grid-cols-3 gap-2 overflow-hidden rounded-xl">
+                  <img src="/project/football-team/photos/court-outdoor.jpg" alt="Court exterior" className="aspect-video w-full object-cover rounded-lg" />
+                  <img src="/project/football-team/photos/ball-turf.jpg" alt="Ball on turf" className="aspect-video w-full object-cover rounded-lg" />
+                  <img src="/project/football-team/photos/court-aerial-2.jpg" alt="Court aerial view" className="aspect-video w-full object-cover rounded-lg" />
                 </div>
               </div>
             </div>

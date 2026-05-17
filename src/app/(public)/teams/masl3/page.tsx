@@ -1,17 +1,19 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Calendar, ExternalLink, Users } from "lucide-react"
+import { ArrowRight, Calendar, ExternalLink } from "lucide-react"
+import { TeamRosterGrid, type TeamRosterEntry } from "@/components/team-roster-grid"
 
 export const metadata = {
   title: "MASL3 Arena Soccer",
   description: "Baltimore Kings MASL3 arena soccer — off-season competition in Major Arena Soccer League 3.",
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function MASL3Page() {
   const supabase = await createClient()
 
-  // Get the MASL3 team
   const { data: team } = await supabase
     .from("teams")
     .select("id")
@@ -23,9 +25,21 @@ export default async function MASL3Page() {
   const { data: roster } = teamId
     ? await supabase
         .from("team_members")
-        .select("*, profiles(full_name, photo_url, position_primary, jersey_number, role, also_plays)")
+        .select("id, profile_id, position, jersey_number_for_team, is_active, profiles(full_name, photo_url, position_primary, jersey_number)")
         .eq("team_id", teamId)
     : { data: null }
+
+  const members: TeamRosterEntry[] = (roster ?? [])
+    .filter((m: any) => m.is_active !== false && m.profiles)
+    .map((m: any) => ({
+      id: m.id,
+      profileId: m.profile_id,
+      fullName: m.profiles?.full_name ?? "TBA",
+      photoUrl: m.profiles?.photo_url ?? null,
+      jerseyNumber: m.jersey_number_for_team ?? m.profiles?.jersey_number ?? null,
+      position: m.position || m.profiles?.position_primary || null,
+    }))
+    .sort((a, b) => (a.jerseyNumber ?? 999) - (b.jerseyNumber ?? 999))
 
   const { data: games } = teamId
     ? await supabase
@@ -35,22 +49,32 @@ export default async function MASL3Page() {
         .order("starts_at", { ascending: true })
     : { data: null }
 
+  const now = Date.now()
+  const allGames = games ?? []
+  const upcoming = allGames.filter((g: any) => new Date(g.starts_at).getTime() >= now)
+  const past = allGames
+    .filter((g: any) => new Date(g.starts_at).getTime() < now)
+    .reverse()
+
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-paper py-20 sm:py-28">
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 overflow-hidden rounded-2xl">
-            <img src="/project/football-team/photos/masl3-team.jpg" alt="Baltimore Kings MASL3 team photo" className="w-full h-auto max-h-[480px] object-cover" />
-          </div>
+      {/* Hero — huddle photo */}
+      <section className="relative overflow-hidden bg-court">
+        <img
+          src="/project/football-team/photos/masl3-huddle.jpg"
+          alt="Baltimore Kings MASL3 team huddle"
+          className="absolute inset-0 h-full w-full object-cover opacity-45"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-court via-court/70 to-court/30" />
+        <div className="relative mx-auto max-w-7xl px-4 py-28 sm:px-6 sm:py-36 lg:px-8">
           <div className="max-w-2xl">
-            <p className="font-heading text-sm font-semibold uppercase tracking-widest text-brand">
+            <p className="font-heading text-sm font-semibold uppercase tracking-widest text-accent">
               Major Arena Soccer League 3
             </p>
-            <h1 className="mt-3 font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+            <h1 className="mt-3 font-heading text-4xl font-bold tracking-tight text-paper sm:text-5xl">
               Baltimore Kings MASL3
             </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
+            <p className="mt-4 text-lg text-paper/80">
               Arena soccer at full speed. Six-a-side, boards, unlimited subs, 60-minute matches.
               The off-season arm of the club — same players, different format.
               We play in the Eastern Conference out of GOALS Baltimore.
@@ -63,11 +87,20 @@ export default async function MASL3Page() {
                 </Button>
               </Link>
               <Link href="#schedule">
-                <Button size="lg" variant="outline" className="border-border font-heading font-semibold text-ink hover:bg-paper rounded-full">
+                <Button size="lg" variant="outline" className="border-paper/30 bg-transparent font-heading font-semibold text-paper hover:bg-paper/10 rounded-full">
                   View Schedule
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Team photo */}
+      <section className="bg-paper py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="overflow-hidden rounded-2xl">
+            <img src="/project/football-team/photos/masl3-team.jpg" alt="Baltimore Kings MASL3 team photo" className="w-full h-auto max-h-[440px] object-cover" />
           </div>
         </div>
       </section>
@@ -78,49 +111,7 @@ export default async function MASL3Page() {
           <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Roster</h2>
           <p className="mt-2 text-muted-foreground">Current active players for the MASL3 season.</p>
 
-          {roster && roster.length > 0 ? (
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {roster.map((member: any) => (
-                <div
-                  key={member.id}
-                  className="group relative overflow-hidden rounded-xl border border-border bg-white p-4 transition-all hover:border-accent/30"
-                >
-                  <div className="mb-3 mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-paper">
-                    {member.profiles?.photo_url ? (
-                      <img
-                        src={member.profiles.photo_url}
-                        alt={member.profiles.full_name || "Player"}
-                        className="h-20 w-20 rounded-full object-cover"
-                      />
-                    ) : (
-                      <Users className="h-8 w-8 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div className="text-center">
-                    {member.jersey_number_for_team != null && (
-                      <span className="font-heading text-xs font-bold text-accent">
-                        #{member.jersey_number_for_team}
-                      </span>
-                    )}
-                    <p className="font-heading text-sm font-semibold leading-tight text-ink">
-                      {member.profiles?.full_name || "TBA"}
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {member.profiles?.position_primary || "—"}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-8 rounded-xl border border-dashed border-border p-12 text-center">
-              <Users className="mx-auto h-10 w-10 text-muted-foreground" />
-              <p className="mt-3 font-heading text-lg font-semibold text-ink">Roster coming soon</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Tryouts are in progress. Check back for the full squad.
-              </p>
-            </div>
-          )}
+          <TeamRosterGrid members={members} />
         </div>
       </section>
 
@@ -151,45 +142,31 @@ export default async function MASL3Page() {
       {/* Schedule */}
       <section id="schedule" className="border-t border-border bg-paper py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Schedule</h2>
+          <h2 className="font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">Schedule &amp; Results</h2>
           <p className="mt-2 text-muted-foreground">All MASL3 matches this season.</p>
 
-          {games && games.length > 0 ? (
-            <div className="mt-8 space-y-3">
-              {games.map((game: any) => (
-                <div
-                  key={game.id}
-                  className="flex items-center justify-between rounded-xl border border-border bg-white p-4 transition-all hover:border-accent/30"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex flex-col items-center rounded-lg bg-paper px-3 py-1.5">
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {new Date(game.starts_at).toLocaleDateString("en-US", { month: "short" })}
-                      </span>
-                      <span className="font-heading text-lg font-bold text-ink">
-                        {new Date(game.starts_at).getDate()}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-heading font-semibold text-ink">
-                        {game.home_or_away === "home" ? "vs" : "@"} {game.opponent}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {game.location || "GOALS Baltimore"} &middot;{" "}
-                        {new Date(game.starts_at).toLocaleTimeString("en-US", {
-                          hour: "numeric",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    </div>
+          {allGames.length > 0 ? (
+            <div className="mt-8 space-y-8">
+              {upcoming.length > 0 && (
+                <div>
+                  <h3 className="font-heading text-sm uppercase tracking-wide text-brand">Upcoming</h3>
+                  <div className="mt-3 space-y-3">
+                    {upcoming.map((game: any) => (
+                      <GameRow key={game.id} game={game} fallbackLocation="GOALS Baltimore" />
+                    ))}
                   </div>
-                  {game.score_for != null && game.score_against != null && (
-                    <div className="font-heading text-lg font-bold text-accent">
-                      {game.score_for}–{game.score_against}
-                    </div>
-                  )}
                 </div>
-              ))}
+              )}
+              {past.length > 0 && (
+                <div>
+                  <h3 className="font-heading text-sm uppercase tracking-wide text-brand">Results</h3>
+                  <div className="mt-3 space-y-3">
+                    {past.map((game: any) => (
+                      <GameRow key={game.id} game={game} fallbackLocation="GOALS Baltimore" />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="mt-8 rounded-xl border border-dashed border-border p-12 text-center">
@@ -225,6 +202,11 @@ export default async function MASL3Page() {
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-4">
+              <Link href="/teams/pathway">
+                <Button variant="outline" className="border-border font-heading font-semibold text-ink hover:bg-paper rounded-full">
+                  See the full pathway
+                </Button>
+              </Link>
               <Link href="/apply">
                 <Button className="bg-accent font-heading font-semibold text-ink hover:bg-accent/90 rounded-full">
                   Apply now
@@ -236,5 +218,53 @@ export default async function MASL3Page() {
         </div>
       </section>
     </>
+  )
+}
+
+function GameRow({ game, fallbackLocation }: { game: any; fallbackLocation: string }) {
+  const played = game.score_for != null && game.score_against != null
+  const resultColor =
+    game.result === "W"
+      ? "bg-emerald-100 text-emerald-800"
+      : game.result === "L"
+        ? "bg-red-100 text-red-700"
+        : "bg-secondary text-ink"
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-border bg-white p-4 transition-all hover:border-accent/30">
+      <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center rounded-lg bg-paper px-3 py-1.5">
+          <span className="text-xs font-medium text-muted-foreground">
+            {new Date(game.starts_at).toLocaleDateString("en-US", { month: "short" })}
+          </span>
+          <span className="font-heading text-lg font-bold text-ink">
+            {new Date(game.starts_at).getDate()}
+          </span>
+        </div>
+        <div>
+          <p className="font-heading font-semibold text-ink">
+            {game.home_or_away === "home" ? "vs" : "@"} {game.opponent}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {game.location || fallbackLocation} &middot;{" "}
+            {new Date(game.starts_at).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+            })}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        {played && (
+          <span className="font-heading text-lg font-bold text-accent">
+            {game.score_for}&ndash;{game.score_against}
+          </span>
+        )}
+        {game.result && (
+          <span className={`rounded-full px-2 py-0.5 font-heading text-xs ${resultColor}`}>
+            {game.result}
+          </span>
+        )}
+      </div>
+    </div>
   )
 }

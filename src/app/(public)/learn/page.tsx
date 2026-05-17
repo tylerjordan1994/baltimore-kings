@@ -163,23 +163,28 @@ export default function LearnPage() {
 
   return (
     <>
-      <section className="bg-paper py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+      <section className="relative overflow-hidden bg-court py-20 sm:py-24">
+        <img
+          src="/project/football-team/photos/futsal-action.jpg"
+          alt="Futsal in action"
+          className="absolute inset-0 h-full w-full object-cover opacity-20"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Learn
           </h1>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-2 text-white/80">
             Futsal and arena soccer education. How we play, how we think, how we train.
           </p>
           <a
             href="https://www.youtube.com/@danzafut"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-accent/30"
+            className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
           >
-            <Video className="h-4 w-4 text-red-600" />
+            <Video className="h-4 w-4 text-red-400" />
             Coach Josh on YouTube
-            <ExternalLink className="h-3 w-3 text-muted-foreground" />
+            <ExternalLink className="h-3 w-3 text-white/60" />
           </a>
         </div>
       </section>

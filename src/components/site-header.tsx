@@ -127,12 +127,14 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
           </Link>
 
           {/* Merch */}
-          <Link
-            href="/merch"
+          <a
+            href="https://baltimorekings.printify.me/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink hover:bg-paper"
           >
             Merch
-          </Link>
+          </a>
         </nav>
 
         {/* Right side: Sign In + Join CTA */}
@@ -313,13 +315,15 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
               >
                 Learn
               </Link>
-              <Link
-                href="/merch"
+              <a
+                href="https://baltimorekings.printify.me/"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setMobileOpen(false)}
                 className="block rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper"
               >
                 Merch
-              </Link>
+              </a>
 
               <div className="my-3 border-t border-border" />
 

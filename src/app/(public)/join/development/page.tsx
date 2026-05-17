@@ -9,12 +9,17 @@ export const metadata: Metadata = {
 export default function DevelopmentPage() {
   return (
     <>
-      <section className="bg-paper py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+      <section className="relative overflow-hidden bg-court py-28 sm:py-36">
+        <img
+          src="/project/football-team/photos/futsal-kings-2.jpg"
+          alt="Kings players in training"
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
             How We Develop Players
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-lg text-white/80">
             Structured training. Tactical education. Regular feedback. Not just games — a system designed to make you better.
           </p>
         </div>
@@ -61,11 +66,33 @@ export default function DevelopmentPage() {
             </p>
           </div>
 
-          {/* Training Schedule Placeholder */}
+          {/* Training Schedule */}
           <div className="rounded-xl border border-border bg-white p-6 sm:p-8">
-            <p className="text-sm text-muted-foreground italic">
-              [NEEDS CONTENT] - Specific training schedule details to be added
+            <h2 className="font-heading text-xl font-semibold text-ink">Training Schedule</h2>
+            <p className="mt-3 text-muted-foreground">
+              The Kings train twice per week during the competitive season, with optional additional sessions during pre-season prep. Training days are Tuesday and Thursday evenings at Benfield Sports in Millersville.
             </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-lg border border-border bg-paper p-4">
+                <p className="font-heading text-sm font-semibold text-ink">Tuesday Evenings</p>
+                <p className="mt-1 text-sm text-muted-foreground">Tactical sessions — system work, set pieces, and game preparation</p>
+                <p className="mt-1 text-xs text-accent">Benfield Sports · 8:00 PM – 9:30 PM</p>
+              </div>
+              <div className="rounded-lg border border-border bg-paper p-4">
+                <p className="font-heading text-sm font-semibold text-ink">Thursday Evenings</p>
+                <p className="mt-1 text-sm text-muted-foreground">Technical sessions — individual skill work, small-sided games, pressure training</p>
+                <p className="mt-1 text-xs text-accent">Benfield Sports · 8:00 PM – 9:30 PM</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Photo */}
+          <div className="overflow-hidden rounded-xl">
+            <img
+              src="/project/football-team/photos/court-shoes.jpg"
+              alt="Futsal court and player equipment"
+              className="h-56 w-full object-cover"
+            />
           </div>
         </div>
       </section>

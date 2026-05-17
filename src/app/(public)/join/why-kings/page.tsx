@@ -35,18 +35,24 @@ const differentiators = [
 export default function WhyKingsPage() {
   return (
     <>
-      <section className="bg-paper py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+      {/* Hero with image */}
+      <section className="relative overflow-hidden bg-court py-28 sm:py-36">
+        <img
+          src="/project/football-team/photos/futsal-action.jpg"
+          alt="Kings in action"
+          className="absolute inset-0 h-full w-full object-cover opacity-30"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Why the Kings
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-lg text-white/80">
             There are rec leagues. There are college clubs. There are adult leagues that play once a week and call it competitive. This is not that.
           </p>
         </div>
       </section>
 
-      <section className="bg-paper pb-24">
+      <section className="bg-paper pb-12 pt-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {differentiators.map((item) => (
@@ -62,6 +68,29 @@ export default function WhyKingsPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Photo evidence section */}
+      <section className="bg-paper py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <img
+              src="/project/football-team/photos/masl3-huddle.jpg"
+              alt="Team huddle"
+              className="h-48 w-full rounded-xl object-cover sm:h-64"
+            />
+            <img
+              src="/project/football-team/photos/player-kick.jpg"
+              alt="Player in action"
+              className="h-48 w-full rounded-xl object-cover sm:h-64"
+            />
+            <img
+              src="/project/football-team/photos/masl3-team.jpg"
+              alt="MASL3 team"
+              className="h-48 w-full rounded-xl object-cover sm:h-64"
+            />
           </div>
         </div>
       </section>

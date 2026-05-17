@@ -2,6 +2,14 @@ import Link from "next/link"
 
 // basePath handled by next.config.ts
 
+const SPONSOR_PLACEHOLDERS = [
+  "Your Brand Here",
+  "Partner Slot",
+  "Your Logo Here",
+  "Partner Slot",
+  "Sponsor Us",
+]
+
 export function SiteFooter() {
   return (
     <footer className="relative bg-paper">
@@ -80,11 +88,44 @@ export function SiteFooter() {
                 <p className="text-xs text-muted-foreground">1031 Benfield Blvd, Millersville, MD 21108</p>
               </li>
             </ul>
+            <h4 className="mt-8 font-heading text-xs font-semibold uppercase tracking-widest text-brand">Club</h4>
+            <ul className="mt-4 space-y-3">
+              <li><Link href="/club" className="text-sm text-muted-foreground transition-colors hover:text-ink">About the Club</Link></li>
+              <li><Link href="/club/affiliations" className="text-sm text-muted-foreground transition-colors hover:text-ink">Affiliations</Link></li>
+              <li><Link href="/club/sponsors" className="text-sm text-muted-foreground transition-colors hover:text-ink">Partners &amp; Sponsors</Link></li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Sponsors row */}
+        <div className="mt-12 border-t border-border pt-10">
+          <div className="mb-4 flex items-center justify-between">
+            <p className="font-heading text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Club Partners
+            </p>
+            <Link
+              href="/club/sponsors"
+              className="text-xs font-medium text-accent transition-colors hover:text-accent/80"
+            >
+              Become a partner &rarr;
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {SPONSOR_PLACEHOLDERS.map((label, i) => (
+              <div
+                key={i}
+                className="flex h-12 min-w-[100px] flex-1 items-center justify-center rounded-lg border border-dashed border-border bg-white px-3 text-center"
+              >
+                <span className="font-heading text-[10px] font-medium uppercase tracking-wide text-muted-foreground/50">
+                  {label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Copyright bar */}
-        <div className="mt-14 border-t border-border pt-6 text-center text-xs text-muted-foreground">
+        <div className="mt-10 border-t border-border pt-6 text-center text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} Baltimore Kings / Pro-Soccer Alliance. All rights reserved.
         </div>
       </div>

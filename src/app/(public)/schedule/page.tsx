@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Calendar, Download } from "lucide-react"
+import { SponsorStrip } from "@/components/sponsor-strip"
 
 // basePath handled by next.config.ts
 
@@ -209,6 +210,8 @@ export default async function SchedulePage() {
           )}
         </div>
       </section>
+
+      <SponsorStrip />
     </>
   )
 }

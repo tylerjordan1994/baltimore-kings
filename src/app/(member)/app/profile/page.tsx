@@ -13,6 +13,9 @@ const profileSchema = z.object({
   full_name: z.string().min(1, "Name is required"),
   phone: z.string().nullable(),
   date_of_birth: z.string().nullable(),
+  nickname: z.string().nullable(),
+  hometown: z.string().nullable(),
+  school: z.string().nullable(),
   position_primary: z.string().nullable(),
   position_secondary: z.string().nullable(),
   bio: z.string().nullable(),
@@ -65,6 +68,9 @@ export default function ProfilePage() {
           full_name: profile.full_name,
           phone: profile.phone,
           date_of_birth: profile.date_of_birth,
+          nickname: profile.nickname,
+          hometown: profile.hometown,
+          school: profile.school,
           position_primary: profile.position_primary,
           position_secondary: profile.position_secondary,
           bio: profile.bio,
@@ -91,6 +97,9 @@ export default function ProfilePage() {
       full_name: values.full_name,
       phone: values.phone || null,
       date_of_birth: values.date_of_birth || null,
+      nickname: values.nickname || null,
+      hometown: values.hometown || null,
+      school: values.school || null,
       position_primary: values.position_primary || null,
       position_secondary: values.position_secondary || null,
       bio: values.bio || null,
@@ -165,6 +174,31 @@ export default function ProfilePage() {
             className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
           />
         </Field>
+
+        <Field label="Nickname" error={errors.nickname?.message}>
+          <input
+            {...register("nickname")}
+            placeholder="What teammates call you"
+            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+          />
+        </Field>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Hometown" error={errors.hometown?.message}>
+            <input
+              {...register("hometown")}
+              placeholder="e.g. Baltimore, MD"
+              className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            />
+          </Field>
+          <Field label="School" error={errors.school?.message}>
+            <input
+              {...register("school")}
+              placeholder="School or university"
+              className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            />
+          </Field>
+        </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field

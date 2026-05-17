@@ -6,18 +6,27 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
-import type { Profile, UserRole } from '@/types/database'
+import type { Profile, UserRole, Team, PlayerClubHistory } from '@/types/database'
 
 const editPlayerSchema = z.object({
   full_name: z.string().min(1),
   phone: z.string().optional(),
   date_of_birth: z.string().optional(),
+  nickname: z.string().optional(),
+  hometown: z.string().optional(),
+  school: z.string().optional(),
   position_primary: z.string().optional(),
   position_secondary: z.string().optional(),
   bio: z.string().optional(),
+  photo_url: z.string().optional(),
   jersey_number: z.coerce.number().nullable().optional(),
+  years_in_club: z.coerce.number().nullable().optional(),
+  is_minor: z.boolean().optional(),
+  status: z.enum(['pending', 'active', 'inactive', 'archived', 'injured']),
   role: z.enum(['pending', 'player', 'coach', 'superadmin']),
 })
+
+const PROFILE_STATUSES = ['pending', 'active', 'inactive', 'archived', 'injured'] as const
 
 type EditPlayerForm = z.infer<typeof editPlayerSchema>
 
@@ -65,6 +74,12 @@ export default function PlayersPage() {
   const [sortField, setSortField] = useState<string>('full_name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
+  // Team assignments + club history for the player being edited
+  const [teams, setTeams] = useState<Team[]>([])
+  const [memberTeamIds, setMemberTeamIds] = useState<string[]>([])
+  const [history, setHistory] = useState<PlayerClubHistory[]>([])
+  const [newHistory, setNewHistory] = useState({ year_label: '', team: '', note: '' })
+
   const supabase = createClient()
 
   const { register, handleSubmit, reset, setValue } = useForm<EditPlayerForm>({
@@ -84,22 +99,110 @@ export default function PlayersPage() {
       .select('*')
       .order('full_name')
     if (data) setPlayers(data)
+
+    const { data: teamsData } = await supabase
+      .from('teams')
+      .select('*')
+      .order('display_order', { ascending: true })
+    if (teamsData) setTeams(teamsData)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     loadData()
   }, [loadData])
 
-  function openEdit(player: Profile) {
+  async function openEdit(player: Profile) {
     setEditingPlayer(player)
     setValue('full_name', player.full_name)
     setValue('phone', player.phone ?? '')
     setValue('date_of_birth', player.date_of_birth ?? '')
+    setValue('nickname', player.nickname ?? '')
+    setValue('hometown', player.hometown ?? '')
+    setValue('school', player.school ?? '')
     setValue('position_primary', player.position_primary ?? '')
     setValue('position_secondary', player.position_secondary ?? '')
     setValue('bio', player.bio ?? '')
+    setValue('photo_url', player.photo_url ?? '')
     setValue('jersey_number', player.jersey_number)
+    setValue('years_in_club', player.years_in_club)
+    setValue('is_minor', player.is_minor)
+    setValue('status', player.status)
     setValue('role', player.role)
+
+    // Load this player's team assignments + club history
+    const { data: tmData } = await supabase
+      .from('team_members')
+      .select('team_id')
+      .eq('profile_id', player.id)
+    setMemberTeamIds((tmData ?? []).map((t) => t.team_id))
+
+    const { data: histData } = await supabase
+      .from('player_club_history')
+      .select('*')
+      .eq('profile_id', player.id)
+      .order('display_order', { ascending: true })
+    setHistory(histData ?? [])
+    setNewHistory({ year_label: '', team: '', note: '' })
+  }
+
+  // ── Team assignment ──────────────────────────────────────────
+  async function toggleTeam(teamId: string) {
+    if (!editingPlayer) return
+    if (memberTeamIds.includes(teamId)) {
+      await supabase
+        .from('team_members')
+        .delete()
+        .eq('profile_id', editingPlayer.id)
+        .eq('team_id', teamId)
+      setMemberTeamIds((prev) => prev.filter((id) => id !== teamId))
+    } else {
+      await supabase.from('team_members').insert({
+        team_id: teamId,
+        profile_id: editingPlayer.id,
+        roster_position: 'reserve',
+      })
+      setMemberTeamIds((prev) => [...prev, teamId])
+    }
+  }
+
+  // ── Club history ─────────────────────────────────────────────
+  async function addHistoryRow() {
+    if (!editingPlayer || !newHistory.year_label.trim() || !newHistory.team.trim()) return
+    const { data } = await supabase
+      .from('player_club_history')
+      .insert({
+        profile_id: editingPlayer.id,
+        year_label: newHistory.year_label.trim(),
+        team: newHistory.team.trim(),
+        note: newHistory.note.trim() || null,
+        display_order: history.length,
+        created_by: currentUserId,
+      })
+      .select()
+      .single()
+    if (data) {
+      setHistory((prev) => [...prev, data])
+      setNewHistory({ year_label: '', team: '', note: '' })
+    }
+  }
+
+  async function updateHistoryRow(
+    id: string,
+    field: 'year_label' | 'team' | 'note',
+    value: string
+  ) {
+    setHistory((prev) =>
+      prev.map((h) => (h.id === id ? { ...h, [field]: value } : h))
+    )
+    await supabase
+      .from('player_club_history')
+      .update({ [field]: value || null })
+      .eq('id', id)
+  }
+
+  async function deleteHistoryRow(id: string) {
+    await supabase.from('player_club_history').delete().eq('id', id)
+    setHistory((prev) => prev.filter((h) => h.id !== id))
   }
 
   async function onSubmit(data: EditPlayerForm) {
@@ -114,10 +217,17 @@ export default function PlayersPage() {
       full_name: data.full_name,
       phone: data.phone || null,
       date_of_birth: data.date_of_birth || null,
+      nickname: data.nickname || null,
+      hometown: data.hometown || null,
+      school: data.school || null,
       position_primary: data.position_primary || null,
       position_secondary: data.position_secondary || null,
       bio: data.bio || null,
+      photo_url: data.photo_url || null,
       jersey_number: data.jersey_number ?? null,
+      years_in_club: data.years_in_club ?? null,
+      is_minor: data.is_minor ?? false,
+      status: data.status,
       role: data.role,
     }
 
@@ -250,8 +360,8 @@ export default function PlayersPage() {
 
       {/* Edit Dialog/Sheet */}
       {editingPlayer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-zinc-700 bg-zinc-900 p-6">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4">
+          <div className="my-8 w-full max-w-2xl rounded-xl border border-zinc-700 bg-zinc-900 p-6">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Edit {editingPlayer.full_name}</h2>
               <Button size="sm" variant="ghost" onClick={() => setEditingPlayer(null)}>
@@ -264,6 +374,13 @@ export default function PlayersPage() {
                   <label className="mb-1 block text-xs text-zinc-400">Full Name</label>
                   <input
                     {...register('full_name')}
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-zinc-400">Nickname</label>
+                  <input
+                    {...register('nickname')}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
                   />
                 </div>
@@ -283,10 +400,32 @@ export default function PlayersPage() {
                   />
                 </div>
                 <div>
+                  <label className="mb-1 block text-xs text-zinc-400">Hometown</label>
+                  <input
+                    {...register('hometown')}
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-zinc-400">School</label>
+                  <input
+                    {...register('school')}
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  />
+                </div>
+                <div>
                   <label className="mb-1 block text-xs text-zinc-400">Jersey #</label>
                   <input
                     type="number"
                     {...register('jersey_number')}
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-zinc-400">Years in Club</label>
+                  <input
+                    type="number"
+                    {...register('years_in_club')}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
                   />
                 </div>
@@ -315,6 +454,17 @@ export default function PlayersPage() {
                   </select>
                 </div>
                 <div>
+                  <label className="mb-1 block text-xs text-zinc-400">Status</label>
+                  <select
+                    {...register('status')}
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  >
+                    {PROFILE_STATUSES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
                   <label className="mb-1 block text-xs text-zinc-400">Role</label>
                   <select
                     {...register('role')}
@@ -331,13 +481,32 @@ export default function PlayersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Photo</label>
+                  <label className="mb-1 block text-xs text-zinc-400">Photo URL</label>
+                  <input
+                    {...register('photo_url')}
+                    placeholder="https://..."
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-zinc-400">Upload Photo</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
                     className="w-full text-xs text-zinc-400"
                   />
+                </div>
+                <div className="flex items-center gap-2 sm:col-span-2">
+                  <input
+                    id="is_minor"
+                    type="checkbox"
+                    {...register('is_minor')}
+                    className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 accent-[#C9A94E]"
+                  />
+                  <label htmlFor="is_minor" className="text-sm text-zinc-300">
+                    Player is a minor
+                  </label>
                 </div>
               </div>
               <div>
@@ -348,6 +517,110 @@ export default function PlayersPage() {
                   className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
                 />
               </div>
+
+              {/* Team assignments */}
+              <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+                  Team Assignments
+                </p>
+                <p className="mb-3 text-xs text-zinc-500">
+                  Adding a player to a team here shows them on that team&apos;s public roster.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {teams.map((t) => {
+                    const active = memberTeamIds.includes(t.id)
+                    return (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => toggleTeam(t.id)}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                          active
+                            ? 'bg-gold/20 text-gold ring-1 ring-[#C9A94E]'
+                            : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                        }`}
+                      >
+                        {active ? '✓ ' : '+ '}
+                        {t.name}
+                      </button>
+                    )
+                  })}
+                  {teams.length === 0 && (
+                    <span className="text-xs text-zinc-500">No teams found.</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Club history editor */}
+              <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+                  Club History
+                </p>
+                <div className="space-y-2">
+                  {history.map((h) => (
+                    <div key={h.id} className="flex flex-wrap items-center gap-2">
+                      <input
+                        value={h.year_label}
+                        onChange={(e) => updateHistoryRow(h.id, 'year_label', e.target.value)}
+                        placeholder="Year"
+                        className="w-24 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                      />
+                      <input
+                        value={h.team}
+                        onChange={(e) => updateHistoryRow(h.id, 'team', e.target.value)}
+                        placeholder="Team"
+                        className="w-40 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                      />
+                      <input
+                        value={h.note ?? ''}
+                        onChange={(e) => updateHistoryRow(h.id, 'note', e.target.value)}
+                        placeholder="Note"
+                        className="min-w-[120px] flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => deleteHistoryRow(h.id)}
+                        className="rounded px-2 py-1 text-xs text-red-400 hover:bg-red-500/10"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                  {history.length === 0 && (
+                    <p className="text-xs text-zinc-500">No history rows yet.</p>
+                  )}
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-zinc-800 pt-3">
+                  <input
+                    value={newHistory.year_label}
+                    onChange={(e) =>
+                      setNewHistory((p) => ({ ...p, year_label: e.target.value }))
+                    }
+                    placeholder="Year"
+                    className="w-24 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                  />
+                  <input
+                    value={newHistory.team}
+                    onChange={(e) =>
+                      setNewHistory((p) => ({ ...p, team: e.target.value }))
+                    }
+                    placeholder="Team"
+                    className="w-40 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                  />
+                  <input
+                    value={newHistory.note}
+                    onChange={(e) =>
+                      setNewHistory((p) => ({ ...p, note: e.target.value }))
+                    }
+                    placeholder="Note (optional)"
+                    className="min-w-[120px] flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                  />
+                  <Button type="button" size="sm" onClick={addHistoryRow}>
+                    Add Row
+                  </Button>
+                </div>
+              </div>
+
               <div className="flex justify-end gap-2">
                 <Button type="button" variant="ghost" onClick={() => setEditingPlayer(null)}>
                   Cancel

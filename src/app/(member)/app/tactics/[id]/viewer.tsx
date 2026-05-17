@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useTacticsStore } from "@/lib/stores/tactics-store"
 import { TacticsBoard as TacticsBoardComponent } from "@/components/tactics/tactics-board"
-import type { TacticsBoard } from "@/types/database"
+import type { TacticsBoard, TacticsBoardState } from "@/types/database"
 
 interface TacticsBoardViewerProps {
   board: TacticsBoard
@@ -14,7 +14,11 @@ export function TacticsBoardViewer({ board }: TacticsBoardViewerProps) {
 
   useEffect(() => {
     loadState({
-      ...board.state_json,
+      ...((board.state_json as TacticsBoardState | null) ?? {
+        players: [],
+        arrows: [],
+        labels: [],
+      }),
       id: board.id,
       name: board.name,
       kind: board.kind,

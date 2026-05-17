@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useTacticsStore } from "@/lib/stores/tactics-store"
 import { TacticsBoard as TacticsBoardComponent } from "@/components/tactics/tactics-board"
-import type { TacticsBoard, Team } from "@/types/database"
+import type { TacticsBoard, TacticsBoardState, Team } from "@/types/database"
 import { AddPlayerPanel } from "./add-player-panel"
 
 interface TacticsBoardEditorProps {
@@ -18,7 +18,11 @@ export function TacticsBoardEditor({ board, teams }: TacticsBoardEditorProps) {
   useEffect(() => {
     if (board) {
       loadState({
-        ...board.state_json,
+        ...((board.state_json as TacticsBoardState | null) ?? {
+          players: [],
+          arrows: [],
+          labels: [],
+        }),
         id: board.id,
         name: board.name,
         kind: board.kind,
