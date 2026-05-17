@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createServiceClient } from "@/lib/supabase/server"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+function getStripeInstance() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!)
+}
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -16,6 +17,9 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     )
   }
+
+  const stripe = getStripeInstance()
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
   let event: Stripe.Event
 
