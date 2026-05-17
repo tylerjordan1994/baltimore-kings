@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient()
 
     const { data: media, error } = await supabase
-      .from('media')
+      .from('media_items')
       .insert({
         url: data.url,
         kind: data.kind,
@@ -62,7 +62,7 @@ export async function DELETE(request: NextRequest) {
     const supabase = await createClient()
 
     const { error } = await supabase
-      .from('media')
+      .from('media_items')
       .delete()
       .eq('id', id)
 

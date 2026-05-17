@@ -33,7 +33,7 @@ export default function MediaPage() {
 
   const loadData = useCallback(async () => {
     const { data: mediaData } = await supabase
-      .from('media')
+      .from('media_items')
       .select('*')
       .order('created_at', { ascending: false })
 

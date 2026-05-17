@@ -1,8 +1,7 @@
 "use client"
 
 import { useDraggable } from "@dnd-kit/core"
-import type { TacticsPlayer } from "@/types/database"
-import type { FieldType } from "@/types/database"
+import type { TacticsPlayer, FieldType } from "@/types/database"
 
 interface PlayerTokenProps {
   player: TacticsPlayer
@@ -15,8 +14,10 @@ interface PlayerTokenProps {
 // Baltimore Kings colors
 const HOME_BG = "#1B2A4A" // Baltimore blue
 const HOME_ACCENT = "#C9A94E" // Baltimore gold
-const AWAY_BG = "#cc2222" // Opponent red
-const AWAY_ACCENT = "#ff4444"
+const AWAY_BG = "#8a1f1f" // Opponent red
+const AWAY_ACCENT = "#e05555"
+
+const R = 16 // token radius — smaller than the old r=22
 
 export function PlayerToken({
   player,
@@ -29,24 +30,19 @@ export function PlayerToken({
   const vbHeight = fieldType === "futsal_rounded" ? 500 : 425
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: player.id,
-      disabled,
-    })
+    useDraggable({ id: player.id, disabled })
 
   const cx = player.x * vbWidth
   const cy = player.y * vbHeight
-
   const dx = transform?.x ?? 0
   const dy = transform?.y ?? 0
 
   const isBall = player.tokenType === "ball"
-  const isHome = player.team === "home"
 
   if (isBall) {
     return (
       <g
-        ref={setNodeRef as any}
+        ref={setNodeRef as unknown as React.Ref<SVGGElement>}
         {...listeners}
         {...attributes}
         style={{
@@ -63,30 +59,29 @@ export function PlayerToken({
           <circle
             cx={cx}
             cy={cy}
-            r="14"
+            r="13"
             fill="none"
             stroke="#fbbf24"
             strokeWidth="2"
             strokeDasharray="4 2"
           />
         )}
-        {/* Ball - white circle with pattern */}
-        <circle cx={cx} cy={cy} r="10" fill="white" stroke="#333" strokeWidth="1.5" />
-        {/* Pentagon pattern to look like a soccer ball */}
-        <circle cx={cx} cy={cy} r="4" fill="none" stroke="#333" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r="8" fill="white" stroke="#1f1f1f" strokeWidth="1.5" />
+        <circle cx={cx} cy={cy} r="3" fill="none" stroke="#1f1f1f" strokeWidth="1" />
         <title>Ball</title>
       </g>
     )
   }
 
-  const bgColor = isHome ? HOME_BG : AWAY_BG
+  const isHome = player.team === "home"
+  const bgColor = player.color ?? (isHome ? HOME_BG : AWAY_BG)
   const accentColor = isHome ? HOME_ACCENT : AWAY_ACCENT
   const borderColor = isSelected ? "#fbbf24" : accentColor
-  const textColor = "white"
+  const label = player.position || player.name.split(" ")[0]
 
   return (
     <g
-      ref={setNodeRef as any}
+      ref={setNodeRef as unknown as React.Ref<SVGGElement>}
       {...listeners}
       {...attributes}
       style={{
@@ -99,12 +94,11 @@ export function PlayerToken({
         onSelect(player.id)
       }}
     >
-      {/* Selection ring */}
       {isSelected && (
         <circle
           cx={cx}
           cy={cy}
-          r="26"
+          r={R + 4}
           fill="none"
           stroke="#fbbf24"
           strokeWidth="2"
@@ -112,87 +106,65 @@ export function PlayerToken({
         />
       )}
 
-      {/* Main token circle */}
       <circle
         cx={cx}
         cy={cy}
-        r="22"
+        r={R}
         fill={bgColor}
         stroke={borderColor}
         strokeWidth="2.5"
       />
 
-      {/* Photo clip (if available) */}
       {player.photoUrl && (
         <>
           <defs>
             <clipPath id={`clip-${player.id}`}>
-              <circle cx={cx} cy={cy} r="20" />
+              <circle cx={cx} cy={cy} r={R - 2} />
             </clipPath>
           </defs>
           <image
             href={player.photoUrl}
-            x={cx - 20}
-            y={cy - 20}
-            width="40"
-            height="40"
+            x={cx - (R - 2)}
+            y={cy - (R - 2)}
+            width={(R - 2) * 2}
+            height={(R - 2) * 2}
             clipPath={`url(#clip-${player.id})`}
             preserveAspectRatio="xMidYMid slice"
           />
         </>
       )}
 
-      {/* Position abbreviation (center of token) */}
-      {player.position && (
+      {!player.photoUrl && (
         <text
           x={cx}
-          y={cy + 4}
+          y={cy + 3}
           textAnchor="middle"
-          fontSize="11"
+          fontSize="9"
           fontWeight="bold"
-          fill={textColor}
+          fill="white"
           style={{ userSelect: "none" }}
         >
-          {player.position}
+          {label.slice(0, 3)}
         </text>
       )}
 
-      {/* Jersey number badge */}
-      <circle
-        cx={cx + 14}
-        cy={cy - 14}
-        r="9"
-        fill={accentColor}
-        stroke="white"
-        strokeWidth="1"
-      />
-      <text
-        x={cx + 14}
-        y={cy - 10}
-        textAnchor="middle"
-        fontSize="9"
-        fontWeight="bold"
-        fill="white"
-      >
-        {player.jerseyNumber}
-      </text>
-
-      {/* Name (visible on hover via CSS, always rendered here for simplicity) */}
       <title>
-        {player.name} #{player.jerseyNumber} {player.position ? `(${player.position})` : ""}
+        {player.name}
+        {player.position ? ` (${player.position})` : ""}
       </title>
 
-      {/* Player name below token */}
       <text
         x={cx}
-        y={cy + 34}
+        y={cy + R + 11}
         textAnchor="middle"
         fontSize="10"
-        fill={textColor}
-        fontWeight="500"
-        opacity="0.9"
+        fill="white"
+        fontWeight="600"
+        style={{ userSelect: "none", paintOrder: "stroke" }}
+        stroke="rgba(0,0,0,0.7)"
+        strokeWidth="2.5"
       >
-        {player.name.split(" ")[0]}
+        {label}
       </text>
     </g>
   )

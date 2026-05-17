@@ -1,100 +1,182 @@
 "use client"
 
-import { useState } from "react"
-import { useTacticsStore } from "@/lib/stores/tactics-store"
+import { useMemo, useState } from "react"
+import {
+  useTacticsStore,
+  FUTSAL_POSITIONS,
+  MASL_POSITIONS,
+} from "@/lib/stores/tactics-store"
 import { Button } from "@/components/ui/button"
 
-export function AddPlayerPanel() {
+export interface RosterPlayer {
+  id: string
+  full_name: string
+  photo_url: string | null
+}
+
+interface AddPlayerPanelProps {
+  roster: RosterPlayer[]
+}
+
+/** Stagger new home tokens across the left half of the court. */
+function nextHomeSpot(count: number): { x: number; y: number } {
+  const col = count % 3
+  const row = Math.floor(count / 3)
+  return { x: 0.12 + col * 0.1, y: 0.22 + row * 0.16 }
+}
+
+export function AddPlayerPanel({ roster }: AddPlayerPanelProps) {
   const addPlayer = useTacticsStore((s) => s.addPlayer)
   const players = useTacticsStore((s) => s.players)
+  const fieldType = useTacticsStore((s) => s.fieldType)
 
-  const [name, setName] = useState("")
-  const [jerseyNumber, setJerseyNumber] = useState("")
-  const [team, setTeam] = useState<"home" | "away">("home")
+  const [search, setSearch] = useState("")
+  const [position, setPosition] = useState("")
 
-  function handleAdd() {
-    if (!name.trim() || !jerseyNumber) return
+  const positions =
+    fieldType === "futsal_rounded" ? FUTSAL_POSITIONS : MASL_POSITIONS
 
-    // Place new players in a grid pattern
-    const homeCount = players.filter((p) => p.team === team).length
-    const baseX = team === "home" ? 0.2 : 0.8
-    const row = Math.floor(homeCount / 3)
-    const col = homeCount % 3
+  const homeCount = players.filter(
+    (p) => p.team === "home" && p.tokenType !== "ball"
+  ).length
 
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    const placedProfileIds = new Set(
+      players.map((p) => p.profileId).filter(Boolean)
+    )
+    return roster
+      .filter((r) => !placedProfileIds.has(r.id))
+      .filter((r) => !q || r.full_name.toLowerCase().includes(q))
+  }, [roster, search, players])
+
+  function addRosterPlayer(r: RosterPlayer) {
+    const spot = nextHomeSpot(homeCount)
     addPlayer({
       id: crypto.randomUUID(),
-      name: name.trim(),
-      jerseyNumber: parseInt(jerseyNumber, 10),
-      team,
-      x: baseX + col * 0.08 - 0.08,
-      y: 0.25 + row * 0.15,
+      x: spot.x,
+      y: spot.y,
+      name: r.full_name,
+      team: "home",
+      tokenType: "player",
+      profileId: r.id,
+      photoUrl: r.photo_url,
     })
+  }
 
-    setName("")
-    setJerseyNumber("")
+  function addPositionToken() {
+    const pos = position || positions[0]
+    const spot = nextHomeSpot(homeCount)
+    addPlayer({
+      id: crypto.randomUUID(),
+      x: spot.x,
+      y: spot.y,
+      name: pos,
+      team: "home",
+      tokenType: "player",
+      position: pos,
+      profileId: null,
+    })
   }
 
   return (
     <div className="hidden rounded-lg border border-zinc-800 bg-zinc-900 p-4 md:block">
       <h3 className="mb-3 text-sm font-semibold text-zinc-300">
-        Add Player to Board
+        Add Players to Board
       </h3>
-      <div className="flex flex-wrap items-end gap-3">
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        {/* Roster picker */}
         <div>
-          <label className="mb-1 block text-xs text-zinc-500">Name</label>
+          <p className="mb-1.5 text-xs font-medium text-zinc-500">
+            From roster
+          </p>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Player name"
-            className="h-8 w-40 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search players..."
+            className="mb-2 h-8 w-full rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
           />
+          <div className="max-h-52 space-y-1 overflow-y-auto pr-1">
+            {filtered.length === 0 && (
+              <p className="py-3 text-center text-xs text-zinc-600">
+                {roster.length === 0
+                  ? "No roster players found."
+                  : "All players placed."}
+              </p>
+            )}
+            {filtered.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => addRosterPlayer(r)}
+                className="flex w-full items-center gap-2 rounded border border-zinc-800 bg-zinc-800/60 px-2 py-1.5 text-left text-sm text-white transition hover:border-zinc-600 hover:bg-zinc-800"
+              >
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-700 text-xs">
+                  {r.photo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={r.photo_url}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    r.full_name.charAt(0)
+                  )}
+                </span>
+                <span className="truncate">{r.full_name}</span>
+                <span className="ml-auto text-xs text-zinc-500">Add</span>
+              </button>
+            ))}
+          </div>
         </div>
+
+        {/* Generic position token */}
         <div>
-          <label className="mb-1 block text-xs text-zinc-500">Number</label>
-          <input
-            type="number"
-            value={jerseyNumber}
-            onChange={(e) => setJerseyNumber(e.target.value)}
-            placeholder="#"
-            min="0"
-            max="99"
-            className="h-8 w-16 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
-          />
+          <p className="mb-1.5 text-xs font-medium text-zinc-500">
+            Generic position token
+          </p>
+          <div className="flex items-center gap-2">
+            <select
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              className="h-8 flex-1 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white"
+            >
+              {positions.map((pos) => (
+                <option key={pos} value={pos}>
+                  {pos}
+                </option>
+              ))}
+            </select>
+            <Button size="sm" onClick={addPositionToken}>
+              Add token
+            </Button>
+          </div>
+          <p className="mt-2 text-xs text-zinc-600">
+            Opponent tokens are placed automatically. Drag any token to
+            reposition it; numbers are intentionally hidden.
+          </p>
         </div>
-        <div>
-          <label className="mb-1 block text-xs text-zinc-500">Team</label>
-          <select
-            value={team}
-            onChange={(e) => setTeam(e.target.value as "home" | "away")}
-            className="h-8 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white"
-          >
-            <option value="home">Home</option>
-            <option value="away">Away</option>
-          </select>
-        </div>
-        <Button size="sm" onClick={handleAdd}>
-          Add
-        </Button>
       </div>
 
-      {/* Current players list */}
       {players.length > 0 && (
-        <div className="mt-4">
+        <div className="mt-4 border-t border-zinc-800 pt-3">
           <p className="mb-2 text-xs text-zinc-500">
-            Players on board ({players.length})
+            On board ({players.length})
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {players.map((p) => (
               <span
                 key={p.id}
-                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${
-                  p.team === "home"
-                    ? "bg-blue-900/40 text-blue-300"
-                    : "bg-zinc-700 text-zinc-300"
+                className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs ${
+                  p.tokenType === "ball"
+                    ? "bg-zinc-700 text-zinc-200"
+                    : p.team === "home"
+                      ? "bg-blue-900/40 text-blue-200"
+                      : "bg-red-900/40 text-red-200"
                 }`}
               >
-                #{p.jerseyNumber} {p.name}
+                {p.tokenType === "ball" ? "Ball" : p.position || p.name}
               </span>
             ))}
           </div>

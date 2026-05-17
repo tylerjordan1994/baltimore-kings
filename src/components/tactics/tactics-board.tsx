@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   DndContext,
   type DragEndEvent,
@@ -8,254 +8,299 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core"
+import { toPng } from "html-to-image"
 import { useTacticsStore } from "@/lib/stores/tactics-store"
-import { FieldSvg, svgPointFromEvent } from "./field-svg"
+import { FieldSvg } from "./field-svg"
 import { PlayerToken } from "./player-token"
 import { ArrowLayer } from "./arrow-layer"
 import { LabelLayer } from "./label-layer"
 import { Toolbar } from "./toolbar"
+import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
-import type { FieldType } from "@/types/database"
+import { toast } from "sonner"
 
 interface TacticsBoardProps {
   editable?: boolean
   teams?: { id: string; name: string }[]
 }
 
+type LabelModal = { mode: "new" } | { mode: "edit"; id: string } | null
+
 export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps) {
   const store = useTacticsStore()
+  const captureRef = useRef<HTMLDivElement | null>(null)
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const savingRef = useRef(false)
+  const [saving, setSaving] = useState(false)
+  const [labelModal, setLabelModal] = useState<LabelModal>(null)
+  const [labelText, setLabelText] = useState("")
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 3 } })
   )
 
-  // Auto-save debounce
+  /** Render the board to a PNG data URL. Returns null on failure. */
+  const exportPng = useCallback(async (): Promise<string | null> => {
+    if (!captureRef.current) return null
+    try {
+      return await toPng(captureRef.current, {
+        backgroundColor: "#18181b",
+        pixelRatio: 2,
+        cacheBust: true,
+      })
+    } catch {
+      return null
+    }
+  }, [])
+
+  const persist = useCallback(
+    async (withSnapshot: boolean) => {
+      if (savingRef.current) return
+      savingRef.current = true
+      setSaving(true)
+      try {
+        const supabase = createClient()
+        const s = useTacticsStore.getState()
+        const payload = {
+          name: s.name,
+          kind: s.kind,
+          field_type: s.fieldType,
+          team_id: s.teamIds[0] ?? null,
+          is_published: s.isPublished,
+          state_json: s.getStateJson(),
+          preview_image_url: s.previewImageUrl,
+        }
+
+        let boardId = s.boardId
+        if (boardId) {
+          await supabase
+            .from("tactics_boards")
+            .update(payload)
+            .eq("id", boardId)
+        } else {
+          const { data, error } = await supabase
+            .from("tactics_boards")
+            .insert(payload)
+            .select("id")
+            .single()
+          if (error || !data) throw error ?? new Error("Insert failed")
+          boardId = data.id
+          store.setBoardId(boardId)
+        }
+
+        // Sync the multi-team join table
+        await supabase
+          .from("tactics_board_teams")
+          .delete()
+          .eq("board_id", boardId)
+        if (s.teamIds.length > 0) {
+          await supabase.from("tactics_board_teams").insert(
+            s.teamIds.map((team_id) => ({ board_id: boardId!, team_id }))
+          )
+        }
+
+        // Generate + upload a preview snapshot
+        if (withSnapshot) {
+          const dataUrl = await exportPng()
+          if (dataUrl) {
+            const blob = await (await fetch(dataUrl)).blob()
+            const path = `tactics/${boardId}.png`
+            const { error: upErr } = await supabase.storage
+              .from("media")
+              .upload(path, blob, {
+                upsert: true,
+                contentType: "image/png",
+              })
+            if (!upErr) {
+              const { data: pub } = supabase.storage
+                .from("media")
+                .getPublicUrl(path)
+              const previewUrl = `${pub.publicUrl}?v=${Date.now()}`
+              await supabase
+                .from("tactics_boards")
+                .update({ preview_image_url: previewUrl })
+                .eq("id", boardId)
+              store.setPreviewImageUrl(previewUrl)
+            }
+          }
+        }
+
+        store.markClean()
+        if (withSnapshot) toast.success("Board saved")
+      } catch {
+        toast.error("Failed to save board")
+      } finally {
+        savingRef.current = false
+        setSaving(false)
+      }
+    },
+    [store, exportPng]
+  )
+
+  // Debounced autosave (state only, no snapshot)
   useEffect(() => {
     if (!editable || !store.isDirty || !store.boardId) return
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
-    saveTimerRef.current = setTimeout(() => {
-      handleSave()
-    }, 1000)
+    saveTimerRef.current = setTimeout(() => persist(false), 1500)
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.isDirty, store.players, store.arrows, store.labels, store.name, store.kind, store.fieldType, store.teamId, store.isPublished, store.selectedPosition])
+  }, [
+    store.isDirty,
+    store.players,
+    store.arrows,
+    store.labels,
+    store.name,
+    store.kind,
+    store.fieldType,
+    store.teamIds,
+    store.isPublished,
+  ])
 
-  const handleSave = useCallback(async () => {
-    if (savingRef.current) return
-    savingRef.current = true
-    const supabase = createClient()
-    const stateJson = store.getStateJson()
+  const handleSave = useCallback(() => persist(true), [persist])
 
-    const payload = {
-      name: store.name,
-      kind: store.kind,
-      field_type: store.fieldType,
-      team_id: store.teamId,
-      is_published: store.isPublished,
-      state_json: stateJson,
+  const handleExport = useCallback(async () => {
+    const dataUrl = await exportPng()
+    if (!dataUrl) {
+      toast.error("Could not export image")
+      return
     }
-
-    if (store.boardId) {
-      await supabase
-        .from("tactics_boards")
-        .update(payload)
-        .eq("id", store.boardId)
-    } else {
-      const { data } = await supabase
-        .from("tactics_boards")
-        .insert(payload)
-        .select("id")
-        .single()
-      if (data) store.setBoardId(data.id)
-    }
-
-    store.markClean()
-    savingRef.current = false
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.boardId, store.name, store.kind, store.fieldType, store.teamId, store.isPublished, store.players, store.arrows, store.labels])
+    const a = document.createElement("a")
+    a.href = dataUrl
+    a.download = `${store.name || "tactics-board"}.png`
+    a.click()
+  }, [exportPng, store.name])
 
   const handleDuplicate = useCallback(async () => {
     const supabase = createClient()
-    const stateJson = store.getStateJson()
-    const { data } = await supabase
+    const s = useTacticsStore.getState()
+    const { data, error } = await supabase
       .from("tactics_boards")
       .insert({
-        name: `${store.name} (copy)`,
-        kind: store.kind,
-        field_type: store.fieldType,
-        team_id: store.teamId,
+        name: `${s.name} (copy)`,
+        kind: s.kind,
+        field_type: s.fieldType,
+        team_id: s.teamIds[0] ?? null,
         is_published: false,
-        state_json: stateJson,
+        state_json: s.getStateJson(),
       })
       .select("id")
       .single()
-    if (data) {
-      store.setBoardId(data.id)
-      store.setName(`${store.name} (copy)`)
-      store.setIsPublished(false)
-      store.markClean()
+    if (error || !data) {
+      toast.error("Failed to duplicate")
+      return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.name, store.kind, store.fieldType, store.teamId])
+    if (s.teamIds.length > 0) {
+      await supabase.from("tactics_board_teams").insert(
+        s.teamIds.map((team_id) => ({ board_id: data.id, team_id }))
+      )
+    }
+    toast.success("Board duplicated")
+    window.location.href = `/app/admin/tactics/${data.id}`
+  }, [])
 
   const handleDeleteBoard = useCallback(async () => {
-    if (!store.boardId) return
-    if (!confirm("Are you sure you want to delete this board?")) return
+    const s = useTacticsStore.getState()
+    if (!s.boardId) return
+    if (!confirm("Delete this board? This cannot be undone.")) return
     const supabase = createClient()
-    await supabase.from("tactics_boards").delete().eq("id", store.boardId)
-    store.reset()
-    window.history.back()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.boardId])
+    await supabase.from("tactics_boards").delete().eq("id", s.boardId)
+    window.location.href = `/app/admin/tactics`
+  }, [])
 
   const handleNew = useCallback(() => {
-    store.reset()
+    store.initNewBoard(store.fieldType, store.kind)
   }, [store])
 
-  // Handle field click for arrow/label/player/ball tools
-  function handleFieldClick(e: React.MouseEvent<SVGSVGElement>) {
+  function handleFieldClick() {
     if (!editable) return
-    const point = svgPointFromEvent(e, store.fieldType)
-
-    if (store.tool === "arrow") {
-      if (!store.arrowStart) {
-        store.setArrowStart(point)
-      } else {
-        store.addArrow({
-          id: crypto.randomUUID(),
-          startX: store.arrowStart.x,
-          startY: store.arrowStart.y,
-          endX: point.x,
-          endY: point.y,
-          curved: store.curvedArrows,
-          ...(store.curvedArrows
-            ? {
-                controlX: (store.arrowStart.x + point.x) / 2,
-                controlY: (store.arrowStart.y + point.y) / 2 - 0.08,
-              }
-            : {}),
-        })
-        store.setArrowStart(null)
-      }
-    } else if (store.tool === "label") {
-      const text = prompt("Enter label text:")
-      if (text) {
-        store.addLabel({
-          id: crypto.randomUUID(),
-          x: point.x,
-          y: point.y,
-          text,
-        })
-      }
-    } else if (store.tool === "ball") {
-      store.addPlayer({
-        id: crypto.randomUUID(),
-        x: point.x,
-        y: point.y,
-        jerseyNumber: 0,
-        name: "Ball",
-        team: "home",
-        tokenType: "ball",
-      })
-    } else if (store.tool === "player_home" || store.tool === "player_away") {
-      const team = store.tool === "player_home" ? "home" : "away"
-      const teamPlayers = store.players.filter(
-        (p) => p.team === team && p.tokenType !== "ball"
-      )
-      const nextNumber = teamPlayers.length + 1
-      store.addPlayer({
-        id: crypto.randomUUID(),
-        x: point.x,
-        y: point.y,
-        jerseyNumber: nextNumber,
-        name: store.selectedPosition,
-        team,
-        tokenType: "player",
-        position: store.selectedPosition,
-      })
-    } else if (store.tool === "select") {
-      store.setSelectedId(null)
-    }
+    store.setSelectedId(null)
   }
 
-  // Handle drag end for player tokens
   function handleDragEnd(event: DragEndEvent) {
     if (!editable) return
     const { active, delta } = event
     const playerId = active.id as string
     const player = store.players.find((p) => p.id === playerId)
     if (!player) return
-
-    const svgEl = document.querySelector("[data-tactics-svg]") as SVGSVGElement | null
+    const svgEl = document.querySelector(
+      "[data-tactics-svg]"
+    ) as SVGSVGElement | null
     if (!svgEl) return
     const rect = svgEl.getBoundingClientRect()
-    const vbWidth = 1000
-    const vbHeight = store.fieldType === "futsal_rounded" ? 500 : 425
-
-    const dx = delta.x / rect.width
-    const dy = delta.y / rect.height
-
-    const newX = Math.max(0, Math.min(1, player.x + dx))
-    const newY = Math.max(0, Math.min(1, player.y + dy))
+    const newX = Math.max(0, Math.min(1, player.x + delta.x / rect.width))
+    const newY = Math.max(0, Math.min(1, player.y + delta.y / rect.height))
     store.movePlayer(playerId, newX, newY)
   }
 
-  // Keyboard navigation for selected token
+  // Keyboard: arrows nudge, Delete removes selected
   useEffect(() => {
     if (!editable) return
     function handleKeyDown(e: KeyboardEvent) {
-      const { selectedId, players, movePlayer, removePlayer, removeArrow, removeLabel, arrows, labels } = useTacticsStore.getState()
-      if (!selectedId) return
-
-      const step = 0.01 // ~10px in 1000-unit viewport
-      const player = players.find((p) => p.id === selectedId)
-
+      const target = e.target as HTMLElement
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return
+      const s = useTacticsStore.getState()
+      if (!s.selectedId) return
       if (e.key === "Delete" || e.key === "Backspace") {
-        if (player) removePlayer(selectedId)
-        else if (arrows.find((a) => a.id === selectedId)) removeArrow(selectedId)
-        else if (labels.find((l) => l.id === selectedId)) removeLabel(selectedId)
+        e.preventDefault()
+        s.deleteSelected()
         return
       }
-
+      const player = s.players.find((p) => p.id === s.selectedId)
       if (!player) return
-      switch (e.key) {
-        case "ArrowUp":
-          e.preventDefault()
-          movePlayer(selectedId, player.x, Math.max(0, player.y - step))
-          break
-        case "ArrowDown":
-          e.preventDefault()
-          movePlayer(selectedId, player.x, Math.min(1, player.y + step))
-          break
-        case "ArrowLeft":
-          e.preventDefault()
-          movePlayer(selectedId, Math.max(0, player.x - step), player.y)
-          break
-        case "ArrowRight":
-          e.preventDefault()
-          movePlayer(selectedId, Math.min(1, player.x + step), player.y)
-          break
+      const step = 0.01
+      if (e.key === "ArrowUp") {
+        e.preventDefault()
+        s.movePlayer(player.id, player.x, Math.max(0, player.y - step))
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault()
+        s.movePlayer(player.id, player.x, Math.min(1, player.y + step))
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault()
+        s.movePlayer(player.id, Math.max(0, player.x - step), player.y)
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault()
+        s.movePlayer(player.id, Math.min(1, player.x + step), player.y)
       }
     }
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
   }, [editable])
 
+  function openNewLabel() {
+    setLabelText("")
+    setLabelModal({ mode: "new" })
+  }
+
+  function openEditLabel(id: string) {
+    const label = store.labels.find((l) => l.id === id)
+    setLabelText(label?.text ?? "")
+    setLabelModal({ mode: "edit", id })
+  }
+
+  function confirmLabel() {
+    const text = labelText.trim()
+    if (!text || !labelModal) {
+      setLabelModal(null)
+      return
+    }
+    if (labelModal.mode === "new") {
+      store.addLabel({ id: crypto.randomUUID(), x: 0.5, y: 0.5, text })
+    } else {
+      store.updateLabel(labelModal.id, { text })
+    }
+    setLabelModal(null)
+  }
+
   return (
     <div className="flex flex-col gap-4">
-      {/* Mobile warning */}
       {editable && (
         <div className="block rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-center text-sm text-amber-300 md:hidden">
-          View only on mobile. Rotate to landscape or use a larger screen for
-          editing.
+          View only on mobile. Use a larger screen to edit.
         </div>
       )}
 
-      {/* Toolbar (editor only, hidden on mobile) */}
       {editable && (
         <div className="hidden md:block">
           <Toolbar
@@ -264,42 +309,27 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
             onDuplicate={handleDuplicate}
             onDelete={handleDeleteBoard}
             onNew={handleNew}
-            saving={savingRef.current}
+            onAddLabel={openNewLabel}
+            onExport={handleExport}
+            saving={saving}
           />
         </div>
       )}
 
-      {/* Arrow start indicator */}
-      {editable && store.arrowStart && (
-        <div className="text-center text-xs text-zinc-400">
-          Click on the field to set the arrow endpoint
-        </div>
-      )}
-
-      {/* Board */}
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <div className="relative">
-          <FieldSvg
-            fieldType={store.fieldType}
-            onClick={handleFieldClick}
-          >
-            {/* field SVG now has data-tactics-svg attribute directly */}
-
-            {/* Arrows */}
+        <div ref={captureRef} className="relative">
+          <FieldSvg fieldType={store.fieldType} onClick={handleFieldClick}>
             <ArrowLayer
               arrows={store.arrows}
               fieldType={store.fieldType}
               interactive={editable}
             />
-
-            {/* Labels */}
             <LabelLayer
               labels={store.labels}
               fieldType={store.fieldType}
               interactive={editable}
+              onEditLabel={openEditLabel}
             />
-
-            {/* Players */}
             {store.players.map((player) => (
               <PlayerToken
                 key={player.id}
@@ -310,23 +340,50 @@ export function TacticsBoard({ editable = false, teams = [] }: TacticsBoardProps
                 disabled={!editable}
               />
             ))}
-
-            {/* Arrow start preview dot */}
-            {store.arrowStart && (
-              <circle
-                cx={store.arrowStart.x * 1000}
-                cy={
-                  store.arrowStart.y *
-                  (store.fieldType === "futsal_rounded" ? 500 : 425)
-                }
-                r="5"
-                fill="#fbbf24"
-                opacity="0.8"
-              />
-            )}
           </FieldSvg>
         </div>
       </DndContext>
+
+      {/* Label text modal */}
+      {labelModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setLabelModal(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-xl border border-zinc-700 bg-zinc-900 p-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="mb-3 text-sm font-semibold text-white">
+              {labelModal.mode === "new" ? "Add label" : "Edit label"}
+            </h3>
+            <input
+              autoFocus
+              type="text"
+              value={labelText}
+              onChange={(e) => setLabelText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") confirmLabel()
+                if (e.key === "Escape") setLabelModal(null)
+              }}
+              placeholder="Label text..."
+              className="h-9 w-full rounded border border-zinc-700 bg-zinc-800 px-3 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLabelModal(null)}
+              >
+                Cancel
+              </Button>
+              <Button size="sm" onClick={confirmLabel}>
+                {labelModal.mode === "new" ? "Add" : "Save"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

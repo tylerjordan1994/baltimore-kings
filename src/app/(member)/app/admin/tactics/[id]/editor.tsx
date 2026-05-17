@@ -4,16 +4,23 @@ import { useEffect } from "react"
 import { useTacticsStore } from "@/lib/stores/tactics-store"
 import { TacticsBoard as TacticsBoardComponent } from "@/components/tactics/tactics-board"
 import type { TacticsBoard, TacticsBoardState, Team } from "@/types/database"
-import { AddPlayerPanel } from "./add-player-panel"
+import { AddPlayerPanel, type RosterPlayer } from "./add-player-panel"
 
 interface TacticsBoardEditorProps {
   board: TacticsBoard | null
+  boardTeamIds: string[]
   teams: Pick<Team, "id" | "name">[]
+  roster: RosterPlayer[]
 }
 
-export function TacticsBoardEditor({ board, teams }: TacticsBoardEditorProps) {
+export function TacticsBoardEditor({
+  board,
+  boardTeamIds,
+  teams,
+  roster,
+}: TacticsBoardEditorProps) {
   const loadState = useTacticsStore((s) => s.loadState)
-  const reset = useTacticsStore((s) => s.reset)
+  const initNewBoard = useTacticsStore((s) => s.initNewBoard)
 
   useEffect(() => {
     if (board) {
@@ -27,18 +34,19 @@ export function TacticsBoardEditor({ board, teams }: TacticsBoardEditorProps) {
         name: board.name,
         kind: board.kind,
         field_type: board.field_type,
-        team_id: board.team_id,
+        team_ids: boardTeamIds,
         is_published: board.is_published,
+        preview_image_url: board.preview_image_url,
       })
     } else {
-      reset()
+      initNewBoard()
     }
-  }, [board, loadState, reset])
+  }, [board, boardTeamIds, loadState, initNewBoard])
 
   return (
     <div className="space-y-4">
       <TacticsBoardComponent editable={true} teams={teams} />
-      <AddPlayerPanel />
+      <AddPlayerPanel roster={roster} />
     </div>
   )
 }

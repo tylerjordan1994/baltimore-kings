@@ -578,6 +578,35 @@ export type Database = {
           },
         ]
       }
+      evaluation_periods: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_periods_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evaluations: {
         Row: {
           areas_for_growth: string | null
@@ -593,6 +622,7 @@ export type Database = {
           profile_id: string
           strengths: string | null
           tactical_rating: number | null
+          tags: string[]
           technical_rating: number | null
         }
         Insert: {
@@ -609,6 +639,7 @@ export type Database = {
           profile_id: string
           strengths?: string | null
           tactical_rating?: number | null
+          tags?: string[]
           technical_rating?: number | null
         }
         Update: {
@@ -625,6 +656,7 @@ export type Database = {
           profile_id?: string
           strengths?: string | null
           tactical_rating?: number | null
+          tags?: string[]
           technical_rating?: number | null
         }
         Relationships: [
@@ -1263,9 +1295,11 @@ export type Database = {
           contact: string | null
           created_at: string
           current_team: string | null
+          email: string | null
           event: string | null
           full_name: string
           id: string
+          phone: string | null
           position: string | null
           priority: Database["public"]["Enums"]["prospect_priority"]
           scouted_at: string | null
@@ -1276,9 +1310,11 @@ export type Database = {
           contact?: string | null
           created_at?: string
           current_team?: string | null
+          email?: string | null
           event?: string | null
           full_name: string
           id?: string
+          phone?: string | null
           position?: string | null
           priority?: Database["public"]["Enums"]["prospect_priority"]
           scouted_at?: string | null
@@ -1289,9 +1325,11 @@ export type Database = {
           contact?: string | null
           created_at?: string
           current_team?: string | null
+          email?: string | null
           event?: string | null
           full_name?: string
           id?: string
+          phone?: string | null
           position?: string | null
           priority?: Database["public"]["Enums"]["prospect_priority"]
           scouted_at?: string | null
@@ -1509,6 +1547,36 @@ export type Database = {
         }
         Relationships: []
       }
+      tactics_board_teams: {
+        Row: {
+          board_id: string
+          team_id: string
+        }
+        Insert: {
+          board_id: string
+          team_id: string
+        }
+        Update: {
+          board_id?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tactics_board_teams_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "tactics_boards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tactics_board_teams_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tactics_boards: {
         Row: {
           created_at: string
@@ -1518,6 +1586,7 @@ export type Database = {
           is_published: boolean
           kind: Database["public"]["Enums"]["tactics_kind"]
           name: string
+          preview_image_url: string | null
           state_json: Json
           team_id: string | null
           updated_at: string
@@ -1530,6 +1599,7 @@ export type Database = {
           is_published?: boolean
           kind?: Database["public"]["Enums"]["tactics_kind"]
           name: string
+          preview_image_url?: string | null
           state_json?: Json
           team_id?: string | null
           updated_at?: string
@@ -1542,6 +1612,7 @@ export type Database = {
           is_published?: boolean
           kind?: Database["public"]["Enums"]["tactics_kind"]
           name?: string
+          preview_image_url?: string | null
           state_json?: Json
           team_id?: string | null
           updated_at?: string
@@ -1646,6 +1717,106 @@ export type Database = {
           slug?: string
         }
         Relationships: []
+      }
+      ticketed_events: {
+        Row: {
+          capacity: number | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_date: string | null
+          id: string
+          image_url: string | null
+          is_published: boolean
+          price_cents: number
+          stripe_price_id: string | null
+          title: string
+          venue: string | null
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          price_cents?: number
+          stripe_price_id?: string | null
+          title: string
+          venue?: string | null
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          price_cents?: number
+          stripe_price_id?: string | null
+          title?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticketed_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          amount_cents: number | null
+          id: string
+          purchased_at: string
+          purchaser_email: string | null
+          purchaser_name: string | null
+          quantity: number
+          status: string
+          stripe_session_id: string | null
+          ticket_code: string
+          ticketed_event_id: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          id?: string
+          purchased_at?: string
+          purchaser_email?: string | null
+          purchaser_name?: string | null
+          quantity?: number
+          status?: string
+          stripe_session_id?: string | null
+          ticket_code: string
+          ticketed_event_id: string
+        }
+        Update: {
+          amount_cents?: number | null
+          id?: string
+          purchased_at?: string
+          purchaser_email?: string | null
+          purchaser_name?: string | null
+          quantity?: number
+          status?: string
+          stripe_session_id?: string | null
+          ticket_code?: string
+          ticketed_event_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tickets_ticketed_event_id_fkey"
+            columns: ["ticketed_event_id"]
+            isOneToOne: false
+            referencedRelation: "ticketed_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       training_assignments: {
         Row: {
@@ -2010,6 +2181,85 @@ export type CompositeTypes<
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
+export const Constants = {
+  public: {
+    Enums: {
+      achievement_kind: ["club", "player"],
+      alumni_status: [
+        "playing_pro_futsal",
+        "playing_pro_indoor",
+        "playing_pro_outdoor",
+        "coaching",
+        "college_level",
+        "national_team",
+        "retired",
+        "other",
+      ],
+      application_status: ["new", "reviewed", "invited", "rejected"],
+      contract_applies_to: ["individual", "team", "all_active"],
+      contract_assignment_status: ["pending", "signed", "expired", "voided"],
+      contract_kind: [
+        "player_agreement",
+        "coach_agreement",
+        "tryout_waiver",
+        "tournament_release",
+        "code_of_conduct",
+        "other",
+      ],
+      document_kind: ["waiver", "id", "medical", "other"],
+      event_kind: [
+        "practice",
+        "home_game",
+        "away_game",
+        "tryout",
+        "meeting",
+        "other",
+      ],
+      event_visibility: ["public", "members_only"],
+      field_type: ["futsal_rounded", "masl_rounded_extra_player"],
+      focus_category: ["technical", "tactical", "physical", "mental"],
+      goal_status: [
+        "proposed",
+        "approved",
+        "in_progress",
+        "achieved",
+        "revised",
+        "dropped",
+      ],
+      league_type: ["masl3", "masl2", "futsal_l1", "futsal_other"],
+      media_kind: ["photo", "video"],
+      payment_purpose: [
+        "ref_fee",
+        "practice_fee",
+        "dues",
+        "other",
+        "tournament_fee",
+      ],
+      payment_status: ["pending", "completed", "failed", "refunded"],
+      profile_status: ["pending", "active", "inactive", "archived", "injured"],
+      prospect_priority: [
+        "watch",
+        "target",
+        "actively_recruiting",
+        "signed",
+        "passed",
+      ],
+      roster_position: ["starter", "sub", "reserve"],
+      tactics_kind: ["formation", "set_piece", "play"],
+      training_priority: ["low", "normal", "high"],
+      training_status: [
+        "not_started",
+        "in_progress",
+        "player_marked_complete",
+        "coach_confirmed",
+      ],
+      user_role: ["pending", "player", "coach", "superadmin"],
+    },
+  },
+} as const
+
+
+
 // ─────────────────────────────────────────────────────────────
 // Convenience aliases — row + enum types used across the app.
 // Aliases include optional joined relations (`profiles`, `teams`,
@@ -2091,17 +2341,30 @@ export type UserRole = Enums<"user_role">
 /** Court position label used by the tactics board editor. */
 export type TacticsPosition = string
 
+/**
+ * A token placed on the tactics board.
+ * - `tokenType: "player"` — a real roster player or a generic position token.
+ *   Real players carry a `profileId`; generic position tokens do not.
+ * - `tokenType: "ball"` — the ball.
+ * Numbers are intentionally NOT shown on play-builder tokens.
+ */
 export type TacticsPlayer = {
   id: string
   x: number
   y: number
+  /** Display label — player first name or position label. */
   name: string
-  jerseyNumber: number | string
+  /** "home" = our team, "away" = opponent. */
   team: "home" | "away"
   tokenType?: "player" | "ball"
+  /** Set when this token represents a real roster player. */
+  profileId?: string | null
+  /** Optional position label (Ala, Fixo, etc.). */
   position?: string
   photoUrl?: string | null
   color?: string
+  /** @deprecated numbers are no longer shown on tokens. Kept for back-compat. */
+  jerseyNumber?: number | string
 }
 
 export type TacticsArrow = {
@@ -2110,6 +2373,8 @@ export type TacticsArrow = {
   startY: number
   endX: number
   endY: number
+  /** Visual style of the arrow line. */
+  style?: "solid" | "dashed"
   curved?: boolean
   controlX?: number
   controlY?: number
@@ -2131,80 +2396,3 @@ export type TacticsBoardState = {
   arrows: TacticsArrow[]
   labels: TacticsLabel[]
 }
-
-export const Constants = {
-  public: {
-    Enums: {
-      achievement_kind: ["club", "player"],
-      alumni_status: [
-        "playing_pro_futsal",
-        "playing_pro_indoor",
-        "playing_pro_outdoor",
-        "coaching",
-        "college_level",
-        "national_team",
-        "retired",
-        "other",
-      ],
-      application_status: ["new", "reviewed", "invited", "rejected"],
-      contract_applies_to: ["individual", "team", "all_active"],
-      contract_assignment_status: ["pending", "signed", "expired", "voided"],
-      contract_kind: [
-        "player_agreement",
-        "coach_agreement",
-        "tryout_waiver",
-        "tournament_release",
-        "code_of_conduct",
-        "other",
-      ],
-      document_kind: ["waiver", "id", "medical", "other"],
-      event_kind: [
-        "practice",
-        "home_game",
-        "away_game",
-        "tryout",
-        "meeting",
-        "other",
-      ],
-      event_visibility: ["public", "members_only"],
-      field_type: ["futsal_rounded", "masl_rounded_extra_player"],
-      focus_category: ["technical", "tactical", "physical", "mental"],
-      goal_status: [
-        "proposed",
-        "approved",
-        "in_progress",
-        "achieved",
-        "revised",
-        "dropped",
-      ],
-      league_type: ["masl3", "masl2", "futsal_l1", "futsal_other"],
-      media_kind: ["photo", "video"],
-      payment_purpose: [
-        "ref_fee",
-        "practice_fee",
-        "dues",
-        "other",
-        "tournament_fee",
-      ],
-      payment_status: ["pending", "completed", "failed", "refunded"],
-      profile_status: ["pending", "active", "inactive", "archived", "injured"],
-      prospect_priority: [
-        "watch",
-        "target",
-        "actively_recruiting",
-        "signed",
-        "passed",
-      ],
-      roster_position: ["starter", "sub", "reserve"],
-      tactics_kind: ["formation", "set_piece", "play"],
-      training_priority: ["low", "normal", "high"],
-      training_status: [
-        "not_started",
-        "in_progress",
-        "player_marked_complete",
-        "coach_confirmed",
-      ],
-      user_role: ["pending", "player", "coach", "superadmin"],
-    },
-  },
-} as const

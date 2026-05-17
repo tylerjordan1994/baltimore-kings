@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import type { TacticsBoard, Team } from "@/types/database"
+import type { TacticsBoard } from "@/types/database"
 
 // basePath handled by next.config.ts
 
@@ -28,19 +28,13 @@ export default async function AdminTacticsPage() {
     .select("*")
     .order("updated_at", { ascending: false })
 
-  const { data: teams } = await supabase
-    .from("teams")
-    .select("id, name")
-    .eq("is_active", true)
-
   const allBoards = (boards as TacticsBoard[]) ?? []
-  const allTeams = (teams as Pick<Team, "id" | "name">[]) ?? []
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Tactics Manager</h1>
+          <h1 className="text-2xl font-bold text-white">Team Tactics</h1>
           <p className="mt-1 text-zinc-400">
             Create and manage tactics boards for your teams.
           </p>
@@ -61,36 +55,44 @@ export default async function AdminTacticsPage() {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {allBoards.map((board) => {
-            const team = allTeams.find((t) => t.id === board.team_id)
-            return (
-              <Link
-                key={board.id}
-                href={`/app/admin/tactics/${board.id}`}
-                className="group rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition hover:border-zinc-700 hover:bg-zinc-800/50"
-              >
+          {allBoards.map((board) => (
+            <Link
+              key={board.id}
+              href={`/app/admin/tactics/${board.id}`}
+              className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700 hover:bg-zinc-800/50"
+            >
+              <div className="aspect-video w-full overflow-hidden bg-zinc-950">
+                {board.preview_image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={board.preview_image_url}
+                    alt={board.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-xs text-zinc-600">
+                    No preview
+                  </div>
+                )}
+              </div>
+              <div className="p-5">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400 group-hover:bg-zinc-700">
                     {board.kind.replace("_", " ")}
                   </span>
-                  <div className="flex items-center gap-2">
-                    {board.is_published ? (
-                      <span className="rounded bg-green-900/50 px-1.5 py-0.5 text-xs text-green-400">
-                        Published
-                      </span>
-                    ) : (
-                      <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-500">
-                        Draft
-                      </span>
-                    )}
-                  </div>
+                  {board.is_published ? (
+                    <span className="rounded bg-green-900/50 px-1.5 py-0.5 text-xs text-green-400">
+                      Published
+                    </span>
+                  ) : (
+                    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-500">
+                      Draft
+                    </span>
+                  )}
                 </div>
                 <h3 className="text-lg font-semibold text-white">
                   {board.name}
                 </h3>
-                {team && (
-                  <p className="mt-1 text-sm text-zinc-500">{team.name}</p>
-                )}
                 <p className="mt-2 text-xs text-zinc-600">
                   Updated{" "}
                   {new Date(board.updated_at).toLocaleDateString("en-US", {
@@ -100,9 +102,9 @@ export default async function AdminTacticsPage() {
                     minute: "2-digit",
                   })}
                 </p>
-              </Link>
-            )
-          })}
+              </div>
+            </Link>
+          ))}
         </div>
       )}
     </div>

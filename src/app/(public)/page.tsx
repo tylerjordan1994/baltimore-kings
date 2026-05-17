@@ -407,8 +407,8 @@ export default function HomePage() {
                   },
                   {
                     icon: Users,
-                    title: "Pathway",
-                    body: "Development squad to first-team and beyond.",
+                    title: "Pathway to Pro",
+                    body: "Development squad to first-team futsal, MASL3, and the road to the pro game.",
                   },
                 ].map((f, i) => (
                   <Reveal key={f.title} variant="up" delay={300 + i * 110}>
@@ -630,9 +630,9 @@ export default function HomePage() {
           </Reveal>
           <Reveal variant="scale" delay={120}>
             <h2 className="mt-5 font-heading text-4xl leading-[1.02] text-paper sm:text-6xl lg:text-7xl">
-              Think you can
+              Think you have
               <br />
-              <span className="sheen-text">play here?</span>
+              <span className="sheen-text">what it takes?</span>
             </h2>
           </Reveal>
           <Reveal variant="up" delay={260}>

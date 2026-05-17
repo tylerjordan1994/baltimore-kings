@@ -23,8 +23,9 @@ export function TacticsBoardViewer({ board }: TacticsBoardViewerProps) {
       name: board.name,
       kind: board.kind,
       field_type: board.field_type,
-      team_id: board.team_id,
+      team_ids: board.team_id ? [board.team_id] : [],
       is_published: board.is_published,
+      preview_image_url: board.preview_image_url,
     })
   }, [board, loadState])
 

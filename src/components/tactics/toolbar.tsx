@@ -1,8 +1,8 @@
 "use client"
 
-import { useTacticsStore, type TacticsTool, FUTSAL_POSITIONS, MASL_POSITIONS } from "@/lib/stores/tactics-store"
+import { useTacticsStore } from "@/lib/stores/tactics-store"
 import { Button } from "@/components/ui/button"
-import type { TacticsKind, FieldType, TacticsPosition } from "@/types/database"
+import type { TacticsKind, FieldType } from "@/types/database"
 
 interface ToolbarProps {
   teams: { id: string; name: string }[]
@@ -10,6 +10,8 @@ interface ToolbarProps {
   onDuplicate: () => void
   onDelete: () => void
   onNew: () => void
+  onAddLabel: () => void
+  onExport: () => void
   saving?: boolean
 }
 
@@ -19,107 +21,130 @@ export function Toolbar({
   onDuplicate,
   onDelete,
   onNew,
+  onAddLabel,
+  onExport,
   saving,
 }: ToolbarProps) {
-  const tool = useTacticsStore((s) => s.tool)
-  const setTool = useTacticsStore((s) => s.setTool)
-  const curvedArrows = useTacticsStore((s) => s.curvedArrows)
-  const setCurvedArrows = useTacticsStore((s) => s.setCurvedArrows)
   const name = useTacticsStore((s) => s.name)
   const setName = useTacticsStore((s) => s.setName)
   const kind = useTacticsStore((s) => s.kind)
   const setKind = useTacticsStore((s) => s.setKind)
   const fieldType = useTacticsStore((s) => s.fieldType)
   const setFieldType = useTacticsStore((s) => s.setFieldType)
-  const teamId = useTacticsStore((s) => s.teamId)
-  const setTeamId = useTacticsStore((s) => s.setTeamId)
+  const teamIds = useTacticsStore((s) => s.teamIds)
+  const toggleTeamId = useTacticsStore((s) => s.toggleTeamId)
   const isPublished = useTacticsStore((s) => s.isPublished)
   const setIsPublished = useTacticsStore((s) => s.setIsPublished)
-  const selectedId = useTacticsStore((s) => s.selectedId)
-  const removePlayer = useTacticsStore((s) => s.removePlayer)
-  const removeArrow = useTacticsStore((s) => s.removeArrow)
-  const removeLabel = useTacticsStore((s) => s.removeLabel)
-  const players = useTacticsStore((s) => s.players)
-  const arrows = useTacticsStore((s) => s.arrows)
-  const labels = useTacticsStore((s) => s.labels)
   const isDirty = useTacticsStore((s) => s.isDirty)
-  const selectedPosition = useTacticsStore((s) => s.selectedPosition)
-  const setSelectedPosition = useTacticsStore((s) => s.setSelectedPosition)
+  const selectedId = useTacticsStore((s) => s.selectedId)
+  const arrows = useTacticsStore((s) => s.arrows)
+  const players = useTacticsStore((s) => s.players)
+  const addPlayer = useTacticsStore((s) => s.addPlayer)
+  const addArrow = useTacticsStore((s) => s.addArrow)
+  const updateArrow = useTacticsStore((s) => s.updateArrow)
+  const deleteSelected = useTacticsStore((s) => s.deleteSelected)
+  const setSelectedId = useTacticsStore((s) => s.setSelectedId)
+  const undo = useTacticsStore((s) => s.undo)
+  const history = useTacticsStore((s) => s.history)
 
-  const isFutsal = fieldType === "futsal_rounded"
-  const positions = isFutsal ? FUTSAL_POSITIONS : MASL_POSITIONS
+  const selectedArrow = arrows.find((a) => a.id === selectedId)
+  const hasBall = players.some((p) => p.tokenType === "ball")
 
-  function handleDeleteSelected() {
-    if (!selectedId) return
-    if (players.find((p) => p.id === selectedId)) removePlayer(selectedId)
-    else if (arrows.find((a) => a.id === selectedId)) removeArrow(selectedId)
-    else if (labels.find((l) => l.id === selectedId)) removeLabel(selectedId)
+  function addBall() {
+    if (hasBall) {
+      setSelectedId(players.find((p) => p.tokenType === "ball")!.id)
+      return
+    }
+    addPlayer({
+      id: crypto.randomUUID(),
+      x: 0.5,
+      y: 0.5,
+      name: "Ball",
+      team: "home",
+      tokenType: "ball",
+    })
   }
 
-  const toolBtn = (t: TacticsTool, label: string) => (
-    <Button
-      variant={tool === t ? "default" : "outline"}
-      size="sm"
-      onClick={() => setTool(t)}
-    >
-      {label}
-    </Button>
-  )
+  function addNewArrow() {
+    const id = crypto.randomUUID()
+    addArrow({
+      id,
+      startX: 0.4,
+      startY: 0.5,
+      endX: 0.6,
+      endY: 0.5,
+      style: "solid",
+      curved: false,
+    })
+    setSelectedId(id)
+  }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900 p-3">
-      {/* Board name */}
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 p-3">
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="h-7 w-48 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+        className="h-7 w-44 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
         placeholder="Board name..."
       />
 
       <div className="h-5 w-px bg-zinc-700" />
 
-      {/* Tools */}
-      <div className="flex gap-1">
-        {toolBtn("select", "Select")}
-        {toolBtn("player_home", "Home")}
-        {toolBtn("player_away", "Away")}
-        {toolBtn("ball", "Ball")}
-        {toolBtn("arrow", "Arrow")}
-        {toolBtn("label", "Label")}
-      </div>
+      {/* Add elements */}
+      <Button variant="outline" size="sm" onClick={addBall}>
+        + Ball
+      </Button>
+      <Button variant="outline" size="sm" onClick={addNewArrow}>
+        + Arrow
+      </Button>
+      <Button variant="outline" size="sm" onClick={onAddLabel}>
+        + Label
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={undo}
+        disabled={history.length === 0}
+      >
+        Undo
+      </Button>
 
-      {/* Position selector for player tools */}
-      {(tool === "player_home" || tool === "player_away") && (
-        <select
-          value={selectedPosition}
-          onChange={(e) => setSelectedPosition(e.target.value as TacticsPosition)}
-          className="h-7 rounded border border-zinc-700 bg-zinc-800 px-2 text-xs text-white"
-        >
-          {positions.map((pos) => (
-            <option key={pos} value={pos}>
-              {pos}
-            </option>
-          ))}
-        </select>
+      {/* Selected arrow controls */}
+      {selectedArrow && (
+        <>
+          <div className="h-5 w-px bg-zinc-700" />
+          <Button
+            variant={selectedArrow.style === "dashed" ? "default" : "outline"}
+            size="sm"
+            onClick={() =>
+              updateArrow(selectedArrow.id, {
+                style: selectedArrow.style === "dashed" ? "solid" : "dashed",
+              })
+            }
+          >
+            {selectedArrow.style === "dashed" ? "Dashed" : "Solid"}
+          </Button>
+          <Button
+            variant={selectedArrow.curved ? "default" : "outline"}
+            size="sm"
+            onClick={() =>
+              updateArrow(selectedArrow.id, { curved: !selectedArrow.curved })
+            }
+          >
+            {selectedArrow.curved ? "Curved" : "Straight"}
+          </Button>
+        </>
       )}
 
-      {/* Arrow curve toggle */}
-      {tool === "arrow" && (
-        <label className="flex items-center gap-1.5 text-xs text-zinc-400">
-          <input
-            type="checkbox"
-            checked={curvedArrows}
-            onChange={(e) => setCurvedArrows(e.target.checked)}
-            className="rounded"
-          />
-          Curved
-        </label>
+      {selectedId && (
+        <Button variant="destructive" size="sm" onClick={deleteSelected}>
+          Delete selected
+        </Button>
       )}
 
       <div className="h-5 w-px bg-zinc-700" />
 
-      {/* Kind selector */}
       <select
         value={kind}
         onChange={(e) => setKind(e.target.value as TacticsKind)}
@@ -130,7 +155,6 @@ export function Toolbar({
         <option value="play">Play</option>
       </select>
 
-      {/* Field type */}
       <select
         value={fieldType}
         onChange={(e) => setFieldType(e.target.value as FieldType)}
@@ -140,50 +164,46 @@ export function Toolbar({
         <option value="masl_rounded_extra_player">MASL Arena</option>
       </select>
 
-      {/* Team selector */}
-      <select
-        value={teamId ?? ""}
-        onChange={(e) => setTeamId(e.target.value || null)}
-        className="h-7 rounded border border-zinc-700 bg-zinc-800 px-2 text-xs text-white"
-      >
-        <option value="">No team</option>
-        {teams.map((t) => (
-          <option key={t.id} value={t.id}>
-            {t.name}
-          </option>
-        ))}
-      </select>
-
-      <div className="h-5 w-px bg-zinc-700" />
-
-      {/* Delete selected */}
-      {selectedId && (
-        <Button variant="destructive" size="sm" onClick={handleDeleteSelected}>
-          Delete
-        </Button>
+      {/* Multi-team assignment */}
+      {teams.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 rounded border border-zinc-700 bg-zinc-800 px-2 py-1">
+          <span className="text-xs text-zinc-500">Teams:</span>
+          {teams.map((t) => (
+            <label
+              key={t.id}
+              className="flex items-center gap-1 text-xs text-zinc-300"
+            >
+              <input
+                type="checkbox"
+                checked={teamIds.includes(t.id)}
+                onChange={() => toggleTeamId(t.id)}
+                className="rounded"
+              />
+              {t.name}
+            </label>
+          ))}
+        </div>
       )}
 
       {/* Actions */}
-      <div className="ml-auto flex gap-2">
+      <div className="ml-auto flex flex-wrap gap-2">
         <Button variant="outline" size="sm" onClick={onNew}>
           New
         </Button>
         <Button variant="outline" size="sm" onClick={onDuplicate}>
           Duplicate
         </Button>
+        <Button variant="outline" size="sm" onClick={onExport}>
+          Export PNG
+        </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => setIsPublished(!isPublished)}
         >
-          {isPublished ? "Unpublish" : "Publish"}
+          {isPublished ? "Published" : "Draft"}
         </Button>
-        <Button
-          variant="default"
-          size="sm"
-          onClick={onSave}
-          disabled={saving}
-        >
+        <Button variant="default" size="sm" onClick={onSave} disabled={saving}>
           {saving ? "Saving..." : isDirty ? "Save *" : "Save"}
         </Button>
         <Button variant="destructive" size="sm" onClick={onDelete}>

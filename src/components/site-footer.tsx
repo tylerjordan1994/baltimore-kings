@@ -80,12 +80,26 @@ export function SiteFooter() {
             <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">Venues</h4>
             <ul className="mt-4 space-y-4">
               <li>
-                <p className="text-sm font-medium text-ink">GOALS Baltimore</p>
-                <p className="text-xs text-muted-foreground">6159 Edmondson Ave, Catonsville, MD 21228</p>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=GOALS+Baltimore+6159+Edmondson+Ave+Catonsville+MD+21228"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block"
+                >
+                  <p className="text-sm font-medium text-ink transition-colors group-hover:text-accent">GOALS Baltimore</p>
+                  <p className="text-xs text-muted-foreground">6159 Edmondson Ave, Catonsville, MD 21228</p>
+                </a>
               </li>
               <li>
-                <p className="text-sm font-medium text-ink">Benfield Sportscenter</p>
-                <p className="text-xs text-muted-foreground">1031 Benfield Blvd, Millersville, MD 21108</p>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Benfield+Sportscenter+1031+Benfield+Blvd+Millersville+MD+21108"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block"
+                >
+                  <p className="text-sm font-medium text-ink transition-colors group-hover:text-accent">Benfield Sportscenter</p>
+                  <p className="text-xs text-muted-foreground">1031 Benfield Blvd, Millersville, MD 21108</p>
+                </a>
               </li>
             </ul>
             <h4 className="mt-8 font-heading text-xs font-semibold uppercase tracking-widest text-brand">Club</h4>
