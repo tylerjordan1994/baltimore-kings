@@ -39,7 +39,7 @@ export default function ApplyPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ApplicationData>({
-    resolver: zodResolver(applicationSchema),
+    resolver: zodResolver(applicationSchema) as any,
   })
 
   async function onSubmit(data: ApplicationData) {
@@ -89,7 +89,7 @@ export default function ApplyPage() {
 
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-6">
             {/* Full Name */}
             <div>
               <label htmlFor="full_name" className="block text-sm font-medium">
