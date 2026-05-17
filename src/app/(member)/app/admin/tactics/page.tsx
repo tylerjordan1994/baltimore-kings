@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import type { TacticsBoard, Team } from "@/types/database"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default async function AdminTacticsPage() {
   const supabase = await createClient()
@@ -11,7 +11,7 @@ export default async function AdminTacticsPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect(`${basePath}/login`)
+  if (!user) redirect(`/login`)
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -20,7 +20,7 @@ export default async function AdminTacticsPage() {
     .single()
 
   if (!profile || (profile.role !== "coach" && profile.role !== "superadmin")) {
-    redirect(`${basePath}/app`)
+    redirect(`/app`)
   }
 
   const { data: boards } = await supabase
@@ -46,7 +46,7 @@ export default async function AdminTacticsPage() {
           </p>
         </div>
         <Link
-          href={`${basePath}/app/admin/tactics/new`}
+          href={`/app/admin/tactics/new`}
           className="inline-flex h-8 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
         >
           New Board
@@ -66,7 +66,7 @@ export default async function AdminTacticsPage() {
             return (
               <Link
                 key={board.id}
-                href={`${basePath}/app/admin/tactics/${board.id}`}
+                href={`/app/admin/tactics/${board.id}`}
                 className="group rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition hover:border-zinc-700 hover:bg-zinc-800/50"
               >
                 <div className="mb-2 flex items-center justify-between">

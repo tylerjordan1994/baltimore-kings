@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import type { TacticsBoard } from "@/types/database"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default async function TacticsPage() {
   const supabase = await createClient()
@@ -11,7 +11,7 @@ export default async function TacticsPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect(`${basePath}/login`)
+  if (!user) redirect(`/login`)
 
   // Get user's teams
   const { data: teamMembers } = await supabase
@@ -60,7 +60,7 @@ export default async function TacticsPage() {
             return (
               <Link
                 key={board.id}
-                href={`${basePath}/app/tactics/${board.id}`}
+                href={`/app/tactics/${board.id}`}
                 className="group rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition hover:border-zinc-700 hover:bg-zinc-800/50"
               >
                 <div className="mb-2 flex items-center justify-between">

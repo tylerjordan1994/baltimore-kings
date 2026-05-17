@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import type { Profile } from "@/types/database"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 const playerLinks = [
   { href: "/app", label: "Dashboard" },
@@ -34,7 +34,7 @@ export function MemberSidebar({ profile }: { profile: Profile }) {
   async function handleSignOut() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push(`${basePath}/login`)
+    router.push(`/login`)
   }
 
   const roleBadgeColor =
@@ -62,7 +62,7 @@ export function MemberSidebar({ profile }: { profile: Profile }) {
       <nav className="flex-1 overflow-y-auto p-3">
         <ul className="space-y-1">
           {playerLinks.map((link) => {
-            const fullHref = `${basePath}${link.href}`
+            const fullHref = `/${link.href}`
             const isActive = pathname === fullHref
             return (
               <li key={link.href}>
@@ -89,7 +89,7 @@ export function MemberSidebar({ profile }: { profile: Profile }) {
             </p>
             <ul className="space-y-1">
               {adminLinks.map((link) => {
-                const fullHref = `${basePath}${link.href}`
+                const fullHref = `/${link.href}`
                 const isActive = pathname === fullHref
                 return (
                   <li key={link.href}>

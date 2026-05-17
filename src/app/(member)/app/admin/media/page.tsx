@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import type { MediaItem, Team } from '@/types/database'
 
-const basePath = '/project/football-team'
+// basePath handled by next.config.ts
 
 const uploadSchema = z.object({
   caption: z.string().optional(),
@@ -70,7 +70,7 @@ export default function MediaPage() {
 
     const { data: urlData } = supabase.storage.from('media').getPublicUrl(path)
 
-    await fetch(`${basePath}/api/admin/media`, {
+    await fetch(`/api/admin/media`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -89,7 +89,7 @@ export default function MediaPage() {
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this media item?')) return
-    await fetch(`${basePath}/api/admin/media`, {
+    await fetch(`/api/admin/media`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),

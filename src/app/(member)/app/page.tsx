@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -9,7 +9,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect(`${basePath}/login`)
+  if (!user) redirect(`/login`)
 
   const { data: profile } = await supabase
     .from("profiles")

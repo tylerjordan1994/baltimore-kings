@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, ShoppingBag } from "lucide-react"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export const metadata = {
   title: "Merch | Baltimore Kings",

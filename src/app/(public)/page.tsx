@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, MapPin, Calendar, Users } from "lucide-react"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default function HomePage() {
   return (
@@ -22,13 +22,13 @@ export default function HomePage() {
               who want to compete at the highest level of indoor play on the East Coast.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href={`${basePath}/apply`}>
+              <Link href={`/apply`}>
                 <Button size="lg" variant="secondary" className="font-heading font-semibold">
                   Apply for a Tryout
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link href={`${basePath}/schedule`}>
+              <Link href={`/schedule`}>
                 <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
                   See the Schedule
                 </Button>
@@ -45,7 +45,7 @@ export default function HomePage() {
           <p className="mt-2 text-muted-foreground">Three competitive tracks. One pathway up.</p>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href={`${basePath}/teams/masl3`}>
+            <Link href={`/teams/masl3`}>
               <Card className="group h-full transition-shadow hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary">
@@ -64,7 +64,7 @@ export default function HomePage() {
               </Card>
             </Link>
 
-            <Link href={`${basePath}/teams/futsal-l1`}>
+            <Link href={`/teams/futsal-l1`}>
               <Card className="group h-full transition-shadow hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex h-12 w-12 items-center justify-center rounded-md bg-gold">
@@ -93,7 +93,7 @@ export default function HomePage() {
                   get promoted to the MASL2 roster. This is how you move up.
                 </p>
                 <Link
-                  href={`${basePath}/teams/masl3#pathway`}
+                  href={`/teams/masl3#pathway`}
                   className="mt-4 inline-flex items-center text-sm font-medium text-gold-dark"
                 >
                   Learn about the pathway <ArrowRight className="ml-1 h-3 w-3" />
@@ -163,7 +163,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-2xl font-bold sm:text-3xl">Upcoming</h2>
-            <Link href={`${basePath}/schedule`} className="text-sm font-medium text-gold-dark hover:underline">
+            <Link href={`/schedule`} className="text-sm font-medium text-gold-dark hover:underline">
               Full schedule <ArrowRight className="ml-1 inline h-3 w-3" />
             </Link>
           </div>

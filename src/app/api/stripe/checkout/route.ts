@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import Stripe from "stripe"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export async function POST(request: NextRequest) {
   try {
@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
         fee_item_id: fee.id,
         profile_id: user.id,
       },
-      success_url: `${origin}${basePath}/app/payments?success=true`,
-      cancel_url: `${origin}${basePath}/app/payments?canceled=true`,
+      success_url: `${origin}/project/football-team/app/payments?success=true`,
+      cancel_url: `${origin}/project/football-team/app/payments?canceled=true`,
     })
 
     return NextResponse.json({ url: session.url })

@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation"
 import type { TacticsBoard } from "@/types/database"
 import { TacticsBoardViewer } from "./viewer"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default async function ViewTacticsPage({
   params,
@@ -16,7 +16,7 @@ export default async function ViewTacticsPage({
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect(`${basePath}/login`)
+  if (!user) redirect(`/login`)
 
   const { data: board } = await supabase
     .from("tactics_boards")

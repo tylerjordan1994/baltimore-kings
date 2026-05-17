@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation"
 import type { TacticsBoard, Team } from "@/types/database"
 import { TacticsBoardEditor } from "./editor"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default async function EditTacticsPage({
   params,
@@ -16,7 +16,7 @@ export default async function EditTacticsPage({
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect(`${basePath}/login`)
+  if (!user) redirect(`/login`)
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -25,7 +25,7 @@ export default async function EditTacticsPage({
     .single()
 
   if (!profile || (profile.role !== "coach" && profile.role !== "superadmin")) {
-    redirect(`${basePath}/app`)
+    redirect(`/app`)
   }
 
   const { data: teams } = await supabase

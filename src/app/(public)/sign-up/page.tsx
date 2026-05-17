@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 const signUpSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -66,7 +66,7 @@ export default function SignUpPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <Link href={`${basePath}/sign-in`} className="text-primary underline underline-offset-4 hover:text-primary/80 text-sm">
+            <Link href={`/sign-in`} className="text-primary underline underline-offset-4 hover:text-primary/80 text-sm">
               Back to sign in
             </Link>
           </CardContent>
@@ -163,7 +163,7 @@ export default function SignUpPage() {
 
           <div className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href={`${basePath}/sign-in`} className="text-primary underline underline-offset-4 hover:text-primary/80">
+            <Link href={`/sign-in`} className="text-primary underline underline-offset-4 hover:text-primary/80">
               Sign in
             </Link>
           </div>

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import type { Application, ApplicationStatus } from '@/types/database'
 
-const basePath = '/project/football-team'
+// basePath handled by next.config.ts
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([])

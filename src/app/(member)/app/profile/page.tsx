@@ -7,7 +7,7 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/client"
 import type { Profile } from "@/types/database"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 const profileSchema = z.object({
   full_name: z.string().min(1, "Name is required"),

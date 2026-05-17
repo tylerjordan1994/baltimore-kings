@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -54,7 +54,7 @@ export default function SignInPage() {
       setError(error.message)
       return
     }
-    router.push(`${basePath}/app`)
+    router.push(`/app`)
   }
 
   async function onMagicLinkSubmit(values: MagicLinkValues) {
@@ -180,7 +180,7 @@ export default function SignInPage() {
 
           <div className="mt-4 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href={`${basePath}/sign-up`} className="text-primary underline underline-offset-4 hover:text-primary/80">
+            <Link href={`/sign-up`} className="text-primary underline underline-offset-4 hover:text-primary/80">
               Sign up
             </Link>
           </div>

@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Calendar, Users } from "lucide-react"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export const metadata = {
   title: "Futsal League 1 | Baltimore Kings",
@@ -44,7 +44,7 @@ export default async function FutsalL1Page() {
               We compete in Pro-SA League 1 — the top tier of organized futsal in the Mid-Atlantic.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href={`${basePath}/apply`}>
+              <Link href={`/apply`}>
                 <Button size="lg" variant="secondary" className="font-heading font-semibold">
                   Try out
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -191,7 +191,7 @@ export default async function FutsalL1Page() {
               </p>
             </div>
             <div className="mt-8">
-              <Link href={`${basePath}/learn`}>
+              <Link href={`/learn`}>
                 <Button variant="default" className="font-heading font-semibold">
                   Futsal tutorials
                   <ArrowRight className="ml-2 h-4 w-4" />

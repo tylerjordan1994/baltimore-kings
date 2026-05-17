@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { MemberSidebar } from "./member-sidebar"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default async function MemberLayout({
   children,
@@ -15,7 +15,7 @@ export default async function MemberLayout({
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect(`${basePath}/login`)
+    redirect(`/login`)
   }
 
   const { data: profile } = await supabase
@@ -25,7 +25,7 @@ export default async function MemberLayout({
     .single()
 
   if (!profile) {
-    redirect(`${basePath}/login`)
+    redirect(`/login`)
   }
 
   if (profile.role === "pending") {

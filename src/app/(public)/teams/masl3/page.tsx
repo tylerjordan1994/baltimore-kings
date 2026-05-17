@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Calendar, MapPin, Users } from "lucide-react"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export const metadata = {
   title: "MASL3 Team | Baltimore Kings",
@@ -44,7 +44,7 @@ export default async function MASL3Page() {
               We play in the Eastern Conference out of GOALS Baltimore.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href={`${basePath}/apply`}>
+              <Link href={`/apply`}>
                 <Button size="lg" variant="secondary" className="font-heading font-semibold">
                   Try out
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -192,7 +192,7 @@ export default async function MASL3Page() {
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href={`${basePath}/apply`}>
+              <Link href={`/apply`}>
                 <Button variant="default" className="font-heading font-semibold">
                   Apply now
                   <ArrowRight className="ml-2 h-4 w-4" />

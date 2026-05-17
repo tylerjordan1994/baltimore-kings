@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import type { CalendarEvent, Team } from '@/types/database'
 
-const basePath = '/project/football-team'
+// basePath handled by next.config.ts
 
 const eventSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -64,13 +64,13 @@ export default function SchedulePage() {
 
   async function onSubmit(data: EventForm) {
     if (editingId) {
-      await fetch(`${basePath}/api/admin/events`, {
+      await fetch(`/api/admin/events`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: editingId, ...data }),
       })
     } else {
-      await fetch(`${basePath}/api/admin/events`, {
+      await fetch(`/api/admin/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -84,7 +84,7 @@ export default function SchedulePage() {
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this event?')) return
-    await fetch(`${basePath}/api/admin/events`, {
+    await fetch(`/api/admin/events`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),

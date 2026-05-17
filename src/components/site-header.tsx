@@ -6,7 +6,7 @@ import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -27,7 +27,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href={basePath} className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary">
             <span className="font-heading text-lg font-bold text-primary-foreground">BK</span>
           </div>
@@ -40,13 +40,13 @@ export function SiteHeader() {
           {navLinks.map((link) => (
             <Link
               key={link.href}
-              href={`${basePath}${link.href === "/" ? "" : link.href}`}
+              href={`/${link.href === "/" ? "" : link.href}`}
               className="px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}
             </Link>
           ))}
-          <Link href={`${basePath}/sign-in`}>
+          <Link href={`/sign-in`}>
             <Button variant="outline" size="sm" className="ml-2">
               Sign In
             </Button>
@@ -63,7 +63,7 @@ export function SiteHeader() {
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
-                  href={`${basePath}${link.href === "/" ? "" : link.href}`}
+                  href={`/${link.href === "/" ? "" : link.href}`}
                   onClick={() => setOpen(false)}
                   className="rounded-md px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted"
                 >
@@ -71,7 +71,7 @@ export function SiteHeader() {
                 </Link>
               ))}
               <Link
-                href={`${basePath}/sign-in`}
+                href={`/sign-in`}
                 onClick={() => setOpen(false)}
                 className="mt-4 rounded-md bg-primary px-3 py-2 text-center text-base font-medium text-primary-foreground"
               >

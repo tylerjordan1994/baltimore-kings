@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import type { Payment, FeeItem } from "@/types/database"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([])
@@ -44,7 +44,7 @@ export default function PaymentsPage() {
   async function handlePayNow(feeId: string) {
     setProcessingFee(feeId)
 
-    const res = await fetch(`${basePath}/api/stripe/checkout`, {
+    const res = await fetch(`/api/stripe/checkout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fee_item_id: feeId }),

@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const token_hash = searchParams.get("token_hash")
   const type = searchParams.get("type") as "signup" | "email" | "recovery" | "invite" | null
-  const next = searchParams.get("next") ?? `${basePath}/app`
+  const next = searchParams.get("next") ?? `/app`
 
   if (token_hash && type) {
     const supabase = await createClient()
@@ -21,5 +21,5 @@ export async function GET(request: Request) {
   }
 
   // If verification fails, redirect to sign-in
-  return NextResponse.redirect(`${origin}${basePath}/sign-in`)
+  return NextResponse.redirect(`${origin}/sign-in`)
 }

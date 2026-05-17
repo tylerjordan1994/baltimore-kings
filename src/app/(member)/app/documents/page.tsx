@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import type { Document, DocumentKind } from "@/types/database"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 const documentKinds: DocumentKind[] = ["waiver", "id", "medical", "other"]
 
@@ -58,7 +58,7 @@ export default function DocumentsPage() {
     formData.append("file", file)
     formData.append("kind", kind)
 
-    const res = await fetch(`${basePath}/api/documents/upload`, {
+    const res = await fetch(`/api/documents/upload`, {
       method: "POST",
       body: formData,
     })

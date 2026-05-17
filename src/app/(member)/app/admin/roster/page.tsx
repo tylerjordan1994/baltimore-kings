@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import type { Team, Profile, TeamMember } from '@/types/database'
 
-const basePath = '/project/football-team'
+// basePath handled by next.config.ts
 
 interface PlayerCard {
   id: string
@@ -155,7 +155,7 @@ export default function RosterPage() {
     if (!teams.find((t) => t.id === targetTeamId)) return
 
     // Add player to new team (doesn't remove from origin)
-    await fetch(`${basePath}/api/admin/roster`, {
+    await fetch(`/api/admin/roster`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -183,7 +183,7 @@ export default function RosterPage() {
 
   async function handleAddPlayer(teamId: string) {
     if (!selectedPlayerId) return
-    await fetch(`${basePath}/api/admin/roster`, {
+    await fetch(`/api/admin/roster`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teamId, profileId: selectedPlayerId }),
@@ -194,7 +194,7 @@ export default function RosterPage() {
   }
 
   async function handleRemovePlayer(teamMemberId: string) {
-    await fetch(`${basePath}/api/admin/roster`, {
+    await fetch(`/api/admin/roster`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teamMemberId }),

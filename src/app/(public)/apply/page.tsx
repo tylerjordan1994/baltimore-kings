@@ -7,7 +7,7 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Loader2 } from "lucide-react"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 const applicationSchema = z.object({
   full_name: z.string().min(2, "Name is required"),
@@ -45,7 +45,7 @@ export default function ApplyPage() {
   async function onSubmit(data: ApplicationData) {
     setError(null)
     try {
-      const res = await fetch(`${basePath}/api/applications`, {
+      const res = await fetch(`/api/applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

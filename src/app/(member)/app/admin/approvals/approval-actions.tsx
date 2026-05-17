@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 
-const basePath = '/project/football-team'
+// basePath handled by next.config.ts
 
 export function ApprovalActions({ profileId }: { profileId: string }) {
   const [loading, setLoading] = useState(false)
@@ -11,7 +11,7 @@ export function ApprovalActions({ profileId }: { profileId: string }) {
 
   async function handleApprove() {
     setLoading(true)
-    await fetch(`${basePath}/api/admin/approve`, {
+    await fetch(`/api/admin/approve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profileId }),
@@ -23,7 +23,7 @@ export function ApprovalActions({ profileId }: { profileId: string }) {
   async function handleReject() {
     if (!confirm('Are you sure you want to reject this account? This will delete their profile.')) return
     setLoading(true)
-    await fetch(`${basePath}/api/admin/approve`, {
+    await fetch(`/api/admin/approve`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profileId }),

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
-const basePath = "/project/football-team"
+const BASE = "/project/football-team"
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get("code")
-  const next = searchParams.get("next") ?? `${basePath}/app`
+  const next = searchParams.get("next") ?? `${BASE}/app`
 
   if (code) {
     const supabase = await createClient()
@@ -16,6 +16,5 @@ export async function GET(request: Request) {
     }
   }
 
-  // If code exchange fails, redirect to sign-in with error
-  return NextResponse.redirect(`${origin}${basePath}/sign-in`)
+  return NextResponse.redirect(`${origin}${BASE}/sign-in`)
 }

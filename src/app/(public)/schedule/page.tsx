@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Calendar, Download } from "lucide-react"
 
-const basePath = "/project/football-team"
+// basePath handled by next.config.ts
 
 export const metadata = {
   title: "Schedule | Baltimore Kings",
@@ -58,7 +58,7 @@ export default async function SchedulePage() {
                 Games, training sessions, and events.
               </p>
             </div>
-            <Link href={`${basePath}/api/calendar/ical`}>
+            <Link href={`/api/calendar/ical`}>
               <Button variant="secondary" size="sm" className="font-heading font-semibold">
                 <Download className="mr-1.5 h-3.5 w-3.5" />
                 iCal Export
