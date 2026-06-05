@@ -2,8 +2,18 @@
 
 import type { Config, Fields, CustomField } from "@measured/puck"
 import { useEffect, useState } from "react"
+import DOMPurify from "isomorphic-dompurify"
 import { createClient } from "@/lib/supabase/client"
-import type { PlayerCardItem, EventItem, SponsorItem, ResolvedPayload } from "@/lib/content-tokens/types"
+import type {
+  PlayerCardItem,
+  EventItem,
+  SponsorItem,
+  AchievementItem,
+  MediaItemNorm,
+  LearnItem,
+  TeamItem,
+  ResolvedPayload,
+} from "@/lib/content-tokens/types"
 
 /* ════════════════════════════════════════════════════════
    Shared field helpers — brand-safe by construction.
@@ -92,6 +102,34 @@ function readResolved<T>(props: unknown): T[] {
   return []
 }
 
+function readValue(props: unknown): string | number | null {
+  const r = (props as { _resolved?: ResolvedPayload })._resolved
+  return r && "value" in r ? r.value : null
+}
+
+// EmbedHTML safety: strip scripts (DOMPurify default) and drop any iframe whose
+// host isn't an approved embed provider. CSP frame-src is the second line of defence.
+const EMBED_HOSTS = [
+  "instagram.com", "www.instagram.com", "facebook.com", "www.facebook.com",
+  "youtube.com", "www.youtube.com", "youtube-nocookie.com", "www.youtube-nocookie.com",
+  "google.com", "www.google.com", "maps.google.com",
+]
+DOMPurify.addHook("uponSanitizeElement", (node, data) => {
+  if (data.tagName === "iframe") {
+    const el = node as unknown as Element
+    const src = el.getAttribute?.("src") ?? ""
+    let ok = false
+    try { ok = EMBED_HOSTS.includes(new URL(src).host) } catch { ok = false }
+    if (!ok) el.parentNode?.removeChild(el)
+  }
+})
+function sanitizeEmbed(html: string): string {
+  return DOMPurify.sanitize(html, {
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "loading"],
+  })
+}
+
 function EmptyState({ label }: { label: string }) {
   return (
     <div className="mx-auto max-w-3xl rounded-xl border border-dashed border-[#E2E0DA] bg-paper/60 p-8 text-center text-sm text-[#6B6B6B]">
@@ -112,6 +150,19 @@ type HeroProps = { eyebrow: string; title: string; subtitle: string; imageUrl: s
 type PlayerCardsProps = { token: string; columns: 2 | 3 | 4; showJersey: boolean }
 type ScheduleListProps = { token: string; heading: string }
 type SponsorStripProps = { token: string; grayscale: boolean }
+type ImageProps = { src: string; alt: string; caption: string; rounded: boolean }
+type GalleryProps = { images: string; columns: 2 | 3 | 4 }
+type StatProps = { value: string; label: string; bg: string }
+type SectionLabelProps = { text: string }
+type QuoteProps = { text: string; attribution: string }
+type AccordionProps = { items: string }
+type MapProps = { query: string; height: number }
+type EmbedHTMLProps = { html: string }
+type MediaGridProps = { token: string; columns: 2 | 3 | 4 }
+type TrophyCaseProps = { token: string }
+type TeamStripProps = { token: string }
+type LearnIndexProps = { token: string }
+type NextMatchProps = { token: string; label: string }
 
 export type Props = {
   Heading: HeadingProps
@@ -119,9 +170,22 @@ export type Props = {
   Button: ButtonProps
   Spacer: SpacerProps
   Hero: HeroProps
+  Image: ImageProps
+  Gallery: GalleryProps
+  Stat: StatProps
+  SectionLabel: SectionLabelProps
+  Quote: QuoteProps
+  Accordion: AccordionProps
+  Map: MapProps
+  EmbedHTML: EmbedHTMLProps
   PlayerCards: PlayerCardsProps
   ScheduleList: ScheduleListProps
   SponsorStrip: SponsorStripProps
+  MediaGrid: MediaGridProps
+  TrophyCase: TrophyCaseProps
+  TeamStrip: TeamStripProps
+  LearnIndex: LearnIndexProps
+  NextMatch: NextMatchProps
 }
 
 const GAP: Record<number, string> = {
@@ -136,8 +200,9 @@ const GAP: Record<number, string> = {
 
 export const puckConfig: Config<Props> = {
   categories: {
-    content: { title: "Content", components: ["Hero", "Heading", "RichText", "Button", "Spacer"] },
-    data: { title: "Data-bound", components: ["PlayerCards", "ScheduleList", "SponsorStrip"] },
+    content: { title: "Content", components: ["Hero", "Heading", "RichText", "Button", "SectionLabel", "Quote", "Spacer"] },
+    media: { title: "Media & embeds", components: ["Image", "Gallery", "Stat", "Accordion", "Map", "EmbedHTML"] },
+    data: { title: "Data-bound", components: ["PlayerCards", "ScheduleList", "SponsorStrip", "MediaGrid", "TrophyCase", "TeamStrip", "LearnIndex", "NextMatch"] },
   },
   components: {
     Hero: {
@@ -327,6 +392,236 @@ export const puckConfig: Config<Props> = {
                 <span key={s.id} className="font-heading text-xl text-ink/40">{s.name}</span>
               ),
             )}
+          </div>
+        )
+      },
+    },
+
+    /* ── Presentational: media & embeds ── */
+    Image: {
+      label: "Image",
+      fields: {
+        src: { type: "text", label: "Image URL" },
+        alt: { type: "text", label: "Alt text" },
+        caption: { type: "text", label: "Caption" },
+        rounded: { type: "radio", label: "Rounded", options: [{ label: "Yes", value: true }, { label: "No", value: false }] },
+      } as Fields<ImageProps>,
+      defaultProps: { src: "", alt: "", caption: "", rounded: true },
+      render: ({ src, alt, caption, rounded }) => (
+        <figure className="mx-auto max-w-4xl px-6">
+          {src ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={src} alt={alt} className={`w-full object-cover ${rounded ? "rounded-2xl" : ""}`} />
+          ) : <EmptyState label="Add an image URL." />}
+          {caption ? <figcaption className="mt-2 text-center text-sm text-[#6B6B6B]">{caption}</figcaption> : null}
+        </figure>
+      ),
+    },
+    Gallery: {
+      label: "Gallery",
+      fields: {
+        images: { type: "textarea", label: "Image URLs (one per line)" },
+        columns: { type: "select", label: "Columns", options: [{ label: "2", value: 2 }, { label: "3", value: 3 }, { label: "4", value: 4 }] },
+      } as Fields<GalleryProps>,
+      defaultProps: { images: "", columns: 3 },
+      render: ({ images, columns }) => {
+        const urls = images.split("\n").map((s) => s.trim()).filter(Boolean)
+        if (urls.length === 0) return <EmptyState label="Add image URLs, one per line." />
+        return (
+          <div className={`mx-auto grid max-w-6xl grid-cols-2 gap-3 px-6 ${GAP[columns] ?? GAP[3]}`}>
+            {urls.map((u, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={i} src={u} alt="" className="aspect-square w-full rounded-xl object-cover" />
+            ))}
+          </div>
+        )
+      },
+    },
+    Stat: {
+      label: "Stat",
+      fields: {
+        value: { type: "text", label: "Value" },
+        label: { type: "text", label: "Label" },
+        bg: colorField("Background"),
+      } as Fields<StatProps>,
+      defaultProps: { value: "100+", label: "Players developed", bg: "paper" },
+      render: ({ value, label, bg }) => (
+        <div className={`mx-auto max-w-6xl px-6`}>
+          <div className={`rounded-2xl px-8 py-10 text-center ${bgClass[bg] ?? bgClass.paper}`}>
+            <div className="font-heading text-5xl tabular-nums sm:text-7xl">{value}</div>
+            <div className="mt-2 text-sm uppercase tracking-[0.15em] opacity-70">{label}</div>
+          </div>
+        </div>
+      ),
+    },
+    SectionLabel: {
+      label: "Section Label",
+      fields: { text: { type: "text", label: "Text" } } as Fields<SectionLabelProps>,
+      defaultProps: { text: "Section" },
+      render: ({ text }) => (
+        <div className="mx-auto max-w-6xl px-6"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-dark">{text}</p></div>
+      ),
+    },
+    Quote: {
+      label: "Quote",
+      fields: {
+        text: { type: "textarea", label: "Quote" },
+        attribution: { type: "text", label: "Attribution" },
+      } as Fields<QuoteProps>,
+      defaultProps: { text: "An inspiring quote.", attribution: "— Coach" },
+      render: ({ text, attribution }) => (
+        <blockquote className="mx-auto max-w-3xl px-6 text-center">
+          <p className="font-heading text-2xl leading-snug text-ink sm:text-3xl">“{text}”</p>
+          {attribution ? <footer className="mt-3 text-sm text-[#6B6B6B]">{attribution}</footer> : null}
+        </blockquote>
+      ),
+    },
+    Accordion: {
+      label: "Accordion",
+      fields: { items: { type: "textarea", label: "Items (Question | Answer, one per line)" } } as Fields<AccordionProps>,
+      defaultProps: { items: "What is futsal? | Five-a-side indoor soccer on a hard court." },
+      render: ({ items }) => {
+        const rows = items.split("\n").map((l) => l.split("|").map((s) => s.trim())).filter((p) => p[0])
+        if (rows.length === 0) return <EmptyState label="Add Question | Answer lines." />
+        return (
+          <div className="mx-auto max-w-3xl px-6">
+            {rows.map(([q, a], i) => (
+              <details key={i} className="border-b border-[#E2E0DA] py-4">
+                <summary className="cursor-pointer font-semibold text-ink">{q}</summary>
+                <p className="mt-2 text-[#6B6B6B]">{a}</p>
+              </details>
+            ))}
+          </div>
+        )
+      },
+    },
+    Map: {
+      label: "Map",
+      fields: {
+        query: { type: "text", label: "Address or place" },
+        height: { type: "number", label: "Height (px)" },
+      } as Fields<MapProps>,
+      defaultProps: { query: "GOALS Baltimore, Catonsville, MD", height: 360 },
+      render: ({ query, height }) => (
+        <div className="mx-auto max-w-5xl px-6">
+          <iframe
+            title="Map"
+            className="w-full rounded-2xl border border-[#E2E0DA]"
+            style={{ height: `${height || 360}px` }}
+            loading="lazy"
+            src={`https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`}
+          />
+        </div>
+      ),
+    },
+    EmbedHTML: {
+      label: "Embed HTML",
+      fields: { html: { type: "textarea", label: "Embed code (sanitized; YouTube/Maps/Instagram/Facebook)" } } as Fields<EmbedHTMLProps>,
+      defaultProps: { html: "" },
+      render: ({ html }) => {
+        if (!html) return <EmptyState label="Paste an embed from YouTube, Instagram, Facebook, or Google Maps." />
+        return <div className="mx-auto max-w-4xl px-6 [&_iframe]:w-full" dangerouslySetInnerHTML={{ __html: sanitizeEmbed(html) }} />
+      },
+    },
+
+    /* ── Data-bound: more collections ── */
+    MediaGrid: {
+      label: "Media Grid",
+      fields: {
+        token: tokenField("media"),
+        columns: { type: "select", label: "Columns", options: [{ label: "2", value: 2 }, { label: "3", value: 3 }, { label: "4", value: 4 }] },
+      } as Fields<MediaGridProps>,
+      defaultProps: { token: "", columns: 3 },
+      render: (props) => {
+        const media = readResolved<MediaItemNorm>(props)
+        if (!props.token) return <EmptyState label="No media bound — pick a media token." />
+        if (media.length === 0) return <EmptyState label="No media yet." />
+        return (
+          <div className={`mx-auto grid max-w-6xl grid-cols-2 gap-3 px-6 ${GAP[props.columns] ?? GAP[3]}`}>
+            {media.map((m) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={m.id} src={m.url} alt={m.caption ?? ""} className="aspect-square w-full rounded-xl object-cover" />
+            ))}
+          </div>
+        )
+      },
+    },
+    TrophyCase: {
+      label: "Trophy Case",
+      fields: { token: tokenField("achievements") } as Fields<TrophyCaseProps>,
+      defaultProps: { token: "" },
+      render: (props) => {
+        const items = readResolved<AchievementItem>(props)
+        if (!props.token) return <EmptyState label="No achievements bound — pick an achievements token." />
+        if (items.length === 0) return <EmptyState label="No achievements yet." />
+        return (
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-6 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((a) => (
+              <article key={a.id} className="rounded-2xl border border-[#E2E0DA] bg-white p-5">
+                <div className="font-heading text-lg text-ink">🏆 {a.title}</div>
+                {a.season ? <div className="mt-1 text-xs uppercase tracking-wide text-accent-dark">{a.season}</div> : null}
+                {a.description ? <p className="mt-2 text-sm text-[#6B6B6B]">{a.description}</p> : null}
+              </article>
+            ))}
+          </div>
+        )
+      },
+    },
+    TeamStrip: {
+      label: "Team Strip",
+      fields: { token: tokenField("teams") } as Fields<TeamStripProps>,
+      defaultProps: { token: "" },
+      render: (props) => {
+        const teams = readResolved<TeamItem>(props)
+        if (!props.token) return <EmptyState label="No teams bound — pick a teams token." />
+        if (teams.length === 0) return <EmptyState label="No teams yet." />
+        return (
+          <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-4 px-6">
+            {teams.map((t) => (
+              <a key={t.id} href={`/project/football-team/teams/${t.slug}`} className="rounded-full border border-[#E2E0DA] bg-white px-5 py-2 font-heading text-ink transition hover:border-accent">
+                {t.name}
+              </a>
+            ))}
+          </div>
+        )
+      },
+    },
+    LearnIndex: {
+      label: "Learn Index",
+      fields: { token: tokenField("learn") } as Fields<LearnIndexProps>,
+      defaultProps: { token: "" },
+      render: (props) => {
+        const pages = readResolved<LearnItem>(props)
+        if (!props.token) return <EmptyState label="No learn pages bound — pick a learn token." />
+        if (pages.length === 0) return <EmptyState label="No learn pages yet." />
+        return (
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-4 px-6 sm:grid-cols-2">
+            {pages.map((p) => (
+              <a key={p.id} href={`/project/football-team/learn/${p.slug}`} className="rounded-2xl border border-[#E2E0DA] bg-white p-5 transition hover:border-accent">
+                <div className="font-heading text-lg text-ink">{p.title}</div>
+                {p.summary ? <p className="mt-1 text-sm text-[#6B6B6B]">{p.summary}</p> : null}
+              </a>
+            ))}
+          </div>
+        )
+      },
+    },
+    NextMatch: {
+      label: "Next Match",
+      fields: {
+        token: tokenField("value"),
+        label: { type: "text", label: "Label" },
+      } as Fields<NextMatchProps>,
+      defaultProps: { token: "next-match", label: "Next match" },
+      render: (props) => {
+        const value = readValue(props)
+        if (!value) return <EmptyState label="No upcoming match." />
+        return (
+          <div className="mx-auto max-w-3xl px-6">
+            <div className="rounded-2xl bg-brand px-8 py-8 text-center text-paper">
+              <div className="text-xs uppercase tracking-[0.2em] text-accent">{props.label}</div>
+              <div className="mt-2 font-heading text-2xl sm:text-4xl">{String(value)}</div>
+            </div>
           </div>
         )
       },
