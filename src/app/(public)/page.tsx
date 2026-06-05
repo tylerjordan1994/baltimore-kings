@@ -8,6 +8,10 @@ import {
   Camera,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
+import { createAnonClient } from "@/lib/supabase/anon"
+import { hydrateTokens, type PuckData } from "@/lib/content-tokens/hydrate"
+import { PageRenderer } from "@/components/puck/page-renderer"
+import type { Data } from "@measured/puck"
 import {
   Reveal,
   Parallax,
@@ -99,6 +103,21 @@ function formatPostDate(value: string | null) {
 }
 
 export default async function HomePage() {
+  // CMS override: if a coach has marked a published Puck page as "home", it
+  // renders at the site root. Otherwise the built-in homepage below is the default.
+  const anon = createAnonClient()
+  const { data: homePage } = await anon
+    .from("pages")
+    .select("puck_data")
+    .eq("is_home", true)
+    .eq("status", "published")
+    .eq("visibility", "public")
+    .maybeSingle()
+  if (homePage && (homePage as { puck_data: PuckData }).puck_data) {
+    const hydrated = await hydrateTokens((homePage as { puck_data: PuckData }).puck_data, { audience: "public", supabase: anon })
+    return <PageRenderer data={hydrated as unknown as Data} />
+  }
+
   const supabase = await createClient()
 
   const [{ data: sponsorData }, { data: socialData }] = await Promise.all([
