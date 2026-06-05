@@ -30,6 +30,7 @@ const playerLinks = [
 ]
 
 const adminLinks = [
+  { href: "/app/admin/pages", label: "Pages", icon: "▤" },
   { href: "/app/admin/roster", label: "Roster Manager", icon: "⊞" },
   { href: "/app/admin/players", label: "All Players", icon: "⊟" },
   { href: "/app/admin/schedule", label: "Schedule", icon: "▦" },
