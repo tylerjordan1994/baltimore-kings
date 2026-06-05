@@ -44,11 +44,57 @@ export interface SponsorItem {
   description: string | null
 }
 
+export interface AchievementItem {
+  id: string
+  title: string
+  description: string | null
+  date: string | null
+  season: string | null
+  photoUrl: string | null
+  kind: string
+}
+export interface MediaItemNorm {
+  id: string
+  kind: string
+  url: string
+  caption: string | null
+  takenAt: string | null
+}
+export interface SocialItem {
+  id: string
+  source: string | null
+  caption: string | null
+  mediaUrl: string | null
+  externalUrl: string | null
+  embedHtml: string | null
+  postedAt: string | null
+}
+export interface LearnItem {
+  id: string
+  slug: string
+  title: string
+  summary: string | null
+  category: string | null
+  coverImageUrl: string | null
+}
+export interface TeamItem {
+  id: string
+  name: string
+  slug: string
+  league: string
+  season: string | null
+}
+
 /** Discriminated payload returned by resolveToken(). `value` mode returns a scalar. */
 export type ResolvedPayload =
   | { collection: "players"; items: PlayerCardItem[] }
   | { collection: "events"; items: EventItem[] }
   | { collection: "sponsors"; items: SponsorItem[] }
+  | { collection: "achievements"; items: AchievementItem[] }
+  | { collection: "media"; items: MediaItemNorm[] }
+  | { collection: "social"; items: SocialItem[] }
+  | { collection: "learn"; items: LearnItem[] }
+  | { collection: "teams"; items: TeamItem[] }
   | { collection: "value"; value: string | number | null }
   | { collection: "empty"; items: never[]; note?: string }
 
@@ -75,6 +121,13 @@ export const sponsorsDynamicConfig = z.object({
   activeOnly: z.boolean().default(true),
   tier: z.string().optional(),
   sort: z.enum(["order_index_asc", "name_asc"]).default("order_index_asc"),
+  limit: z.number().int().positive().max(100).optional(),
+})
+
+/** Generic dynamic filter for the simpler collections. */
+export const genericDynamicConfig = z.object({
+  activeOnly: z.boolean().default(true),
+  sort: z.enum(["recent", "order", "name"]).default("recent"),
   limit: z.number().int().positive().max(100).optional(),
 })
 

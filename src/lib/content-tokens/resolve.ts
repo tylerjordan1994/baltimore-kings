@@ -4,6 +4,7 @@ import {
   playersDynamicConfig,
   eventsDynamicConfig,
   sponsorsDynamicConfig,
+  genericDynamicConfig,
   curatedConfig,
   valueConfig,
 } from "./types"
@@ -36,15 +37,33 @@ export async function resolveToken(
 
   if (!token) return EMPTY
   const t = token as TokenRow
-  const config = (t.config ?? {}) as Record<string, unknown>
+  return resolveTokenConfig(t.collection, t.mode, (t.config ?? {}) as Record<string, unknown>, ctx)
+}
 
+/**
+ * Resolve an ad-hoc (collection, mode, config) without a persisted token row.
+ * Used by the token wizard's live preview and by resolveToken().
+ */
+export async function resolveTokenConfig(
+  collection: string,
+  mode: string,
+  config: Record<string, unknown>,
+  ctx: ResolveContext,
+): Promise<ResolvedPayload> {
   try {
-    if (t.collection === "players") return await resolvePlayers(ctx, t.mode, config)
-    if (t.collection === "events") return await resolveEvents(ctx, t.mode, config)
-    if (t.collection === "sponsors") return await resolveSponsors(ctx, t.mode, config)
-    if (t.collection === "value") return await resolveValue(ctx, config)
-    // achievements / media / social / merch / learn / teams: not yet wired (Phase F).
-    return { collection: "empty", items: [], note: `collection '${t.collection}' not yet resolved` }
+    switch (collection) {
+      case "players": return await resolvePlayers(ctx, mode, config)
+      case "events": return await resolveEvents(ctx, mode, config)
+      case "sponsors": return await resolveSponsors(ctx, mode, config)
+      case "achievements": return await resolveAchievements(ctx, config)
+      case "media": return await resolveMedia(ctx, config)
+      case "social": return await resolveSocial(ctx, config)
+      case "learn": return await resolveLearn(ctx, config)
+      case "teams": return await resolveTeams(ctx, config)
+      case "value": return await resolveValue(ctx, config)
+      case "merch": return { collection: "empty", items: [], note: "no merch source in this database" }
+      default: return { collection: "empty", items: [], note: `collection '${collection}' not resolved` }
+    }
   } catch {
     return EMPTY
   }
@@ -230,7 +249,15 @@ async function resolveValue(
     return { collection: "value", value: (fromJson as string | number | null) ?? null }
   }
 
-  // computed
+  // (computed below)
+  return resolveValueComputed(ctx, cfg)
+}
+
+async function resolveValueComputed(
+  ctx: ResolveContext,
+  cfg: { compute: "next_match" | "club_record" },
+): Promise<ResolvedPayload> {
+  const { supabase } = ctx
   if (cfg.compute === "next_match") {
     const { data } = await supabase
       .from("calendar_events")
@@ -248,4 +275,65 @@ async function resolveValue(
   }
 
   return { collection: "value", value: null }
+}
+
+/* ── achievements / media / social / learn / teams ─────── */
+
+async function resolveAchievements(ctx: ResolveContext, raw: Record<string, unknown>): Promise<ResolvedPayload> {
+  const c = genericDynamicConfig.parse(raw)
+  let q = ctx.supabase
+    .from("achievements")
+    .select("id, kind, title, description, achievement_date, season, photo_url, display_order")
+    .eq("is_archived", false)
+  q = c.sort === "order" ? q.order("display_order", { ascending: true })
+    : c.sort === "name" ? q.order("title", { ascending: true })
+    : q.order("achievement_date", { ascending: false, nullsFirst: false })
+  if (c.limit) q = q.limit(c.limit)
+  const { data } = await q
+  type R = { id: string; kind: string; title: string; description: string | null; achievement_date: string | null; season: string | null; photo_url: string | null }
+  return {
+    collection: "achievements",
+    items: ((data ?? []) as R[]).map((r) => ({ id: r.id, title: r.title, description: r.description, date: r.achievement_date, season: r.season, photoUrl: r.photo_url, kind: r.kind })),
+  }
+}
+
+async function resolveMedia(ctx: ResolveContext, raw: Record<string, unknown>): Promise<ResolvedPayload> {
+  const c = genericDynamicConfig.parse(raw)
+  let q = ctx.supabase.from("media_items").select("id, kind, url, caption, taken_at")
+  q = c.sort === "name" ? q.order("caption", { ascending: true }) : q.order("taken_at", { ascending: false, nullsFirst: false })
+  if (c.limit) q = q.limit(c.limit)
+  const { data } = await q
+  type R = { id: string; kind: string; url: string; caption: string | null; taken_at: string | null }
+  return { collection: "media", items: ((data ?? []) as R[]).map((r) => ({ id: r.id, kind: r.kind, url: r.url, caption: r.caption, takenAt: r.taken_at })) }
+}
+
+async function resolveSocial(ctx: ResolveContext, raw: Record<string, unknown>): Promise<ResolvedPayload> {
+  const c = genericDynamicConfig.parse(raw)
+  let q = ctx.supabase.from("social_posts").select("id, source, external_url, embed_html, media_url, caption, posted_at").order("posted_at", { ascending: false, nullsFirst: false })
+  if (c.limit) q = q.limit(c.limit)
+  const { data } = await q
+  type R = { id: string; source: string | null; external_url: string | null; embed_html: string | null; media_url: string | null; caption: string | null; posted_at: string | null }
+  return { collection: "social", items: ((data ?? []) as R[]).map((r) => ({ id: r.id, source: r.source, caption: r.caption, mediaUrl: r.media_url, externalUrl: r.external_url, embedHtml: r.embed_html, postedAt: r.posted_at })) }
+}
+
+async function resolveLearn(ctx: ResolveContext, raw: Record<string, unknown>): Promise<ResolvedPayload> {
+  const c = genericDynamicConfig.parse(raw)
+  let q = ctx.supabase.from("learn_pages").select("id, slug, title, summary, category, cover_image_url, is_public, order_index")
+  if (c.activeOnly && ctx.audience === "public") q = q.eq("is_public", true)
+  q = c.sort === "name" ? q.order("title", { ascending: true }) : q.order("order_index", { ascending: true, nullsFirst: false })
+  if (c.limit) q = q.limit(c.limit)
+  const { data } = await q
+  type R = { id: string; slug: string; title: string; summary: string | null; category: string | null; cover_image_url: string | null }
+  return { collection: "learn", items: ((data ?? []) as R[]).map((r) => ({ id: r.id, slug: r.slug, title: r.title, summary: r.summary, category: r.category, coverImageUrl: r.cover_image_url })) }
+}
+
+async function resolveTeams(ctx: ResolveContext, raw: Record<string, unknown>): Promise<ResolvedPayload> {
+  const c = genericDynamicConfig.parse(raw)
+  let q = ctx.supabase.from("teams").select("id, name, slug, league, season, is_active, display_order")
+  if (c.activeOnly) q = q.eq("is_active", true)
+  q = c.sort === "name" ? q.order("name", { ascending: true }) : q.order("display_order", { ascending: true, nullsFirst: false })
+  if (c.limit) q = q.limit(c.limit)
+  const { data } = await q
+  type R = { id: string; name: string; slug: string; league: string; season: string | null }
+  return { collection: "teams", items: ((data ?? []) as R[]).map((r) => ({ id: r.id, name: r.name, slug: r.slug, league: r.league, season: r.season })) }
 }
