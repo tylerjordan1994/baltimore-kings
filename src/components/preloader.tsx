@@ -24,8 +24,11 @@ setWasmUrl(`${BASE}/dotlottie-player.wasm`)
 
 type Phase = "loading" | "exiting" | "done"
 
-// Let the cosmos animation breathe before we allow it to leave.
-const MIN_VISIBLE_MS = 1700
+// How long the cosmos animation shows before it leaves. The page content is
+// already server-rendered underneath, so we deliberately do NOT wait on the
+// `load` event — that wouldn't fire until every image (and the wasm) finished,
+// which would pin the preloader to the slowest asset on the page.
+const VISIBLE_MS = 1300
 const EXIT_MS_HOME = 950
 const EXIT_MS_DEFAULT = 550
 
@@ -34,22 +37,11 @@ export function Preloader() {
   const isHome = pathname === "/"
   const [phase, setPhase] = useState<Phase>("loading")
 
-  // loading → exiting, once the page is loaded + min time met
+  // loading → exiting, after a short fixed beat (not gated on asset loading)
   useEffect(() => {
     if (phase !== "loading") return
-    const start = performance.now()
-
-    const begin = () => {
-      const wait = Math.max(0, MIN_VISIBLE_MS - (performance.now() - start))
-      window.setTimeout(() => setPhase("exiting"), wait)
-    }
-
-    if (document.readyState === "complete") {
-      begin()
-    } else {
-      window.addEventListener("load", begin, { once: true })
-      return () => window.removeEventListener("load", begin)
-    }
+    const t = window.setTimeout(() => setPhase("exiting"), VISIBLE_MS)
+    return () => window.clearTimeout(t)
   }, [phase])
 
   // exiting → done, after the leave transition finishes
