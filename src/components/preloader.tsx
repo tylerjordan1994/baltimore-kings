@@ -90,17 +90,17 @@ export function Preloader() {
   return (
     <div
       aria-hidden={exiting}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-brand"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-accent"
       style={{ willChange: "transform, opacity", ...leaveStyle }}
     >
       <div className="w-[min(62vw,260px)]">
         <DotLottieReact src={`${BASE}/cosmos.lottie`} autoplay loop />
       </div>
       <div className="-mt-2 text-center">
-        <p className="font-heading text-base tracking-[0.32em] text-paper/90 sm:text-lg">
+        <p className="font-heading text-base tracking-[0.32em] text-brand sm:text-lg">
           BALTIMORE KINGS
         </p>
-        <p className="mt-1.5 text-[0.65rem] uppercase tracking-[0.28em] text-accent">
+        <p className="mt-1.5 text-[0.65rem] uppercase tracking-[0.28em] text-brand/70">
           Futsal · Arena Soccer
         </p>
       </div>
