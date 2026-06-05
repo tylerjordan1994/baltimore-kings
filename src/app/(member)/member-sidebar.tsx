@@ -37,6 +37,7 @@ const adminLinks = [
   { href: "/app/admin/navigation", label: "Navigation", icon: "☰" },
   { href: "/app/admin/roster", label: "Roster Manager", icon: "⊞" },
   { href: "/app/admin/players", label: "All Players", icon: "⊟" },
+  { href: "/app/admin/quick-add", label: "Quick-add Players", icon: "⊕" },
   { href: "/app/admin/schedule", label: "Schedule", icon: "▦" },
   { href: "/app/admin/tactics", label: "Play Builder", icon: "⬡" },
   { href: "/app/admin/videos", label: "VEO Videos", icon: "▷" },

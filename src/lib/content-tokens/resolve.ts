@@ -123,7 +123,9 @@ async function resolvePlayers(
     const { data: team } = await supabase.from("teams").select("slug").eq("id", cfg.teamId).maybeSingle()
     teamSlug = (team as { slug: string } | null)?.slug
   }
-  if (teamSlug) q = q.contains("teams", [{ slug: teamSlug }])
+  // Pass a JSON string: supabase-js formats an array arg as a Postgres array
+  // (cs.{...}), which doesn't match a jsonb column. A string uses cs.<json>.
+  if (teamSlug) q = q.contains("teams", JSON.stringify([{ slug: teamSlug }]))
 
   if (cfg.sort === "name_asc") q = q.order("full_name", { ascending: true })
   else q = q.order("jersey_number", { ascending: true, nullsFirst: false })
