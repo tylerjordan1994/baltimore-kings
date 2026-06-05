@@ -10,7 +10,9 @@ const SPONSOR_PLACEHOLDERS = [
   "Sponsor Us",
 ]
 
-export function SiteFooter() {
+type QuickLink = { label: string; href: string; external: boolean }
+
+export function SiteFooter({ quickLinks }: { quickLinks?: QuickLink[] } = {}) {
   return (
     <footer className="relative bg-paper">
       {/* Top accent gradient line */}
@@ -67,11 +69,27 @@ export function SiteFooter() {
           <div>
             <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">Quick Links</h4>
             <ul className="mt-4 space-y-3">
-              <li><Link href="/apply" className="text-sm text-muted-foreground transition-colors hover:text-ink">Apply for Tryout</Link></li>
-              <li><Link href="/roster" className="text-sm text-muted-foreground transition-colors hover:text-ink">Roster</Link></li>
-              <li><Link href="/schedule" className="text-sm text-muted-foreground transition-colors hover:text-ink">Full Schedule</Link></li>
-              <li><a href="https://baltimorekings.printify.me/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">Merch Store</a></li>
-              <li><Link href="/sign-in" className="text-sm text-muted-foreground transition-colors hover:text-ink">Member Login</Link></li>
+              {quickLinks && quickLinks.length > 0 ? (
+                quickLinks.map((l) => (
+                  <li key={l.href + l.label}>
+                    <a
+                      href={l.href}
+                      {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      className="text-sm text-muted-foreground transition-colors hover:text-ink"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><Link href="/apply" className="text-sm text-muted-foreground transition-colors hover:text-ink">Apply for Tryout</Link></li>
+                  <li><Link href="/roster" className="text-sm text-muted-foreground transition-colors hover:text-ink">Roster</Link></li>
+                  <li><Link href="/schedule" className="text-sm text-muted-foreground transition-colors hover:text-ink">Full Schedule</Link></li>
+                  <li><a href="https://baltimorekings.printify.me/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">Merch Store</a></li>
+                  <li><Link href="/sign-in" className="text-sm text-muted-foreground transition-colors hover:text-ink">Member Login</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
