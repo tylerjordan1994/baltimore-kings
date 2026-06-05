@@ -140,7 +140,8 @@ function TokenWizard({
   // Live preview (debounced).
   const cfgKey = useMemo(() => JSON.stringify({ c: d.collection, m: d.mode, cfg: d.config }), [d.collection, d.mode, d.config])
   useEffect(() => {
-    if (d.collection === "value") { setPreview(null); return }
+    // Value tokens show a static message (not driven by `preview`), so skip fetching.
+    if (d.collection === "value") return
     const id = setTimeout(async () => {
       const res = await fetch(`${BASE}/api/cms/tokens/preview`, {
         method: "POST",

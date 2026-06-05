@@ -124,3 +124,7 @@ Still open:
 - **Stripe** — set test keys in env to exercise fee Checkout end-to-end; live keys in prod only.
 - **merch** collection has no backing table; **events** opponent/result need `games` integration.
 - Curated mode is fully wired for `players`; other collections currently resolve as dynamic.
+
+- **Soft 404**: the CMS catch-all (`(public)/[...slug]`) renders the branded 404 page for
+  unknown/reserved slugs (guard works, real routes win) but responds HTTP 200 instead of 404
+  (Next 16 notFound()+catch-all status quirk). Fix for SEO: force a 404 status from the route.
