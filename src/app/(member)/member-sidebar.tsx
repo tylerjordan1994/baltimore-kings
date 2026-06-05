@@ -20,6 +20,7 @@ const playerLinks = [
   { href: "/app/profile", label: "Profile", icon: "●" },
   { href: "/app/schedule", label: "Schedule", icon: "▦" },
   { href: "/app/payments", label: "Payments", icon: "◈" },
+  { href: "/app/fees", label: "My Fees", icon: "₿" },
   { href: "/app/tactics", label: "Play Builder", icon: "⬡" },
   { href: "/app/videos", label: "VEO Videos", icon: "▷" },
   { href: "/app/training", label: "Training & Tutorials", icon: "▣" },
@@ -47,6 +48,7 @@ const adminLinks = [
   { href: "/app/admin/training", label: "Training & Tutorials", icon: "▣" },
   { href: "/app/admin/requirements", label: "Player Agreements", icon: "▢" },
   { href: "/app/admin/scouting", label: "Scouting", icon: "◬" },
+  { href: "/app/admin/fees", label: "Fees", icon: "₿" },
   { href: "/app/admin/tickets", label: "Ticketed Events", icon: "◈" },
   { href: "/app/admin/social", label: "Social & Brand", icon: "◕" },
 ]
