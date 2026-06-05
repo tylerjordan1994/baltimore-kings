@@ -83,3 +83,19 @@ Add this to the main site's `vercel.json`:
   ]
 }
 ```
+
+---
+
+## CMS / Content-Token layer (Phase A — added 2026-06-05)
+
+### Reconciliations & decisions
+- **Theme:** Public site = **light** default; member dashboard (`/app`) = **dark**. This overrides the master spec §5.2 "dark default for public hero" wording — DESIGN-SYSTEM.md already mandates light-public/dark-dashboard, so no conflict in practice. A public hero may use a dark *section* background via `--court`, but no dark global theme on public.
+- **`site_settings.founded_year` = `[NEEDS CONFIRMATION]`** (seeded null). Set the real founding year in `/app/admin` settings (or DB) so `[club-founded-year]` resolves.
+- **`profiles.slug` added** (generated from `full_name` via trigger, unique). The public roster route currently uses `[id]`; resolve-by-slug-or-id is a small follow-up in Phase C/F.
+- **`fee_items` extended, legacy columns kept:** the table pre-existed with a direct-assignment model (`profile_id`, `is_paid`, `due_date`). Spec's template model adds `title`, `currency`, `applies_to`, `is_active` + a new `fee_assignments` join. Legacy columns remain (nullable) for back-compat; the Phase E Fees admin uses the template+assignments model. Migrate/retire legacy columns once no code reads them.
+- **`public_profiles` is a SECURITY DEFINER view (intentional).** Supabase linter flags it ERROR by blanket policy, but it is the *safer* choice here: anon gets no row-level policy on `profiles` (which would expose minors' DOB/school via direct query); anon reads only the filtered, column-projected view. Documented as an accepted exception in SECURITY-REPORT.md.
+- **Master spec ("Complete Project Specification") is not in the repo.** Cross-references (§5.2 tokens, §6 IA, §9 sections, §11.x managers) were inferred from the live codebase + DESIGN-SYSTEM.md. Drop the master spec into the repo to lock fidelity on later phases.
+
+### Outstanding for later phases
+- `merch` token collection has **no backing table** (no `merch_products` in this DB) — resolver returns empty for `merch` until a products source exists.
+- `events` token currently sources `calendar_events` only; `opponent`/`homeOrAway`/`result` (from `games`) are null until games integration in Phase E/F.

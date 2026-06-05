@@ -66,6 +66,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "achievements_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "achievements_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
@@ -125,6 +132,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "alumni_linked_profile_id_fkey"
+            columns: ["linked_profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       applications: {
@@ -181,6 +195,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "applications_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       attendance_records: {
@@ -227,10 +248,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "attendance_records_marked_by_fkey"
+            columns: ["marked_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "attendance_records_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_records_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -269,6 +304,13 @@ export type Database = {
             columns: ["actor_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_log_actor_profile_id_fkey"
+            columns: ["actor_profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -310,6 +352,13 @@ export type Database = {
             columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_assets_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -365,6 +414,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "calendar_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       conduct_reports: {
@@ -404,10 +460,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "conduct_reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "conduct_reports_subject_profile_id_fkey"
             columns: ["subject_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conduct_reports_subject_profile_id_fkey"
+            columns: ["subject_profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_tokens: {
+        Row: {
+          collection: Database["public"]["Enums"]["token_collection"]
+          config: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          key: string
+          mode: Database["public"]["Enums"]["token_mode"]
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          collection: Database["public"]["Enums"]["token_collection"]
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          key: string
+          mode: Database["public"]["Enums"]["token_mode"]
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          collection?: Database["public"]["Enums"]["token_collection"]
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          key?: string
+          mode?: Database["public"]["Enums"]["token_mode"]
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_tokens_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_tokens_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -447,6 +571,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_assignments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -535,6 +666,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "contracts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "contracts_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
@@ -576,6 +714,58 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "documents_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          criteria: Json
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       evaluation_periods: {
@@ -603,6 +793,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluation_periods_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -668,10 +865,83 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "evaluations_evaluator_id_fkey"
+            columns: ["evaluator_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "evaluations_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fee_assignments: {
+        Row: {
+          created_at: string
+          fee_item_id: string
+          id: string
+          payment_id: string | null
+          profile_id: string
+          status: Database["public"]["Enums"]["fee_assignment_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fee_item_id: string
+          id?: string
+          payment_id?: string | null
+          profile_id: string
+          status?: Database["public"]["Enums"]["fee_assignment_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fee_item_id?: string
+          id?: string
+          payment_id?: string | null
+          profile_id?: string
+          status?: Database["public"]["Enums"]["fee_assignment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fee_assignments_fee_item_id_fkey"
+            columns: ["fee_item_id"]
+            isOneToOne: false
+            referencedRelation: "fee_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fee_assignments_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fee_assignments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fee_assignments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -679,42 +949,54 @@ export type Database = {
       fee_items: {
         Row: {
           amount_cents: number
+          applies_to: Database["public"]["Enums"]["fee_applies_to"]
           created_at: string
           created_by: string | null
+          currency: string
           description: string
           due_date: string | null
           id: string
+          is_active: boolean
           is_paid: boolean
           payment_id: string | null
           profile_id: string | null
           purpose: Database["public"]["Enums"]["payment_purpose"]
           team_id: string | null
+          title: string | null
         }
         Insert: {
           amount_cents: number
+          applies_to?: Database["public"]["Enums"]["fee_applies_to"]
           created_at?: string
           created_by?: string | null
+          currency?: string
           description: string
           due_date?: string | null
           id?: string
+          is_active?: boolean
           is_paid?: boolean
           payment_id?: string | null
           profile_id?: string | null
           purpose?: Database["public"]["Enums"]["payment_purpose"]
           team_id?: string | null
+          title?: string | null
         }
         Update: {
           amount_cents?: number
+          applies_to?: Database["public"]["Enums"]["fee_applies_to"]
           created_at?: string
           created_by?: string | null
+          currency?: string
           description?: string
           due_date?: string | null
           id?: string
+          is_active?: boolean
           is_paid?: boolean
           payment_id?: string | null
           profile_id?: string | null
           purpose?: Database["public"]["Enums"]["payment_purpose"]
           team_id?: string | null
+          title?: string | null
         }
         Relationships: [
           {
@@ -722,6 +1004,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fee_items_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -736,6 +1025,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fee_items_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -815,6 +1111,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_participations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -941,6 +1244,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "learn_pages_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       media_items: {
@@ -987,6 +1297,76 @@ export type Database = {
             columns: ["uploaded_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_items_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nav_items: {
+        Row: {
+          created_at: string
+          external_url: string | null
+          feature_card_json: Json | null
+          id: string
+          is_active: boolean
+          is_cta: boolean
+          label: string
+          link_type: Database["public"]["Enums"]["nav_link_type"]
+          menu_key: string
+          order_index: number
+          page_id: string | null
+          parent_id: string | null
+          visibility: Database["public"]["Enums"]["cms_visibility"]
+        }
+        Insert: {
+          created_at?: string
+          external_url?: string | null
+          feature_card_json?: Json | null
+          id?: string
+          is_active?: boolean
+          is_cta?: boolean
+          label: string
+          link_type?: Database["public"]["Enums"]["nav_link_type"]
+          menu_key: string
+          order_index?: number
+          page_id?: string | null
+          parent_id?: string | null
+          visibility?: Database["public"]["Enums"]["cms_visibility"]
+        }
+        Update: {
+          created_at?: string
+          external_url?: string | null
+          feature_card_json?: Json | null
+          id?: string
+          is_active?: boolean
+          is_cta?: boolean
+          label?: string
+          link_type?: Database["public"]["Enums"]["nav_link_type"]
+          menu_key?: string
+          order_index?: number
+          page_id?: string | null
+          parent_id?: string | null
+          visibility?: Database["public"]["Enums"]["cms_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nav_items_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nav_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "nav_items"
             referencedColumns: ["id"]
           },
         ]
@@ -1052,10 +1432,153 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "orientations_coach_approved_by_fkey"
+            columns: ["coach_approved_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "orientations_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orientations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_revisions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          page_id: string
+          puck_data: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          page_id: string
+          puck_data: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          page_id?: string
+          puck_data?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_revisions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_revisions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_revisions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pages: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_home: boolean
+          og_image_url: string | null
+          published_at: string | null
+          puck_data: Json
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          status: Database["public"]["Enums"]["page_status"]
+          title: string
+          updated_at: string
+          updated_by: string | null
+          visibility: Database["public"]["Enums"]["cms_visibility"]
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_home?: boolean
+          og_image_url?: string | null
+          published_at?: string | null
+          puck_data?: Json
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["page_status"]
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          visibility?: Database["public"]["Enums"]["cms_visibility"]
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_home?: boolean
+          og_image_url?: string | null
+          published_at?: string | null
+          puck_data?: Json
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["page_status"]
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          visibility?: Database["public"]["Enums"]["cms_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pages_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pages_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pages_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pages_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1108,6 +1631,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "payments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       player_club_history: {
@@ -1150,10 +1680,109 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "player_club_history_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "player_club_history_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_club_history_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      player_evaluations: {
+        Row: {
+          created_at: string
+          evaluator_id: string | null
+          id: string
+          profile_id: string
+          scores: Json
+          season: string | null
+          summary_note: string | null
+          team_id: string | null
+          template_id: string | null
+          updated_at: string
+          visibility: Database["public"]["Enums"]["eval_visibility"]
+        }
+        Insert: {
+          created_at?: string
+          evaluator_id?: string | null
+          id?: string
+          profile_id: string
+          scores?: Json
+          season?: string | null
+          summary_note?: string | null
+          team_id?: string | null
+          template_id?: string | null
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["eval_visibility"]
+        }
+        Update: {
+          created_at?: string
+          evaluator_id?: string | null
+          id?: string
+          profile_id?: string
+          scores?: Json
+          season?: string | null
+          summary_note?: string | null
+          team_id?: string | null
+          template_id?: string | null
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["eval_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_evaluations_evaluator_id_fkey"
+            columns: ["evaluator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_evaluations_evaluator_id_fkey"
+            columns: ["evaluator_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_evaluations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_evaluations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_evaluations_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_evaluations_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "eval_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -1197,6 +1826,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "player_goals_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
@@ -1225,6 +1861,7 @@ export type Database = {
           position_secondary: string | null
           role: Database["public"]["Enums"]["user_role"]
           school: string | null
+          slug: string | null
           status: Database["public"]["Enums"]["profile_status"]
           updated_at: string
           years_in_club: number | null
@@ -1254,6 +1891,7 @@ export type Database = {
           position_secondary?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           school?: string | null
+          slug?: string | null
           status?: Database["public"]["Enums"]["profile_status"]
           updated_at?: string
           years_in_club?: number | null
@@ -1283,6 +1921,7 @@ export type Database = {
           position_secondary?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           school?: string | null
+          slug?: string | null
           status?: Database["public"]["Enums"]["profile_status"]
           updated_at?: string
           years_in_club?: number | null
@@ -1343,6 +1982,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "prospects_scouted_by_fkey"
+            columns: ["scouted_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       requirement_signatures: {
@@ -1376,6 +2022,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_signatures_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1423,6 +2076,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "requirements_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       seasons: {
@@ -1459,6 +2119,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      site_settings: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          dashboard_theme: string
+          default_og_image_url: string | null
+          founded_year: number | null
+          id: boolean
+          public_theme: string
+          settings: Json
+          social_handles: Json
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          dashboard_theme?: string
+          default_og_image_url?: string | null
+          founded_year?: number | null
+          id?: boolean
+          public_theme?: string
+          settings?: Json
+          social_handles?: Json
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          dashboard_theme?: string
+          default_og_image_url?: string | null
+          founded_year?: number | null
+          id?: boolean
+          public_theme?: string
+          settings?: Json
+          social_handles?: Json
+          updated_at?: string
+        }
+        Relationships: []
       }
       social_posts: {
         Row: {
@@ -1626,6 +2325,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "tactics_boards_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "tactics_boards_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
@@ -1671,6 +2377,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1767,6 +2480,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ticketed_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1870,10 +2590,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "training_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "training_assignments_assigned_to_profile_id_fkey"
             columns: ["assigned_to_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_assignments_assigned_to_profile_id_fkey"
+            columns: ["assigned_to_profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1935,6 +2669,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "training_progress_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       tutorials: {
@@ -1979,11 +2720,117 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "tutorials_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_recordings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string | null
+          notes_markdown: string | null
+          recorded_at: string | null
+          team_id: string | null
+          title: string | null
+          veo_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string | null
+          notes_markdown?: string | null
+          recorded_at?: string | null
+          team_id?: string | null
+          title?: string | null
+          veo_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string | null
+          notes_markdown?: string | null
+          recorded_at?: string | null
+          team_id?: string | null
+          title?: string | null
+          veo_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_recordings_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "video_recordings_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "video_recordings_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          also_plays_for_steaks: boolean | null
+          bio: string | null
+          full_name: string | null
+          id: string | null
+          jersey_number: number | null
+          nickname: string | null
+          photo_url: string | null
+          position_primary: string | null
+          position_secondary: string | null
+          slug: string | null
+          teams: Json | null
+        }
+        Insert: {
+          also_plays_for_steaks?: boolean | null
+          bio?: never
+          full_name?: string | null
+          id?: string | null
+          jersey_number?: number | null
+          nickname?: string | null
+          photo_url?: string | null
+          position_primary?: string | null
+          position_secondary?: string | null
+          slug?: string | null
+          teams?: never
+        }
+        Update: {
+          also_plays_for_steaks?: boolean | null
+          bio?: never
+          full_name?: string | null
+          id?: string | null
+          jersey_number?: number | null
+          nickname?: string | null
+          photo_url?: string | null
+          position_primary?: string | null
+          position_secondary?: string | null
+          slug?: string | null
+          teams?: never
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_user_role: {
@@ -1991,7 +2838,10 @@ export type Database = {
         Returns: Database["public"]["Enums"]["user_role"]
       }
       is_coach_or_above: { Args: never; Returns: boolean }
+      is_coach_or_admin: { Args: never; Returns: boolean }
+      is_member: { Args: never; Returns: boolean }
       is_superadmin: { Args: never; Returns: boolean }
+      slugify: { Args: { v: string }; Returns: string }
     }
     Enums: {
       achievement_kind: "club" | "player"
@@ -2005,6 +2855,7 @@ export type Database = {
         | "retired"
         | "other"
       application_status: "new" | "reviewed" | "invited" | "rejected"
+      cms_visibility: "public" | "members_only"
       contract_applies_to: "individual" | "team" | "all_active"
       contract_assignment_status: "pending" | "signed" | "expired" | "voided"
       contract_kind:
@@ -2015,6 +2866,7 @@ export type Database = {
         | "code_of_conduct"
         | "other"
       document_kind: "waiver" | "id" | "medical" | "other"
+      eval_visibility: "coach_only" | "shared"
       event_kind:
         | "practice"
         | "home_game"
@@ -2023,6 +2875,8 @@ export type Database = {
         | "meeting"
         | "other"
       event_visibility: "public" | "members_only"
+      fee_applies_to: "team" | "players"
+      fee_assignment_status: "outstanding" | "paid" | "waived"
       field_type: "futsal_rounded" | "masl_rounded_extra_player"
       focus_category: "technical" | "tactical" | "physical" | "mental"
       goal_status:
@@ -2034,6 +2888,8 @@ export type Database = {
         | "dropped"
       league_type: "masl3" | "masl2" | "futsal_l1" | "futsal_other"
       media_kind: "photo" | "video"
+      nav_link_type: "page" | "url" | "group"
+      page_status: "draft" | "published"
       payment_purpose:
         | "ref_fee"
         | "practice_fee"
@@ -2050,6 +2906,18 @@ export type Database = {
         | "passed"
       roster_position: "starter" | "sub" | "reserve"
       tactics_kind: "formation" | "set_piece" | "play"
+      token_collection:
+        | "players"
+        | "events"
+        | "sponsors"
+        | "achievements"
+        | "media"
+        | "social"
+        | "merch"
+        | "learn"
+        | "teams"
+        | "value"
+      token_mode: "dynamic" | "curated" | "value"
       training_priority: "low" | "normal" | "high"
       training_status:
         | "not_started"
@@ -2196,6 +3064,7 @@ export const Constants = {
         "other",
       ],
       application_status: ["new", "reviewed", "invited", "rejected"],
+      cms_visibility: ["public", "members_only"],
       contract_applies_to: ["individual", "team", "all_active"],
       contract_assignment_status: ["pending", "signed", "expired", "voided"],
       contract_kind: [
@@ -2207,6 +3076,7 @@ export const Constants = {
         "other",
       ],
       document_kind: ["waiver", "id", "medical", "other"],
+      eval_visibility: ["coach_only", "shared"],
       event_kind: [
         "practice",
         "home_game",
@@ -2216,6 +3086,8 @@ export const Constants = {
         "other",
       ],
       event_visibility: ["public", "members_only"],
+      fee_applies_to: ["team", "players"],
+      fee_assignment_status: ["outstanding", "paid", "waived"],
       field_type: ["futsal_rounded", "masl_rounded_extra_player"],
       focus_category: ["technical", "tactical", "physical", "mental"],
       goal_status: [
@@ -2228,6 +3100,8 @@ export const Constants = {
       ],
       league_type: ["masl3", "masl2", "futsal_l1", "futsal_other"],
       media_kind: ["photo", "video"],
+      nav_link_type: ["page", "url", "group"],
+      page_status: ["draft", "published"],
       payment_purpose: [
         "ref_fee",
         "practice_fee",
@@ -2246,6 +3120,19 @@ export const Constants = {
       ],
       roster_position: ["starter", "sub", "reserve"],
       tactics_kind: ["formation", "set_piece", "play"],
+      token_collection: [
+        "players",
+        "events",
+        "sponsors",
+        "achievements",
+        "media",
+        "social",
+        "merch",
+        "learn",
+        "teams",
+        "value",
+      ],
+      token_mode: ["dynamic", "curated", "value"],
       training_priority: ["low", "normal", "high"],
       training_status: [
         "not_started",
@@ -2259,12 +3146,9 @@ export const Constants = {
 } as const
 
 
-
-// ─────────────────────────────────────────────────────────────
+// ────────────────────────────────────────
 // Convenience aliases — row + enum types used across the app.
-// Aliases include optional joined relations (`profiles`, `teams`,
-// `games`, `focus_areas`) so embedded Supabase selects type-check.
-// ─────────────────────────────────────────────────────────────
+// ────────────────────────────────────────
 type WithProfile<T> = T & { profiles?: Tables<"profiles"> | null }
 type WithTeam<T> = T & { teams?: Tables<"teams"> | null }
 type WithGame<T> = T & { games?: Tables<"games"> | null }
