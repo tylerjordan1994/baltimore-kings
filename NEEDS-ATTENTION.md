@@ -99,3 +99,28 @@ Add this to the main site's `vercel.json`:
 ### Outstanding for later phases
 - `merch` token collection has **no backing table** (no `merch_products` in this DB) — resolver returns empty for `merch` until a products source exists.
 - `events` token currently sources `calendar_events` only; `opponent`/`homeOrAway`/`result` (from `games`) are null until games integration in Phase E/F.
+
+### CMS build — remaining work (as of 2026-06-05)
+
+Delivered & verified: data layer (Phase A), token resolver + render pipeline, Puck editor +
+secured page APIs, Token admin + live preview (Phase D), page management + revisions, navigation
+editor + DB-driven footer (Phase C), Player Evaluations + radar, Fees + Stripe (Phase E parts 1–2).
+
+Still open:
+- **Header mega-menu** — still hardcoded in `site-header.tsx`; migrate to render from `nav_items`
+  (footer already does). Deferred to avoid regressing the polished design.
+- **Block palette breadth** — Gallery, Columns/Section (Puck slots), Calendar, TrophyCase,
+  MediaGrid, TeamStrip, NextMatch, LearnIndex, Marquee, Quote, Map, Accordion, Stat, EmbedHTML,
+  PromoSlot. Reference blocks (PlayerCards/ScheduleList/SponsorStrip) are the template.
+- **EmbedHTML block** with sanitization + media-library image picker field.
+- **Players quick-add** (paste format) + injured/minor guardian-consent capture UI (schema +
+  `public_profiles` protection already in place).
+- **Schedule** recurring practices, presets, iCal export (events token + `members_only` vs
+  `public` split already work).
+- **Phase F** — rebuild the existing public pages as editable Puck documents (catch-all render
+  route is ready; homepage-as-Puck via `is_home`).
+- **Next 16 caching** — `revalidateContent`/`revalidatePagePath` use `unstable_cache` +
+  `revalidateTag(tag,'max')`; verify against the Next 16 `'use cache'` model under load.
+- **Stripe** — set test keys in env to exercise fee Checkout end-to-end; live keys in prod only.
+- **merch** collection has no backing table; **events** opponent/result need `games` integration.
+- Curated mode is fully wired for `players`; other collections currently resolve as dynamic.

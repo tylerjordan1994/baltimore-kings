@@ -31,3 +31,23 @@
 2. **Account deletion** — Add DELETE /api/profile endpoint that cascades through all user data. Add UI button in profile settings. Estimated 1 hour.
 3. **EXIF stripping** — Photo uploads should strip EXIF metadata. Add `sharp` processing on upload route. Estimated 30 minutes.
 4. **Signed URL expiry** — Document download URLs should have short TTL (15 minutes). Currently using Supabase's default signed URL expiry.
+
+---
+
+## CMS / Content-Token layer — security checks (2026-06-05)
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| Service-role key isolation | PASS | `SUPABASE_SERVICE_ROLE_KEY` referenced only in `src/lib/supabase/server.ts` (`createServiceClient`); no `'use client'` file references it; absent from `.next/static`. Token resolution uses anon/session clients only. |
+| Token API RLS | PASS | `/api/content-tokens/[token]` resolves under anon (public, cached) or the caller's session (members); never service role. Validates key format. |
+| Page write APIs | PASS | create/save/publish/actions/revisions all `requireRole('coach')` → 401/403 verified unauthenticated. |
+| Token write APIs | PASS | create/update/delete + preview all `requireRole('coach')` → 401 verified. |
+| Nav write APIs | PASS | create/reorder/update/delete `requireRole('coach')` → 401 verified. |
+| Fee write APIs + checkout | PASS | create/waive/checkout `requireRole('coach')` (checkout: authed player, own assignment only) → 401 verified. |
+| Eval isolation | PASS (RLS) | `player_evaluations` RLS: a player reads only own rows with `visibility='shared'`; coach/superadmin full. `/app/my-evaluations` filters `profile_id = auth.uid()` + `shared`. |
+| `_resolved` strip on save | PASS | `stripResolved()` runs in PUT/publish so resolved records are never persisted — only bindings. |
+| Reserved-slug guard | PASS | Enforced at create API (reject), render route (404 on reserved), and a DB CHECK constraint on `pages.slug`. |
+| Minor protection | PASS | `public_profiles` view nulls a minor's bio and never projects school/hometown/DOB/phone; anon has no row policy on `profiles` directly. |
+| `public_profiles` SECURITY DEFINER | ACCEPTED EXCEPTION | Supabase linter flags it ERROR, but it is the safer choice here: anon reads only the filtered, column-projected view, never `profiles`. Reviewed and intentional. |
+| Embed sanitization | PENDING | Dedicated `EmbedHTML` block not yet built; CSP already restricts `frame-src`/`script-src` to known providers (Stripe, YouTube, Instagram, Google Maps). |
+
