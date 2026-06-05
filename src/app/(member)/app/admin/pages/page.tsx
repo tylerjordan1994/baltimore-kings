@@ -1,8 +1,8 @@
-import Link from "next/link"
 import { redirect } from "next/navigation"
 import { requireRole } from "@/lib/require-role"
 import { createClient } from "@/lib/supabase/server"
 import { CreatePageForm } from "./create-page-form"
+import { PageActions } from "./page-actions"
 
 type PageRow = {
   id: string
@@ -63,11 +63,8 @@ export default async function PagesAdmin() {
                     <span className={`rounded-full px-2 py-0.5 text-xs ${p.status === "published" ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{p.visibility}</td>
-                  <td className="px-4 py-3 text-right">
-                    <Link href={`/app/admin/pages/${p.id}/edit`} className="font-semibold text-accent-dark hover:underline">Edit</Link>
-                    {p.status === "published" && p.visibility === "public" ? (
-                      <a href={`/project/football-team/${p.slug}`} target="_blank" rel="noreferrer" className="ml-3 text-muted-foreground hover:underline">View</a>
-                    ) : null}
+                  <td className="px-4 py-3">
+                    <PageActions id={p.id} slug={p.slug} status={p.status} isHome={p.is_home} />
                   </td>
                 </tr>
               ))
