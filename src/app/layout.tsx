@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Archivo_Black, Plus_Jakarta_Sans } from "next/font/google"
 import "./globals.css"
+import { Preloader } from "@/components/preloader"
 
 const archivoBlack = Archivo_Black({
   weight: "400",
@@ -42,6 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${plusJakarta.variable} ${archivoBlack.variable}`}>
       <body className="min-h-screen bg-paper text-ink antialiased">
+        <Preloader />
         {children}
       </body>
     </html>
