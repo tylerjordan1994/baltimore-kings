@@ -2,7 +2,7 @@
 
 import type { Config, Fields, CustomField } from "@measured/puck"
 import { useEffect, useState } from "react"
-import DOMPurify from "isomorphic-dompurify"
+import { sanitizeEmbed } from "@/lib/sanitize-embed"
 import { createClient } from "@/lib/supabase/client"
 import type {
   PlayerCardItem,
@@ -107,28 +107,6 @@ function readValue(props: unknown): string | number | null {
   return r && "value" in r ? r.value : null
 }
 
-// EmbedHTML safety: strip scripts (DOMPurify default) and drop any iframe whose
-// host isn't an approved embed provider. CSP frame-src is the second line of defence.
-const EMBED_HOSTS = [
-  "instagram.com", "www.instagram.com", "facebook.com", "www.facebook.com",
-  "youtube.com", "www.youtube.com", "youtube-nocookie.com", "www.youtube-nocookie.com",
-  "google.com", "www.google.com", "maps.google.com",
-]
-DOMPurify.addHook("uponSanitizeElement", (node, data) => {
-  if (data.tagName === "iframe") {
-    const el = node as unknown as Element
-    const src = el.getAttribute?.("src") ?? ""
-    let ok = false
-    try { ok = EMBED_HOSTS.includes(new URL(src).host) } catch { ok = false }
-    if (!ok) el.parentNode?.removeChild(el)
-  }
-})
-function sanitizeEmbed(html: string): string {
-  return DOMPurify.sanitize(html, {
-    ADD_TAGS: ["iframe"],
-    ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "loading"],
-  })
-}
 
 function EmptyState({ label }: { label: string }) {
   return (

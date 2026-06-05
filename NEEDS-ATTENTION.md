@@ -128,3 +128,24 @@ Still open:
 - **Soft 404**: the CMS catch-all (`(public)/[...slug]`) renders the branded 404 page for
   unknown/reserved slugs (guard works, real routes win) but responds HTTP 200 instead of 404
   (Next 16 notFound()+catch-all status quirk). Fix for SEO: force a 404 status from the route.
+
+### CMS build — progress update (2026-06-05, later)
+
+Now ALSO done: full block palette (Image/Gallery/Stat/SectionLabel/Quote/Accordion/Map/
+EmbedHTML + MediaGrid/TrophyCase/TeamStrip/LearnIndex/NextMatch); EmbedHTML sanitized at
+render AND save; **players quick-add**; **iCal export** (+ footer subscribe link);
+**homepage is CMS-overridable** (Set home → Puck page renders at root, else built-in default);
+and a **critical resolver fix** (roster `.contains` jsonb filter) — roster tokens now return
+the live roster and PlayerCards renders it.
+
+Genuinely still open (deliberately deferred — regression risk or minor):
+- **Header mega-menu** still hardcoded (footer is DB-driven). Full DB-drive needs a careful
+  rewrite of the polished mega-menu + a groups/feature-card editor; deferred to avoid regressing
+  the live design.
+- **Soft-404**: catch-all renders the correct 404 page but at HTTP 200 (Next 16 quirk; may differ
+  on Vercel vs local `next start`).
+- **Schedule recurring/presets** UI (the public/members split + iCal already work).
+- **Rebuild the rest of the existing public pages as Puck docs** (the override mechanism + render
+  route are ready; existing polished pages intentionally left as the default).
+- **Curated mode** is wired for `players`; other collections currently resolve as dynamic.
+- **Stripe** test keys needed in env to exercise fee Checkout end-to-end.

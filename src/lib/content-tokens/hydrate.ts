@@ -2,6 +2,7 @@ import "server-only"
 import type { ResolveContext, ResolvedPayload } from "./types"
 import { resolveToken } from "./resolve"
 import { resolvePublicTokenCached } from "./cache"
+import { sanitizeEmbed } from "@/lib/sanitize-embed"
 
 /** Minimal Puck document shape we walk. */
 interface PuckBlock {
@@ -93,11 +94,17 @@ export async function hydrateTokens(input: PuckData, ctx: ResolveContext): Promi
   return doc
 }
 
-/** Remove resolved data before persisting so only bindings are saved. */
+/**
+ * Prepare a doc for persistence: drop resolved data (only bindings are saved)
+ * and sanitize any EmbedHTML so unsafe markup is never even stored.
+ */
 export function stripResolved(input: PuckData): PuckData {
   const doc: PuckData = structuredClone(input)
   for (const b of allBlocks(doc)) {
     if (b.props && "_resolved" in b.props) delete b.props._resolved
+    if (b.type === "EmbedHTML" && typeof b.props?.html === "string") {
+      b.props.html = sanitizeEmbed(b.props.html as string)
+    }
   }
   return doc
 }

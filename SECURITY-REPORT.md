@@ -49,5 +49,5 @@
 | Reserved-slug guard | PASS | Enforced at create API (reject), render route (404 on reserved), and a DB CHECK constraint on `pages.slug`. |
 | Minor protection | PASS | `public_profiles` view nulls a minor's bio and never projects school/hometown/DOB/phone; anon has no row policy on `profiles` directly. |
 | `public_profiles` SECURITY DEFINER | ACCEPTED EXCEPTION | Supabase linter flags it ERROR, but it is the safer choice here: anon reads only the filtered, column-projected view, never `profiles`. Reviewed and intentional. |
-| Embed sanitization | PENDING | Dedicated `EmbedHTML` block not yet built; CSP already restricts `frame-src`/`script-src` to known providers (Stripe, YouTube, Instagram, Google Maps). |
+| Embed sanitization | PASS | `EmbedHTML` block sanitized at BOTH render and save (`lib/sanitize-embed.ts`, DOMPurify): scripts stripped, only allowlisted-host iframes kept (YouTube/Maps/Instagram/Facebook). Verified: an injected `<script>` + evil iframe → 0 executable scripts / 0 evil iframes in rendered DOM. CSP is the second line of defence. |
 
