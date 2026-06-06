@@ -22,7 +22,9 @@ export function SiteFooter({ quickLinks }: { quickLinks?: QuickLink[] } = {}) {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Club Info */}
           <div>
-            <img src="/project/football-team/logo.png" alt="Baltimore Kings" className="h-24 w-24 object-contain" />
+            <Link href="/" aria-label="Baltimore Kings home">
+              <img src="/project/football-team/logo.png" alt="Baltimore Kings" className="h-24 w-24 object-contain" />
+            </Link>
             <h3 className="mt-4 font-heading text-lg font-bold text-ink">Baltimore Kings</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Futsal and arena soccer in Baltimore. League 1 Futsal, MASL3 arena soccer, and a pathway to the top of American indoor soccer.

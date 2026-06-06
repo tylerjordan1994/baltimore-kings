@@ -31,7 +31,7 @@ export function DbSiteHeader({ nav, logoUrl }: { nav: NavNode[]; logoUrl?: strin
   return (
     <header ref={ref} className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-20 lg:px-8">
-        <a href="/project/football-team/" className="flex items-center gap-2">
+        <a href="/project/football-team" className="flex items-center gap-2">
           <HeaderLogo logoUrl={logoUrl ?? null} />
           <span className="hidden font-heading text-lg font-bold tracking-tight text-ink sm:inline-block">Baltimore Kings</span>
         </a>
