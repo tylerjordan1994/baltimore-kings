@@ -80,11 +80,11 @@ minutes otherwise. Publishing a page refreshes that page immediately.
 
 ## 4. Navigation (`/app/admin/navigation`)
 
-Manage the **Primary** and **Footer** menus. Add an item → choose a **Page**, a **URL**, or a
-**Group** → set the label → **drag to reorder**. Mark an item **Members** to hide it from the
-public, or **CTA** to style it as the apply button. The public footer's Quick Links render from
-here. (The main header mega-menu is being migrated to this system; for now its links are still
-fixed in code.)
+Manage the **Primary** (header) and **Footer** menus. Add a **Link** or a **Group** (dropdown),
+nest links under a group, set the label, **drag to reorder**. Give a group a **feature card**
+(image + blurb) for the mega-menu. Mark an item **Members** to hide it from the public, or **CTA**
+to style it as the apply button. The public **header mega-menu and footer both render entirely
+from here** — no code changes needed. (See §8 for the full editor.)
 
 ---
 
