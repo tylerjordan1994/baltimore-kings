@@ -60,8 +60,9 @@ export default async function MemberLayout({
   return (
     <div className="dark flex min-h-screen bg-court">
       <MemberSidebar profile={profile} brandUploaded={brandUploaded} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-7xl p-6 lg:p-8">
+      <main className="min-w-0 flex-1 overflow-y-auto">
+        {/* pt-16 below lg clears the fixed mobile menu button so it never overlaps page titles */}
+        <div className="mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:p-8">
           {children}
         </div>
       </main>

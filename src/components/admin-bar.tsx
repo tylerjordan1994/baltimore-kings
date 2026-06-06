@@ -33,10 +33,10 @@ export function AdminBar() {
     )
   }
 
-  const link = "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors"
+  const link = "shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-colors"
   return (
-    <div className="fixed bottom-4 left-1/2 z-[1000] flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/10 bg-ink/95 px-2 py-1.5 text-paper shadow-2xl backdrop-blur">
-      <span className="px-2 text-[10px] uppercase tracking-widest text-accent">Coach</span>
+    <div className="fixed bottom-3 left-1/2 z-[1000] flex max-w-[calc(100vw-1rem)] -translate-x-1/2 items-center gap-1.5 overflow-x-auto rounded-full border border-white/10 bg-ink/95 px-2 py-1.5 text-paper shadow-2xl backdrop-blur [scrollbar-width:none]">
+      <span className="shrink-0 px-2 text-[10px] uppercase tracking-widest text-accent">Coach</span>
       {page ? (
         <a href={`${BASE}/app/admin/pages/${page.id}/edit`} className={`${link} bg-accent text-ink hover:bg-accent-light`}>✎ Edit this page</a>
       ) : (
@@ -46,7 +46,7 @@ export function AdminBar() {
       <a href={`${BASE}/app/admin/tokens`} className={`${link} hover:bg-white/10`}>Tokens</a>
       <a href={`${BASE}/app/admin/navigation`} className={`${link} hover:bg-white/10`}>Menu</a>
       <a href={`${BASE}/app`} className={`${link} hover:bg-white/10`}>Dashboard</a>
-      <button onClick={() => setOpen(false)} className="ml-1 rounded-full px-2 py-1 text-paper/50 hover:text-paper" aria-label="Hide">✕</button>
+      <button onClick={() => setOpen(false)} className="ml-1 shrink-0 rounded-full px-2 py-1 text-paper/50 hover:text-paper" aria-label="Hide">✕</button>
     </div>
   )
 }

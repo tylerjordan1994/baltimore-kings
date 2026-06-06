@@ -39,8 +39,8 @@ export function SponsorsManager({ sponsors }: { sponsors: Sponsor[] }) {
 
       {editing ? <SponsorForm sponsor={editing === "new" ? null : editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); router.refresh() }} /> : null}
 
-      <div className="overflow-hidden rounded-xl border border-border">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-xl border border-border">
+        <table className="w-full min-w-[32rem] text-sm">
           <thead className="bg-paper/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr><th className="px-4 py-2.5">Sponsor</th><th className="px-4 py-2.5">Tier</th><th className="px-4 py-2.5">Active</th><th className="px-4 py-2.5"></th></tr>
           </thead>

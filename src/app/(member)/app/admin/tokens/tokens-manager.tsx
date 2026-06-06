@@ -56,8 +56,8 @@ export function TokensManager({
         />
       ) : null}
 
-      <div className="overflow-hidden rounded-xl border border-border">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-xl border border-border">
+        <table className="w-full min-w-[40rem] text-sm">
           <thead className="bg-paper/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr><th className="px-4 py-2.5">Token</th><th className="px-4 py-2.5">Collection</th><th className="px-4 py-2.5">Mode</th><th className="px-4 py-2.5">Used on</th><th className="px-4 py-2.5"></th></tr>
           </thead>
@@ -200,7 +200,7 @@ function TokenWizard({
         <ConfigEditor d={d} teams={teams} setCfg={setCfg} />
       </div>
 
-      <div className="mt-4 flex items-center gap-4">
+      <div className="mt-4 flex flex-wrap items-center gap-3">
         <span className="text-sm text-muted-foreground">
           {d.collection === "value" ? "Resolves to a single value." : preview ? `Live preview: ${preview.count} result${preview.count === 1 ? "" : "s"}${preview.note ? ` (${preview.note})` : ""}` : "Resolving…"}
         </span>
