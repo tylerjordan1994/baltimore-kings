@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/client"
 import type { Profile } from "@/types/database"
+import { PositionPicker } from "@/components/position-picker"
+import { FUTSAL_POSITIONS, ARENA_POSITIONS } from "@/lib/positions"
 
 // basePath handled by next.config.ts
 
@@ -33,6 +35,8 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [userRole, setUserRole] = useState<string>("player")
   const [alsoPlays, setAlsoPlays] = useState(false)
+  const [futsalPositions, setFutsalPositions] = useState<string[]>([])
+  const [arenaPositions, setArenaPositions] = useState<string[]>([])
   const [message, setMessage] = useState<{
     type: "success" | "error"
     text: string
@@ -108,6 +112,8 @@ export default function ProfilePage() {
       if (profile) {
         setUserRole(profile.role)
         setAlsoPlays(profile.also_plays)
+        setFutsalPositions((profile as { futsal_positions?: string[] | null }).futsal_positions ?? [])
+        setArenaPositions((profile as { arena_positions?: string[] | null }).arena_positions ?? [])
         reset({
           full_name: profile.full_name,
           phone: profile.phone,
@@ -146,6 +152,8 @@ export default function ProfilePage() {
       school: values.school || null,
       position_primary: values.position_primary || null,
       position_secondary: values.position_secondary || null,
+      futsal_positions: futsalPositions,
+      arena_positions: arenaPositions,
       bio: values.bio || null,
       photo_url: values.photo_url || null,
       jersey_number: values.jersey_number,
@@ -244,28 +252,9 @@ export default function ProfilePage() {
           </Field>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field
-            label="Primary Position"
-            error={errors.position_primary?.message}
-          >
-            <input
-              {...register("position_primary")}
-              placeholder="e.g. GK, Defender, Forward"
-              className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
-            />
-          </Field>
-
-          <Field
-            label="Secondary Position"
-            error={errors.position_secondary?.message}
-          >
-            <input
-              {...register("position_secondary")}
-              placeholder="e.g. Midfielder"
-              className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
-            />
-          </Field>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <PositionPicker label="Futsal positions" options={FUTSAL_POSITIONS} value={futsalPositions} onChange={setFutsalPositions} />
+          <PositionPicker label="Arena (MASL) positions" options={ARENA_POSITIONS} value={arenaPositions} onChange={setArenaPositions} />
         </div>
 
         <Field label="Jersey Number" error={errors.jersey_number?.message}>
