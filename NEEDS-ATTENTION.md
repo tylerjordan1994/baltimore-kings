@@ -149,3 +149,8 @@ Genuinely still open (deliberately deferred — regression risk or minor):
   route are ready; existing polished pages intentionally left as the default).
 - **Curated mode** is wired for `players`; other collections currently resolve as dynamic.
 - **Stripe** test keys needed in env to exercise fee Checkout end-to-end.
+
+### Update (2026-06-05, latest): header + Shopify-style tools shipped
+- Header mega-menu **now renders from nav_items** (groups + children + feature cards) with a tree editor; the hardcoded header is only a fallback.
+- Added: frontend **admin bar** (edit-on-site for coaches), **site settings** editor, **sponsors** manager, **player playbook**.
+- Genuinely remaining: rebuild remaining public pages as Puck docs (mechanism ready); schedule recurring/presets UI; soft-404 status; Stripe test keys; curated mode for non-player collections.

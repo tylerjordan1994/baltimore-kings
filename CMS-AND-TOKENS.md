@@ -117,3 +117,28 @@ evaluations, fees, schedule).
 new third-party integration. Once a developer registers it, it shows up in your block palette /
 token wizard for you to compose with. You compose from what's registered; you don't conjure new
 block types yourself.
+
+---
+
+## 8. More admin tools
+
+- **Navigation (`/app/admin/navigation`)** — now manages the full header mega-menu: create
+  **groups** (dropdowns), nest links under them, add a **feature card** (image + blurb) per group,
+  drag to reorder. The public header renders entirely from this.
+- **Site Settings (`/app/admin/settings`)** — founding year, contact, social handles, default
+  share image, public/dashboard themes. Feeds value tokens (`[club-founded-year]`) and the site.
+- **Sponsors (`/app/admin/sponsors`)** — add/edit sponsors; they appear anywhere a sponsors token
+  is bound (homepage, footer, pages) the moment you save.
+- **Quick-add Players (`/app/admin/quick-add`)** — paste a roster block to create players + team
+  assignments in one go.
+- **Edit from the front end** — when you're logged in as a coach, a floating **admin bar** appears
+  on the public site: "Edit this page" jumps straight into the editor, plus quick links to Pages,
+  Tokens, and the Menu. Shopify-style.
+
+## 9. For players
+
+- **Make an account** — sign up; a coach approves you.
+- **Playbook (`/app/playbook`)** — view formations, set pieces, and plays your coaches publish.
+- **My Evaluations (`/app/my-evaluations`)** — performance feedback shared by coaches, as a radar chart.
+- **My Fees (`/app/fees`)** — pay outstanding dues / session fees via Stripe; see your history.
+- **Schedule** — public events also export as an **iCal feed** (footer → Subscribe) to add to any calendar.
