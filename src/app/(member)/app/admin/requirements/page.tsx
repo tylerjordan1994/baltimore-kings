@@ -204,10 +204,39 @@ export default function RequirementsPage() {
   ]
 
   async function onSubmit(data: RequirementForm) {
+    const { data: { user } } = await supabase.auth.getUser()
     if (editingId) {
-      await supabase.from('requirements').update(data).eq('id', editingId)
+      // Editing an agreement creates a NEW version. The old version stays saved
+      // with its signatures; everyone must sign the new one.
+      const current = requirements.find((r) => r.id === editingId)
+      const nextVersion = (current?.version ?? 1) + 1
+      const ok = window.confirm(
+        `Update this agreement?\n\nThis publishes version ${nextVersion}. The current version ${current?.version ?? 1} and everyone who signed it stays saved, but all members will be asked to review and sign the new version.`,
+      )
+      if (!ok) return
+      const change_note = window.prompt("Briefly describe what changed (shown to members):", "") ?? ""
+
+      await supabase.from('requirements').update({ title: data.title, body_markdown: data.body_markdown, version: nextVersion }).eq('id', editingId)
+      await supabase.from('requirement_versions').insert({
+        requirement_id: editingId,
+        version: nextVersion,
+        title: data.title,
+        body_markdown: data.body_markdown,
+        change_note: change_note || "Updated",
+        created_by: user?.id ?? null,
+      })
     } else {
-      await supabase.from('requirements').insert(data)
+      const { data: created } = await supabase.from('requirements').insert({ ...data, version: 1 }).select('id').single()
+      if (created) {
+        await supabase.from('requirement_versions').insert({
+          requirement_id: (created as { id: string }).id,
+          version: 1,
+          title: data.title,
+          body_markdown: data.body_markdown,
+          change_note: "Initial version",
+          created_by: user?.id ?? null,
+        })
+      }
     }
     reset()
     setShowForm(false)
