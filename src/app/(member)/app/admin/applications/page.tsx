@@ -37,12 +37,32 @@ export default function ApplicationsPage() {
   }
 
   async function handleReject(id: string) {
-    const supabaseServer = createClient()
-    const { data: { user } } = await supabaseServer.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser()
     await supabase
       .from('applications')
       .update({ status: 'rejected', reviewed_by: user?.id, reviewed_at: new Date().toISOString() })
       .eq('id', id)
+    loadData()
+  }
+
+  async function handleMoveToScouting(app: Application) {
+    const a = app as unknown as Record<string, string | null>
+    const res = await fetch('/api/admin/scouting', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'create',
+        full_name: app.full_name,
+        contact: a.email || a.phone || null,
+        position: a.position_preference || null,
+        event: 'From application',
+        assessment: a.message || a.notes || null,
+        priority: 'watch',
+      }),
+    })
+    if (!res.ok) { alert(`Could not move to scouting: ${(await res.json().catch(() => ({}))).error ?? res.statusText}`); return }
+    const { data: { user } } = await supabase.auth.getUser()
+    await supabase.from('applications').update({ status: 'reviewed', reviewed_by: user?.id, reviewed_at: new Date().toISOString() }).eq('id', app.id)
     loadData()
   }
 
@@ -90,13 +110,16 @@ export default function ApplicationsPage() {
             <p className="mb-3 text-xs text-zinc-600">
               Applied {new Date(app.created_at).toLocaleDateString()}
             </p>
-            {app.status === 'new' && (
-              <div className="flex gap-2">
+            {app.status !== 'rejected' && (
+              <div className="flex flex-wrap gap-2">
                 <Button size="sm" onClick={() => handleInvite(app.id)}>
-                  Invite
+                  Invite to sign up
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => handleMoveToScouting(app)}>
+                  Move to Scouting
                 </Button>
                 <Button size="sm" variant="destructive" onClick={() => handleReject(app.id)}>
-                  Reject
+                  Deny
                 </Button>
               </div>
             )}
