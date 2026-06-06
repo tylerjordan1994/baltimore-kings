@@ -70,16 +70,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile || (profile.role !== "coach" && profile.role !== "superadmin")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
+  // Any member can create their own play; RLS scopes edits/deletes to the owner.
   const body = await request.json()
 
   const { data, error } = await supabase
@@ -113,16 +104,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile || (profile.role !== "coach" && profile.role !== "superadmin")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
+  // RLS allows updates only to boards the user owns (or coach/superadmin).
   const body = await request.json()
 
   if (!body.id) {
@@ -160,16 +142,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  if (!profile || (profile.role !== "coach" && profile.role !== "superadmin")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
+  // RLS allows deletes only for boards the user owns (or coach/superadmin).
   const id = request.nextUrl.searchParams.get("id")
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 })
