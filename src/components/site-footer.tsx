@@ -60,10 +60,10 @@ export function SiteFooter({ quickLinks }: { quickLinks?: QuickLink[] } = {}) {
             <h4 className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">Teams</h4>
             <ul className="mt-4 space-y-3">
               <li><Link href="/teams/futsal-kings-1" className="text-sm text-muted-foreground transition-colors hover:text-ink">Futsal Kings 1</Link></li>
-              <li><Link href="/teams/futsal-kings-2" className="text-sm text-muted-foreground transition-colors hover:text-ink">Futsal Kings 2</Link></li>
-              <li><Link href="/teams/masl3" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL3 Arena Soccer</Link></li>
-              <li><a href="https://www.masl3.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL3 League</a></li>
-              <li><a href="http://www.prosocceralliance.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">Pro-SA</a></li>
+              <li><Link href="/teams/futsal-kings-2" className="text-sm text-muted-foreground transition-colors hover:text-ink">Kings 2</Link></li>
+              <li><Link href="/teams/salisbury-steaks" className="text-sm text-muted-foreground transition-colors hover:text-ink">Salisbury Steaks (MASL2)</Link></li>
+              <li><Link href="/teams/masl3" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL3 (Kings)</Link></li>
+              <li><a href="https://www.masl3.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground transition-colors hover:text-ink">MASL League</a></li>
             </ul>
           </div>
 
