@@ -52,6 +52,7 @@ const adminLinks = [
   { href: "/app/admin/scouting", label: "Scouting", icon: "◬" },
   { href: "/app/admin/fees", label: "Fees", icon: "₿" },
   { href: "/app/admin/tickets", label: "Ticketed Events", icon: "◈" },
+  { href: "/app/admin/sponsors", label: "Sponsors", icon: "◎" },
   { href: "/app/admin/social", label: "Social & Brand", icon: "◕" },
   { href: "/app/admin/settings", label: "Site Settings", icon: "⚙" },
 ]
