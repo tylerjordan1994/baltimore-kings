@@ -70,10 +70,17 @@ export async function DELETE(request: NextRequest) {
     if (body && typeof body === 'object' && 'teamId' in body) {
       const { teamId } = deleteTeamSchema.parse(body)
 
-      // Remove team membership rows first to avoid orphaned references.
+      // Clear the roster.
       await supabase.from('team_members').delete().eq('team_id', teamId)
 
-      const { error } = await supabase.from('teams').delete().eq('id', teamId)
+      // Soft-delete the team: a hard delete fails because 12 tables (games,
+      // fee_items, achievements, evaluations, …) reference teams via FK. The
+      // roster page and public site both filter on is_active, so deactivating
+      // removes it everywhere immediately without an FK violation.
+      const { error } = await supabase
+        .from('teams')
+        .update({ is_active: false })
+        .eq('id', teamId)
 
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })

@@ -221,32 +221,35 @@ export default function RosterPage() {
       )
     )
       return
-    await fetch(`/api/admin/roster`, {
+    const res = await fetch(`/api/admin/roster`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teamId }),
     })
+    if (!res.ok) { alert(`Could not remove team: ${(await res.json().catch(() => ({}))).error ?? res.statusText}`); return }
     loadData()
   }
 
   async function handleAddPlayer(teamId: string) {
     if (!selectedPlayerId) return
-    await fetch(`/api/admin/roster`, {
+    const res = await fetch(`/api/admin/roster`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teamId, profileId: selectedPlayerId }),
     })
+    if (!res.ok) { alert(`Could not add player: ${(await res.json().catch(() => ({}))).error ?? res.statusText}`); return }
     setAddingToTeam(null)
     setSelectedPlayerId('')
     loadData()
   }
 
   async function handleRemovePlayer(teamMemberId: string) {
-    await fetch(`/api/admin/roster`, {
+    const res = await fetch(`/api/admin/roster`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teamMemberId }),
     })
+    if (!res.ok) { alert(`Could not remove player: ${(await res.json().catch(() => ({}))).error ?? res.statusText}`); return }
     loadData()
   }
 
