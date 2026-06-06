@@ -22,6 +22,7 @@ const playerLinks = [
   { href: "/app/payments", label: "Payments", icon: "◈" },
   { href: "/app/fees", label: "My Fees", icon: "₿" },
   { href: "/app/tactics", label: "Play Builder", icon: "⬡" },
+  { href: "/app/playbook", label: "Playbook", icon: "⬢" },
   { href: "/app/videos", label: "VEO Videos", icon: "▷" },
   { href: "/app/training", label: "Training & Tutorials", icon: "▣" },
   { href: "/app/evaluations", label: "Goals & Evaluations", icon: "◎" },
