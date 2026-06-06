@@ -53,6 +53,7 @@ const adminLinks = [
   { href: "/app/admin/fees", label: "Fees", icon: "₿" },
   { href: "/app/admin/tickets", label: "Ticketed Events", icon: "◈" },
   { href: "/app/admin/social", label: "Social & Brand", icon: "◕" },
+  { href: "/app/admin/settings", label: "Site Settings", icon: "⚙" },
 ]
 
 const superadminLinks: { href: string; label: string; icon: string }[] = []
