@@ -2,10 +2,23 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Facilities | Baltimore Kings",
-  description: "Benfield Sportscenter and GOALS Baltimore. Where the Kings train and compete.",
+  description: "The Court (USA Futsal Federation national training center), Benfield Sportscenter, and GOALS Baltimore. Where the Kings train and compete.",
 }
 
 const venues = [
+  {
+    name: "The Court",
+    role: "National training center — USA Futsal Federation (opening June 15)",
+    address: "Forest Hill, MD — beside The Soccer Factory, 98 Industry Ln, Forest Hill, MD 21050",
+    mapEmbed: "https://www.google.com/maps?q=98+Industry+Ln+Forest+Hill+MD+21050&output=embed",
+    features: [
+      "Opening June 15, affiliated with The Soccer Factory in Maryland",
+      "National training center of the USA Futsal Federation",
+      "Home base for the U.S. Men's international futsal team",
+      "Purpose-built futsal courts right beside The Soccer Factory",
+    ],
+    parking: "On-site parking at the Industry Lane complex in Forest Hill.",
+  },
   {
     name: "Benfield Sportscenter",
     role: "Futsal home court & practice facility",
@@ -48,7 +61,8 @@ export default function FacilitiesPage() {
             Facilities
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">
-            Two venues. One for futsal, one for arena. Both purpose-built for the sport.
+            Three venues — including The Court, the USA Futsal Federation&apos;s national training
+            center, opening June 15 beside The Soccer Factory in Forest Hill.
           </p>
         </div>
       </section>

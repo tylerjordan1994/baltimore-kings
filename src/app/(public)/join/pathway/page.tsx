@@ -32,18 +32,18 @@ export default function PathwayPage() {
                 <div className="absolute left-[11px] top-4 bottom-4 w-px bg-border" />
 
                 <PathwayStep
-                  label="Futsal Kings 2"
-                  description="Development team. Build your game in competitive matches."
+                  label="Kings 1 & Kings 2 (League 1 Futsal)"
+                  description="Both Kings squads compete in Pro-SA League 1 Futsal — the top division of US futsal. Same level, two sides."
                   active
                 />
                 <PathwayStep
-                  label="Futsal Kings 1 (L1F)"
-                  description="League 1 Futsal. The top division of US futsal."
-                  active
+                  label="Regional & National Championships"
+                  description="Compete for regional and national futsal titles."
+                  active={false}
                 />
                 <PathwayStep
-                  label="National / Pro Futsal"
-                  description="National team call-ups and professional opportunities abroad."
+                  label="International Call-ups"
+                  description="The best players earn looks at the international futsal stage."
                   active={false}
                 />
               </div>
@@ -58,18 +58,18 @@ export default function PathwayPage() {
                 <div className="absolute left-[11px] top-4 bottom-4 w-px bg-border" />
 
                 <PathwayStep
-                  label="Kings MASL3"
-                  description="Third division of the Major Arena Soccer League."
+                  label="Kings (MASL3)"
+                  description="The club's MASL3 side — one Kings group drawn from both Kings 1 and Kings 2. There is no separate Kings 2 arena team."
                   active
                 />
                 <PathwayStep
                   label="Salisbury Steaks (MASL2)"
-                  description="Second division. Kings players who earn it move up."
-                  active={false}
+                  description="The club's MASL2 squad — part of the club, not an affiliate. Kings players who earn it move up."
+                  active
                 />
                 <PathwayStep
                   label="Baltimore Blast (MASL1)"
-                  description="The top. First division professional arena soccer."
+                  description="Top-flight professional arena soccer. The Blast has scouted from this club before."
                   active={false}
                 />
               </div>

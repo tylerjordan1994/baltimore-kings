@@ -7,7 +7,7 @@ import { ExternalLink, ArrowRight } from "lucide-react"
 export const metadata: Metadata = {
   title: "Affiliations | Baltimore Kings",
   description:
-    "Baltimore Kings affiliations and league partnerships — Pro Soccer Alliance (League 1 Futsal), MASL3, and the Salisbury Steaks organization.",
+    "Baltimore Kings affiliations and league partnerships — Pro Soccer Alliance (League 1 Futsal), the MASL (Divisions 2 & 3), and the USA Futsal Federation.",
 }
 
 const affiliations = [
@@ -25,30 +25,30 @@ const affiliations = [
     accent: true,
   },
   {
-    name: "MASL3",
-    shortName: "MASL3",
+    name: "MASL — Arena Soccer (Divisions 2 & 3)",
+    shortName: "MASL",
     category: "Arena Soccer League",
-    tagline: "Major Arena Soccer League — Division 3",
+    tagline: "The club competes in MASL2 and MASL3",
     description:
-      "The Major Arena Soccer League 3 is the third division of the MASL pyramid — a growing network of arena soccer clubs competing under standardized rules on full-board indoor arenas. Baltimore Kings compete in MASL3, bringing professional-level arena soccer to the Baltimore–Maryland region. MASL3 is a stepping stone in the MASL promotion and relegation system.",
+      "The Major Arena Soccer League is the arena soccer pyramid. The club competes across two of its divisions: a Kings side in MASL3 (drawn from both Kings 1 and Kings 2) and the Salisbury Steaks in MASL2. The Steaks are part of the club — a club squad, not an outside affiliate — and the top of our arena pathway. MASL1 sits above: the Baltimore Blast has scouted from this club before.",
     url: "https://www.masl3.com/",
     detail:
-      "Arena soccer uses a larger court with boards, a standard indoor ball, and allows wall passes. MASL3 games are played at GOALS Baltimore on Edmondson Ave in Catonsville.",
-    logoPlaceholder: "MASL3",
+      "Arena soccer uses a larger court with boards, a standard indoor ball, and wall passes. MASL3 is played at GOALS Baltimore; the Steaks compete at MASL2.",
+    logoPlaceholder: "MASL",
     accent: false,
   },
   {
-    name: "Salisbury Steaks",
-    shortName: "Steaks",
-    category: "MASL2 Affiliate",
-    tagline: "Our direct pathway to Division 2 professional arena soccer",
+    name: "USA Futsal Federation",
+    shortName: "USA Futsal",
+    category: "National Federation",
+    tagline: "The Court — national training center for U.S. futsal",
     description:
-      "The Salisbury Steaks compete in MASL2, one rung above Baltimore Kings' MASL3 division. The affiliation between the Kings and the Steaks creates a direct, structured pathway for Kings players who perform at an elite level to step into professional arena soccer. Coaches from both organizations communicate regularly about player development, and roster movement is a real possibility for top performers.",
+      "The Court, opening June 15 beside The Soccer Factory in Forest Hill, MD, is the national training center of the USA Futsal Federation and the home base for the U.S. Men's international futsal team. The Kings' affiliation with this facility puts our players in the same building as the highest level of American futsal.",
     url: undefined,
     detail:
-      "The Kings–Steaks affiliation is the reason our MASL3 program is not a dead end. When you play for the Kings, your ceiling is not MASL3.",
-    logoPlaceholder: "STEAKS",
-    accent: false,
+      "The Court is purpose-built for futsal and affiliated with The Soccer Factory (98 Industry Ln, Forest Hill, MD 21050).",
+    logoPlaceholder: "USAF",
+    accent: true,
   },
 ]
 
@@ -65,7 +65,7 @@ export default function AffiliationsPage() {
             Connected to the game at every level
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            Baltimore Kings don't operate in isolation. We're a founding member of the Pro Soccer Alliance, compete in MASL3, and are affiliated with the Salisbury Steaks — giving our players a clear ladder from competitive club play to professional indoor soccer.
+            Baltimore Kings don't operate in isolation. We're a founding member of the Pro Soccer Alliance, field a Kings side in MASL3 and the Salisbury Steaks in MASL2 (both part of the club), and train at the USA Futsal Federation's national center — giving our players a clear ladder from competitive club play to professional indoor soccer.
           </p>
         </div>
       </section>
