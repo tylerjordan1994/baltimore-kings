@@ -15,7 +15,7 @@ export default async function SettingsAdmin() {
 
   return (
     <div className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-1 font-heading text-3xl text-ink">Site Settings</h1>
+      <h1 className="mb-1 font-heading text-3xl text-foreground">Site Settings</h1>
       <p className="mb-6 text-sm text-muted-foreground">Founding year, contact, socials, and themes. These feed value tokens (e.g. <code>[club-founded-year]</code>) and the public site.</p>
       <SettingsForm
         initial={{

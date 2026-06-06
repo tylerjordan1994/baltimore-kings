@@ -29,7 +29,7 @@ export default async function PagesAdmin() {
 
   return (
     <div className="mx-auto max-w-4xl p-6">
-      <h1 className="mb-1 font-heading text-3xl text-ink">Pages</h1>
+      <h1 className="mb-1 font-heading text-3xl text-foreground">Pages</h1>
       <p className="mb-6 text-sm text-muted-foreground">
         Compose pages visually with Puck. Bind data-bound blocks to content tokens to show live rosters, schedules, and more.
       </p>
@@ -40,7 +40,7 @@ export default async function PagesAdmin() {
 
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full min-w-[44rem] text-sm">
-          <thead className="bg-paper/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
+          <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
               <th className="px-4 py-2.5">Title</th>
               <th className="px-4 py-2.5">Slug</th>
@@ -55,7 +55,7 @@ export default async function PagesAdmin() {
             ) : (
               pages.map((p) => (
                 <tr key={p.id}>
-                  <td className="px-4 py-3 font-medium text-ink">
+                  <td className="px-4 py-3 font-medium text-foreground">
                     {p.title} {p.is_home ? <span className="ml-1 rounded bg-accent/20 px-1.5 py-0.5 text-[10px] uppercase text-accent-dark">Home</span> : null}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">/{p.slug}</td>

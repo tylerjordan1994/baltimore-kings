@@ -92,6 +92,25 @@ export async function POST(request: NextRequest) {
         .eq("id", feeItemId)
     }
 
+    // Player-initiated payment to the club
+    const playerPayment = session.metadata?.player_payment
+    if (playerPayment && profileId) {
+      const { data: existing } = await supabase.from("payments").select("id").eq("stripe_session_id", session.id).maybeSingle()
+      if (!existing) {
+        await supabase.from("payments").insert({
+          profile_id: profileId,
+          stripe_session_id: session.id,
+          stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
+          amount_cents: session.amount_total ?? 0,
+          currency: session.currency ?? "usd",
+          purpose: "practice_fee",
+          description: session.metadata?.note ? `Payment — ${session.metadata.note}` : "Player payment",
+          status: "completed",
+          paid_at: new Date().toISOString(),
+        })
+      }
+    }
+
     // CMS fee assignment payment (template + assignments model)
     const feeAssignmentId = session.metadata?.fee_assignment_id
     if (feeAssignmentId && profileId) {

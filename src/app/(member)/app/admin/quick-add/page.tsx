@@ -10,7 +10,7 @@ export default async function QuickAddPage() {
   }
   return (
     <div className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-1 font-heading text-3xl text-ink">Quick-add Players</h1>
+      <h1 className="mb-1 font-heading text-3xl text-foreground">Quick-add Players</h1>
       <p className="mb-6 text-sm text-muted-foreground">Paste a roster block to create players and assign them to teams in one go.</p>
       <QuickAddForm />
     </div>

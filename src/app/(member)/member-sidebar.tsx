@@ -19,17 +19,14 @@ const playerLinks = [
   { href: "/app", label: "Home", icon: "◆" },
   { href: "/app/profile", label: "Profile", icon: "●" },
   { href: "/app/schedule", label: "Schedule", icon: "▦" },
-  { href: "/app/payments", label: "Payments", icon: "◈" },
-  { href: "/app/fees", label: "My Fees", icon: "₿" },
+  { href: "/app/payments", label: "Payments & Fees", icon: "◈" },
   { href: "/app/tactics", label: "Play Builder", icon: "⬡" },
-  { href: "/app/playbook", label: "Playbook", icon: "⬢" },
   { href: "/app/videos", label: "VEO Videos", icon: "▷" },
   { href: "/app/training", label: "Training & Tutorials", icon: "▣" },
   { href: "/app/evaluations", label: "Goals & Evaluations", icon: "◎" },
-  { href: "/app/my-evaluations", label: "My Evaluations", icon: "◎" },
   { href: "/app/achievements", label: "Achievements", icon: "★" },
   { href: "/app/contracts", label: "Contracts", icon: "◫" },
-  { href: "/app/requirements", label: "Requirements", icon: "▢" },
+  { href: "/app/requirements", label: "Team Expectations", icon: "▢" },
 ]
 
 const adminLinks = [
@@ -44,7 +41,6 @@ const adminLinks = [
   { href: "/app/admin/videos", label: "VEO Videos", icon: "▷" },
   { href: "/app/admin/achievements", label: "Achievements", icon: "★" },
   { href: "/app/admin/evaluations", label: "Evaluations & Goals", icon: "◎" },
-  { href: "/app/admin/player-evaluations", label: "Player Evaluations", icon: "◉" },
   { href: "/app/admin/applications", label: "Applications", icon: "◧" },
   { href: "/app/admin/media", label: "Media", icon: "◩" },
   { href: "/app/admin/training", label: "Training & Tutorials", icon: "▣" },

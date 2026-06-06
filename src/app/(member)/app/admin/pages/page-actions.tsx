@@ -54,12 +54,12 @@ export function PageActions({
   return (
     <div className="flex flex-wrap items-center justify-end gap-2.5">
       <a href={`/app/admin/pages/${id}/edit`} className={`${link} text-accent-dark`}>Edit</a>
-      <button disabled={busy} onClick={() => act(status === "published" ? "unpublish" : "publish")} className={`${link} text-ink`}>
+      <button disabled={busy} onClick={() => act(status === "published" ? "unpublish" : "publish")} className={`${link} text-foreground`}>
         {status === "published" ? "Unpublish" : "Publish"}
       </button>
-      {!isHome ? <button disabled={busy} onClick={() => act("set-home")} className={`${link} text-ink`}>Set home</button> : null}
-      <button disabled={busy} onClick={() => act("duplicate")} className={`${link} text-ink`}>Duplicate</button>
-      <button disabled={busy} onClick={openRevs} className={`${link} text-ink`}>Revisions</button>
+      {!isHome ? <button disabled={busy} onClick={() => act("set-home")} className={`${link} text-foreground`}>Set home</button> : null}
+      <button disabled={busy} onClick={() => act("duplicate")} className={`${link} text-foreground`}>Duplicate</button>
+      <button disabled={busy} onClick={openRevs} className={`${link} text-foreground`}>Revisions</button>
       <button disabled={busy} onClick={() => act("delete")} className={`${link} text-red-600`}>Delete</button>
       {status === "published" ? (
         <a href={`${BASE}/${slug}`} target="_blank" rel="noreferrer" className={`${link} text-muted-foreground`}>View</a>
@@ -67,8 +67,8 @@ export function PageActions({
 
       {revs ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setRevs(null)}>
-          <div className="max-h-[70vh] w-full max-w-md overflow-auto rounded-xl bg-white p-5" onClick={(e) => e.stopPropagation()}>
-            <h3 className="mb-3 font-heading text-lg text-ink">Revisions</h3>
+          <div className="max-h-[70vh] w-full max-w-md overflow-auto rounded-xl bg-card p-5" onClick={(e) => e.stopPropagation()}>
+            <h3 className="mb-3 font-heading text-lg text-foreground">Revisions</h3>
             {revs.length === 0 ? <p className="text-sm text-muted-foreground">No revisions yet. Publishing creates a snapshot.</p> : (
               <ul className="divide-y divide-border">
                 {revs.map((r) => (

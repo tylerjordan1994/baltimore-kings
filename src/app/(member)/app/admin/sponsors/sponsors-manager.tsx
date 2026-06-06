@@ -31,7 +31,7 @@ export function SponsorsManager({ sponsors }: { sponsors: Sponsor[] }) {
     <div className="mx-auto max-w-3xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="font-heading text-3xl text-ink">Sponsors</h1>
+          <h1 className="font-heading text-3xl text-foreground">Sponsors</h1>
           <p className="text-sm text-muted-foreground">Add sponsors — they appear anywhere a sponsors token is bound (homepage, footer, pages).</p>
         </div>
         <button onClick={() => setEditing("new")} className="rounded-full bg-brand px-5 py-2 text-sm font-semibold text-paper">New sponsor</button>
@@ -41,14 +41,14 @@ export function SponsorsManager({ sponsors }: { sponsors: Sponsor[] }) {
 
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full min-w-[32rem] text-sm">
-          <thead className="bg-paper/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
+          <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr><th className="px-4 py-2.5">Sponsor</th><th className="px-4 py-2.5">Tier</th><th className="px-4 py-2.5">Active</th><th className="px-4 py-2.5"></th></tr>
           </thead>
           <tbody className="divide-y divide-border">
             {sponsors.length === 0 ? <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">No sponsors yet.</td></tr> : null}
             {sponsors.map((s) => (
               <tr key={s.id}>
-                <td className="px-4 py-3 font-medium text-ink">{s.name}</td>
+                <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
                 <td className="px-4 py-3 capitalize text-muted-foreground">{s.tier}</td>
                 <td className="px-4 py-3">{s.is_active ? "✓" : "—"}</td>
                 <td className="px-4 py-3 text-right">

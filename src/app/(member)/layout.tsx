@@ -54,7 +54,8 @@ export default async function MemberLayout({
       .limit(1)
       .single()
 
-    brandUploaded = !!(brand?.logo_full_url && brand?.logo_mark_url && brand?.logo_white_url)
+    // Consider branding done once any primary logo exists (the others are optional variants).
+    brandUploaded = !!(brand?.logo_full_url || brand?.logo_mark_url)
   }
 
   return (

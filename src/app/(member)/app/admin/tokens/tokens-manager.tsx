@@ -39,7 +39,7 @@ export function TokensManager({
     <div className="mx-auto max-w-5xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="font-heading text-3xl text-ink">Content Tokens</h1>
+          <h1 className="font-heading text-3xl text-foreground">Content Tokens</h1>
           <p className="text-sm text-muted-foreground">Named handles that bind blocks to live data.</p>
         </div>
         <button onClick={() => setEditing("new")} className="rounded-full bg-brand px-5 py-2 text-sm font-semibold text-paper">
@@ -58,7 +58,7 @@ export function TokensManager({
 
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full min-w-[40rem] text-sm">
-          <thead className="bg-paper/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
+          <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr><th className="px-4 py-2.5">Token</th><th className="px-4 py-2.5">Collection</th><th className="px-4 py-2.5">Mode</th><th className="px-4 py-2.5">Used on</th><th className="px-4 py-2.5"></th></tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -66,7 +66,7 @@ export function TokensManager({
               <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No tokens yet.</td></tr>
             ) : initial.map((t) => (
               <tr key={t.id}>
-                <td className="px-4 py-3"><div className="font-medium text-ink">{t.name}</div><code className="text-xs text-muted-foreground">[{t.key}]</code></td>
+                <td className="px-4 py-3"><div className="font-medium text-foreground">{t.name}</div><code className="text-xs text-muted-foreground">[{t.key}]</code></td>
                 <td className="px-4 py-3 text-muted-foreground">{t.collection}</td>
                 <td className="px-4 py-3 text-muted-foreground">{t.mode}</td>
                 <td className="px-4 py-3 text-muted-foreground">{usage[t.key] ?? 0} page{(usage[t.key] ?? 0) === 1 ? "" : "s"}</td>
@@ -195,7 +195,7 @@ function TokenWizard({
         </div>
       </div>
 
-      <div className="mt-4 rounded-lg border border-border bg-paper/40 p-4">
+      <div className="mt-4 rounded-lg border border-border bg-muted/40 p-4">
         <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Configuration</p>
         <ConfigEditor d={d} teams={teams} setCfg={setCfg} />
       </div>

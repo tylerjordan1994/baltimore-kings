@@ -29,7 +29,7 @@ type Page = { id: string; title: string; slug: string }
 export function NavEditor({ items, pages }: { items: NavItem[]; pages: Page[] }) {
   return (
     <div className="mx-auto max-w-4xl p-6">
-      <h1 className="mb-1 font-heading text-3xl text-ink">Navigation</h1>
+      <h1 className="mb-1 font-heading text-3xl text-foreground">Navigation</h1>
       <p className="mb-6 text-sm text-muted-foreground">
         Build the public menus. Create <b>groups</b> for dropdowns, nest links under them, drag to reorder. The header and footer render from here.
       </p>
@@ -78,7 +78,7 @@ function Menu({ title, menuKey, items, pages }: { title: string; menuKey: string
   return (
     <section className="mb-10">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="font-heading text-xl text-ink">{title}</h2>
+        <h2 className="font-heading text-xl text-foreground">{title}</h2>
         <div className="flex gap-2">
           <button onClick={() => add("url")} className="rounded-full border border-border px-3 py-1 text-sm font-medium">+ Link</button>
           <button onClick={() => add("group")} className="rounded-full border border-border px-3 py-1 text-sm font-medium">+ Group</button>
@@ -150,7 +150,7 @@ function Row({ item, pages, groups, onChanged }: { item: NavItem; pages: Page[];
         <button onClick={del} className="ml-auto text-xs font-medium text-red-600 hover:underline">Delete</button>
       </div>
       {draft.link_type === "group" && showCard ? (
-        <div className="mt-2 grid grid-cols-2 gap-2 rounded-lg border border-border bg-paper/40 p-3 sm:grid-cols-4">
+        <div className="mt-2 grid grid-cols-2 gap-2 rounded-lg border border-border bg-muted/40 p-3 sm:grid-cols-4">
           {(["title", "blurb", "href", "imageUrl"] as const).map((k) => (
             <input key={k} className={input} placeholder={k} value={fc[k] ?? ""}
               onChange={(e) => setDraft({ ...draft, feature_card_json: { ...fc, [k]: e.target.value } })}

@@ -27,8 +27,8 @@ export function QuickAddForm() {
 
   return (
     <div className="grid gap-4">
-      <div className="rounded-xl border border-border bg-paper/40 p-4 text-sm text-muted-foreground">
-        <p className="font-semibold text-ink">Format — one player per line:</p>
+      <div className="rounded-xl border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+        <p className="font-semibold text-foreground">Format — one player per line:</p>
         <code className="mt-1 block">jersey, Full Name, team-slug, position, flags</code>
         <p className="mt-2">Use <code>?</code> or blank for unknown. Flags (space-separated, optional): <code>steaks</code>, <code>injured</code>, <code>minor</code>. Teams: <code>futsal-kings-1</code>, <code>futsal-kings-2</code>, <code>masl3</code>.</p>
       </div>
@@ -43,7 +43,7 @@ export function QuickAddForm() {
       </button>
       {result ? (
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="font-semibold text-ink">Added {result.added} player{result.added === 1 ? "" : "s"}.</p>
+          <p className="font-semibold text-foreground">Added {result.added} player{result.added === 1 ? "" : "s"}.</p>
           <ul className="mt-2 space-y-1 text-sm">
             {result.results.map((r, i) => (
               <li key={i} className={r.ok ? "text-green-700" : "text-red-600"}>{r.ok ? "✓" : "✗"} {r.line}{r.error ? ` — ${r.error}` : ""}</li>

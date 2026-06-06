@@ -14,7 +14,7 @@ export type Player = { id: string; full_name: string }
 export function FeesManager({ fees, assignments, teams, players }: { fees: FeeItem[]; assignments: Assignment[]; teams: Team[]; players: Player[] }) {
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <h1 className="mb-1 font-heading text-3xl text-ink">Fees</h1>
+      <h1 className="mb-1 font-heading text-3xl text-foreground">Fees</h1>
       <p className="mb-6 text-sm text-muted-foreground">Create a fee, assign it to a team or players, and track payment.</p>
       <CreateFee teams={teams} players={players} />
       <div className="mt-8 grid gap-4">
@@ -101,7 +101,7 @@ function FeeCard({ fee, assignments }: { fee: FeeItem; assignments: Assignment[]
     <div className="rounded-xl border border-border bg-card p-4">
       <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between">
         <div className="text-left">
-          <p className="font-medium text-ink">{fee.title} <span className="text-muted-foreground">· {money(fee.amount_cents)}</span></p>
+          <p className="font-medium text-foreground">{fee.title} <span className="text-muted-foreground">· {money(fee.amount_cents)}</span></p>
           <p className="text-xs text-muted-foreground">{counts.outstanding} outstanding · {counts.paid} paid · {counts.waived} waived</p>
         </div>
         <span className="text-muted-foreground">{open ? "▲" : "▼"}</span>
@@ -111,7 +111,7 @@ function FeeCard({ fee, assignments }: { fee: FeeItem; assignments: Assignment[]
           {assignments.length === 0 ? <li className="py-3 text-sm text-muted-foreground">No assignments.</li> : null}
           {assignments.map((a) => (
             <li key={a.id} className="flex items-center justify-between py-2 text-sm">
-              <span className="text-ink">{a.profiles?.full_name ?? "Player"}</span>
+              <span className="text-foreground">{a.profiles?.full_name ?? "Player"}</span>
               <div className="flex items-center gap-3">
                 <span className={`rounded-full px-2 py-0.5 text-xs ${a.status === "paid" ? "bg-green-100 text-green-800" : a.status === "waived" ? "bg-slate-100 text-slate-700" : "bg-amber-100 text-amber-800"}`}>{a.status}</span>
                 {a.status === "outstanding" ? <button onClick={() => waive(a.id, "waived")} className="text-xs text-muted-foreground hover:underline">Waive</button> : null}
