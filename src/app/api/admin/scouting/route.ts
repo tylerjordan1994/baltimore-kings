@@ -14,6 +14,8 @@ const createSchema = z.object({
   event: z.string().nullable().optional(),
   assessment: z.string().nullable().optional(),
   priority: z.enum(['watch', 'target', 'actively_recruiting', 'signed', 'passed']).default('watch'),
+  futsal_positions: z.array(z.string()).optional(),
+  arena_positions: z.array(z.string()).optional(),
 })
 
 const updatePrioritySchema = z.object({
@@ -43,6 +45,8 @@ export async function POST(request: NextRequest) {
           event: data.event || null,
           assessment: data.assessment || null,
           priority: data.priority,
+          futsal_positions: data.futsal_positions ?? [],
+          arena_positions: data.arena_positions ?? [],
         })
         .select()
         .single()

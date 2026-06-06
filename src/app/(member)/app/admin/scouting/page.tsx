@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import type { Prospect, ProspectPriority } from "@/types/database"
+import { DndContext, useDraggable, useDroppable, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core"
+import { PositionPicker } from "@/components/position-picker"
+import { FUTSAL_POSITIONS, ARENA_POSITIONS } from "@/lib/positions"
 
 const columns: { key: ProspectPriority; label: string; color: string }[] = [
   { key: "watch", label: "Watch", color: "border-zinc-500/30" },
@@ -29,7 +32,10 @@ export default function AdminScoutingPage() {
     event: "",
     assessment: "",
     priority: "watch" as ProspectPriority,
+    futsal_positions: [] as string[],
+    arena_positions: [] as string[],
   })
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
   const supabase = createClient()
 
@@ -49,24 +55,31 @@ export default function AdminScoutingPage() {
 
   async function handleCreate() {
     setSubmitting(true)
-    await fetch("/api/admin/scouting", {
+    const res = await fetch("/api/admin/scouting", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "create", ...form }),
     })
-    setShowForm(false)
-    setForm({ full_name: "", contact: "", current_team: "", position: "", scouted_at: "", event: "", assessment: "", priority: "watch" })
     setSubmitting(false)
+    if (!res.ok) { alert(`Could not add prospect: ${(await res.json().catch(() => ({}))).error ?? res.statusText}`); return }
+    setShowForm(false)
+    setForm({ full_name: "", contact: "", current_team: "", position: "", scouted_at: "", event: "", assessment: "", priority: "watch", futsal_positions: [], arena_positions: [] })
     fetchProspects()
   }
 
   async function movePriority(prospectId: string, newPriority: ProspectPriority) {
-    await fetch("/api/admin/scouting", {
+    // Optimistic: reflect the move immediately, revert if the save fails.
+    const prev = prospects
+    setProspects((ps) => ps.map((p) => (p.id === prospectId ? { ...p, priority: newPriority } : p)))
+    const res = await fetch("/api/admin/scouting", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "update_priority", id: prospectId, priority: newPriority }),
     })
-    fetchProspects()
+    if (!res.ok) {
+      alert(`Could not move prospect: ${(await res.json().catch(() => ({}))).error ?? res.statusText}`)
+      setProspects(prev)
+    }
   }
 
   return (
@@ -84,60 +97,24 @@ export default function AdminScoutingPage() {
       {loading ? (
         <p className="text-sm text-zinc-500">Loading...</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-          {columns.map((col) => {
-            const colProspects = prospects.filter((p) => p.priority === col.key)
-            return (
-              <div key={col.key} className={`rounded-xl border ${col.color} bg-white/5 p-3`}>
-                <h3 className="mb-3 text-sm font-semibold text-white">
-                  {col.label}{" "}
-                  <span className="text-zinc-500">({colProspects.length})</span>
-                </h3>
-                <div className="space-y-2">
-                  {colProspects.map((p) => (
-                    <div key={p.id}>
-                      <div
-                        onClick={() => setExpanded(expanded === p.id ? null : p.id)}
-                        className="cursor-pointer rounded-lg border border-white/10 bg-[#0f0f0f] p-3 hover:border-white/20 transition-colors"
-                      >
-                        <p className="text-sm font-medium text-white">{p.full_name}</p>
-                        <p className="text-xs text-zinc-500">
-                          {p.position} {p.current_team && `- ${p.current_team}`}
-                        </p>
-                        {p.event && (
-                          <p className="mt-1 text-[10px] text-zinc-600">Scouted: {p.event}</p>
-                        )}
-                      </div>
-                      {expanded === p.id && (
-                        <div className="mt-1 rounded-lg border border-white/10 bg-[#0a0a0a] p-3 space-y-2">
-                          {p.assessment && (
-                            <p className="text-xs text-zinc-400">{p.assessment}</p>
-                          )}
-                          {p.contact && (
-                            <p className="text-xs text-zinc-500">Contact: {p.contact}</p>
-                          )}
-                          <div className="flex flex-wrap gap-1 pt-1">
-                            {columns
-                              .filter((c) => c.key !== p.priority)
-                              .map((c) => (
-                                <button
-                                  key={c.key}
-                                  onClick={() => movePriority(p.id, c.key)}
-                                  className="rounded bg-white/10 px-2 py-0.5 text-[10px] text-zinc-300 hover:bg-white/20 transition-colors"
-                                >
-                                  &rarr; {c.label}
-                                </button>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        <DndContext sensors={sensors} onDragEnd={(e: DragEndEvent) => {
+          const overCol = e.over?.id as ProspectPriority | undefined
+          const id = e.active?.id as string | undefined
+          if (!overCol || !id) return
+          const p = prospects.find((x) => x.id === id)
+          if (p && p.priority !== overCol) movePriority(id, overCol)
+        }}>
+          <p className="mb-2 text-xs text-zinc-500">Drag a prospect card to move them through the pipeline.</p>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+            {columns.map((col) => (
+              <DroppableColumn key={col.key} col={col} count={prospects.filter((p) => p.priority === col.key).length}>
+                {prospects.filter((p) => p.priority === col.key).map((p) => (
+                  <DraggableCard key={p.id} p={p} expanded={expanded === p.id} onToggle={() => setExpanded(expanded === p.id ? null : p.id)} />
+                ))}
+              </DroppableColumn>
+            ))}
+          </div>
+        </DndContext>
       )}
 
       {/* Add Prospect Modal */}
@@ -183,6 +160,10 @@ export default function AdminScoutingPage() {
                   onChange={(e) => setForm({ ...form, contact: e.target.value })}
                   className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
                 />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <PositionPicker label="Futsal positions" options={FUTSAL_POSITIONS} value={form.futsal_positions} onChange={(v) => setForm({ ...form, futsal_positions: v })} />
+                <PositionPicker label="Arena (MASL) positions" options={ARENA_POSITIONS} value={form.arena_positions} onChange={(v) => setForm({ ...form, arena_positions: v })} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -244,6 +225,61 @@ export default function AdminScoutingPage() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+/* ── Drag-drop kanban primitives ── */
+const COLS: { key: ProspectPriority; label: string }[] = [
+  { key: "watch", label: "Watch" },
+  { key: "target", label: "Target" },
+  { key: "actively_recruiting", label: "Actively Recruiting" },
+  { key: "signed", label: "Signed" },
+  { key: "passed", label: "Passed" },
+]
+
+function DroppableColumn({
+  col,
+  count,
+  children,
+}: {
+  col: { key: ProspectPriority; label: string; color: string }
+  count: number
+  children: React.ReactNode
+}) {
+  const { setNodeRef, isOver } = useDroppable({ id: col.key })
+  return (
+    <div ref={setNodeRef} className={`rounded-xl border ${col.color} ${isOver ? "bg-amber-500/10" : "bg-white/5"} p-3 transition-colors`}>
+      <h3 className="mb-3 text-sm font-semibold text-white">
+        {col.label} <span className="text-zinc-500">({count})</span>
+      </h3>
+      <div className="min-h-12 space-y-2">{children}</div>
+    </div>
+  )
+}
+
+function DraggableCard({ p, expanded, onToggle }: { p: Prospect; expanded: boolean; onToggle: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: p.id })
+  const positions = [...((p as { futsal_positions?: string[] }).futsal_positions ?? []), ...((p as { arena_positions?: string[] }).arena_positions ?? [])]
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined, opacity: isDragging ? 0.5 : 1 }}
+      {...attributes}
+      {...listeners}
+      className="cursor-grab rounded-lg border border-white/10 bg-[#0f0f0f] p-3 transition-colors hover:border-white/20 active:cursor-grabbing"
+    >
+      <button type="button" onClick={onToggle} className="w-full text-left">
+        <p className="text-sm font-medium text-white">{p.full_name}</p>
+        <p className="text-xs text-zinc-500">{(positions.length ? positions.join(", ") : p.position) || "—"}{p.current_team ? ` · ${p.current_team}` : ""}</p>
+        {p.event ? <p className="mt-1 text-[10px] text-zinc-600">Scouted: {p.event}</p> : null}
+      </button>
+      {expanded ? (
+        <div className="mt-2 space-y-1 border-t border-white/10 pt-2">
+          {p.assessment ? <p className="text-xs text-zinc-400">{p.assessment}</p> : null}
+          {p.contact ? <p className="text-xs text-zinc-500">Contact: {p.contact}</p> : null}
+        </div>
+      ) : null}
     </div>
   )
 }
