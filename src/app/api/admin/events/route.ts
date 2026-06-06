@@ -13,7 +13,9 @@ const createEventSchema = z.object({
   team_ids: z.array(z.string().uuid()).default([]),
   visibility: z.enum(['public', 'members_only']).default('public'),
   description: z.string().nullable().optional(),
-  repeat_weeks: z.number().int().min(0).max(52).optional(),
+  cta_url: z.string().nullable().optional(),
+  cta_label: z.string().nullable().optional(),
+  repeat_weeks: z.coerce.number().int().min(0).max(52).optional(),
 })
 
 const updateEventSchema = z.object({
@@ -26,6 +28,8 @@ const updateEventSchema = z.object({
   team_ids: z.array(z.string().uuid()).optional(),
   visibility: z.enum(['public', 'members_only']).optional(),
   description: z.string().nullable().optional(),
+  cta_url: z.string().nullable().optional(),
+  cta_label: z.string().nullable().optional(),
 })
 
 const deleteEventSchema = z.object({
@@ -89,6 +93,8 @@ export async function POST(request: NextRequest) {
         team_ids: eventData.team_ids,
         visibility: eventData.visibility,
         description: eventData.description ?? null,
+        cta_url: eventData.cta_url ?? null,
+        cta_label: eventData.cta_label ?? null,
         created_by: profile.id,
       })
     }

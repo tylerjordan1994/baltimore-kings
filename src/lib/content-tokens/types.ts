@@ -33,6 +33,8 @@ export interface EventItem {
   homeOrAway: "home" | "away" | null
   teamNames: string[]
   result: string | null
+  ctaUrl: string | null
+  ctaLabel: string | null
 }
 
 export interface SponsorItem {

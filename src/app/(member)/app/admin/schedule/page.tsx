@@ -20,6 +20,8 @@ const eventSchema = z.object({
   team_ids: z.array(z.string()).default([]),
   visibility: z.enum(['public', 'members_only']).default('public'),
   description: z.string().optional(),
+  cta_url: z.string().optional(),
+  cta_label: z.string().optional(),
   repeat_weeks: z.coerce.number().int().min(1).max(52).default(1),
 })
 
@@ -65,18 +67,21 @@ export default function SchedulePage() {
   }, [loadData])
 
   async function onSubmit(data: EventForm) {
-    if (editingId) {
-      await fetch(`/api/admin/events`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: editingId, ...data }),
-      })
-    } else {
-      await fetch(`/api/admin/events`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+    const res = editingId
+      ? await fetch(`/api/admin/events`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: editingId, ...data }),
+        })
+      : await fetch(`/api/admin/events`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}))
+      alert(`Could not save event: ${json.error ?? res.statusText}`)
+      return
     }
     reset()
     setShowForm(false)
@@ -104,6 +109,8 @@ export default function SchedulePage() {
     setValue('team_ids', event.team_ids ?? [])
     setValue('visibility', event.visibility)
     setValue('description', event.description ?? '')
+    setValue('cta_url', (event as { cta_url?: string | null }).cta_url ?? '')
+    setValue('cta_label', (event as { cta_label?: string | null }).cta_label ?? '')
     setValue('repeat_weeks', 1)
     setShowForm(true)
   }
@@ -240,6 +247,24 @@ export default function SchedulePage() {
               rows={3}
               className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
             />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-zinc-400">Ticket / signup link (optional)</label>
+              <input
+                {...register('cta_url')}
+                placeholder="/project/football-team/apply  or  https://…"
+                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-zinc-400">Link label</label>
+              <input
+                {...register('cta_label')}
+                placeholder="Buy tickets / Sign up"
+                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+              />
+            </div>
           </div>
           <Button type="submit">{editingId ? 'Update Event' : 'Create Event'}</Button>
         </form>

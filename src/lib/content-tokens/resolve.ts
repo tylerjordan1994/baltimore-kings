@@ -146,6 +146,8 @@ type EventRow = {
   ends_at: string | null
   location: string | null
   team_ids: string[] | null
+  cta_url: string | null
+  cta_label: string | null
 }
 
 async function resolveEvents(
@@ -159,7 +161,7 @@ async function resolveEvents(
 
   let q = supabase
     .from("calendar_events")
-    .select("id, title, kind, starts_at, ends_at, location, team_ids")
+    .select("id, title, kind, starts_at, ends_at, location, team_ids, cta_url, cta_label")
     .eq("visibility", cfg.scope === "members" ? "members_only" : "public")
 
   if (cfg.when === "upcoming") q = q.gte("starts_at", nowIso)
@@ -169,7 +171,7 @@ async function resolveEvents(
   if (cfg.limit) q = q.limit(cfg.limit)
 
   const { data } = await q
-  const rows = (data ?? []) as EventRow[]
+  const rows = (data ?? []) as unknown as EventRow[]
 
   // Map team ids -> names with a single lookup.
   const ids = [...new Set(rows.flatMap((r) => r.team_ids ?? []))]
@@ -190,6 +192,8 @@ async function resolveEvents(
     homeOrAway: r.kind === "home_game" ? "home" : r.kind === "away_game" ? "away" : null,
     teamNames: (r.team_ids ?? []).map((id) => names.get(id)).filter((n): n is string => !!n),
     result: null,
+    ctaUrl: r.cta_url,
+    ctaLabel: r.cta_label,
   }))
   return { collection: "events", items }
 }

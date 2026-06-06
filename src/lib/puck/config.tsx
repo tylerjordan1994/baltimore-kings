@@ -338,6 +338,11 @@ export const puckConfig: Config<Props> = {
                         {e.location ? ` · ${e.location}` : ""}
                       </p>
                     </div>
+                    {e.ctaUrl ? (
+                      <a href={e.ctaUrl} className="ml-auto shrink-0 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink hover:bg-accent-light">
+                        {e.ctaLabel || "Details"}
+                      </a>
+                    ) : null}
                   </li>
                 )
               })}
