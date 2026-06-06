@@ -98,8 +98,8 @@ function Menu({ title, menuKey, items, pages }: { title: string; menuKey: string
 
 function Row({ item, pages, groups, onChanged }: { item: NavItem; pages: Page[]; groups: NavItem[]; onChanged: () => void }) {
   const top = !item.parent_id
-  const sortable = useSortable({ id: item.id, disabled: !top })
-  const style = { transform: CSS.Transform.toString(sortable.transform), transition: sortable.transition, opacity: sortable.isDragging ? 0.5 : 1 }
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id, disabled: !top })
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }
   const [draft, setDraft] = useState(item)
   const [showCard, setShowCard] = useState(false)
   const fc = (draft.feature_card_json ?? {}) as Record<string, string>
@@ -124,9 +124,9 @@ function Row({ item, pages, groups, onChanged }: { item: NavItem; pages: Page[];
   const input = "rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
 
   return (
-    <div ref={sortable.setNodeRef} style={style} className={`bg-card p-3 ${item.parent_id ? "pl-10" : ""}`}>
+    <div ref={setNodeRef} style={style} className={`bg-card p-3 ${item.parent_id ? "pl-10" : ""}`}>
       <div className="flex flex-wrap items-center gap-2">
-        {top ? <button {...sortable.attributes} {...sortable.listeners} className="cursor-grab px-1 text-muted-foreground" title="Drag">⠿</button> : <span className="px-1 text-muted-foreground">↳</span>}
+        {top ? <button {...attributes} {...listeners} className="cursor-grab px-1 text-muted-foreground" title="Drag">⠿</button> : <span className="px-1 text-muted-foreground">↳</span>}
         <input className={`${input} w-36`} value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} onBlur={() => patch({})} />
         <select className={input} value={draft.link_type} onChange={(e) => patch({ link_type: e.target.value })}>
           <option value="url">URL</option><option value="page">Page</option><option value="group">Group</option>
