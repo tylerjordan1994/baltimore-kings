@@ -8,6 +8,7 @@ const updateSchema = z.object({
   link_type: z.enum(["page", "url", "group"]).optional(),
   page_id: z.string().uuid().nullable().optional(),
   external_url: z.string().nullable().optional(),
+  parent_id: z.string().uuid().nullable().optional(),
   is_cta: z.boolean().optional(),
   visibility: z.enum(["public", "members_only"]).optional(),
   is_active: z.boolean().optional(),
