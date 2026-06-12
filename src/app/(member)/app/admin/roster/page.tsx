@@ -50,23 +50,23 @@ function SortablePlayerCard({ player }: { player: PlayerCard }) {
       style={style}
       {...attributes}
       {...listeners}
-      className="flex items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 cursor-grab active:cursor-grabbing"
+      className="flex items-center gap-3 rounded-lg border border-border bg-paper px-3 py-2 cursor-grab active:cursor-grabbing"
     >
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-600 text-xs font-bold text-white">
         {player.jerseyNumber ?? '?'}
       </div>
-      <span className="text-sm text-white">{player.fullName}</span>
+      <span className="text-sm text-ink">{player.fullName}</span>
     </div>
   )
 }
 
 function PlayerOverlay({ player }: { player: PlayerCard }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-amber-500 bg-zinc-800 px-3 py-2 shadow-xl">
+    <div className="flex items-center gap-3 rounded-lg border border-amber-500 bg-white px-3 py-2 shadow-xl">
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-600 text-xs font-bold text-white">
         {player.jerseyNumber ?? '?'}
       </div>
-      <span className="text-sm text-white">{player.fullName}</span>
+      <span className="text-sm text-ink">{player.fullName}</span>
     </div>
   )
 }
@@ -303,8 +303,8 @@ export default function RosterPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Roster Manager</h1>
-          <p className="text-zinc-400">
+          <h1 className="text-2xl font-bold text-ink">Roster Manager</h1>
+          <p className="text-muted-foreground">
             Approve members, manage teams, and track scouting prospects.
           </p>
         </div>
@@ -314,32 +314,32 @@ export default function RosterPage() {
       {/* ── Pending Approvals ──────────────────────────────────── */}
       <section className="space-y-3">
         <div>
-          <h2 className="text-lg font-semibold text-white">Pending Approvals</h2>
-          <p className="text-sm text-zinc-400">
+          <h2 className="text-lg font-semibold text-ink">Pending Approvals</h2>
+          <p className="text-sm text-muted-foreground">
             Review and approve new member accounts.
           </p>
         </div>
         {pending.length === 0 ? (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center">
-            <p className="text-sm text-zinc-400">No pending accounts to review.</p>
+          <div className="rounded-xl border border-border bg-white p-6 text-center shadow-sm">
+            <p className="text-sm text-muted-foreground">No pending accounts to review.</p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-zinc-800">
+          <div className="overflow-hidden rounded-xl border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-900/50">
+              <thead className="border-b border-border bg-paper">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-zinc-300">Name</th>
-                  <th className="px-4 py-3 font-medium text-zinc-300">Phone</th>
-                  <th className="px-4 py-3 font-medium text-zinc-300">Applied</th>
-                  <th className="px-4 py-3 font-medium text-zinc-300">Actions</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground">Name</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground">Phone</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground">Applied</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800">
+              <tbody className="divide-y divide-border">
                 {pending.map((p) => (
-                  <tr key={p.id} className="bg-zinc-900">
-                    <td className="px-4 py-3 text-white">{p.full_name}</td>
-                    <td className="px-4 py-3 text-zinc-400">{p.phone ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">
+                  <tr key={p.id} className="bg-white">
+                    <td className="px-4 py-3 text-ink">{p.full_name}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{p.phone ?? '—'}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
                       {new Date(p.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">
@@ -372,20 +372,20 @@ export default function RosterPage() {
       {/* ── Teams ──────────────────────────────────────────────── */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold text-white">Teams</h2>
-          <p className="text-sm text-zinc-400">
+          <h2 className="text-lg font-semibold text-ink">Teams</h2>
+          <p className="text-sm text-muted-foreground">
             Drag players between teams. Players can be on multiple teams.
           </p>
         </div>
 
         {showCreateTeam && (
-          <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-900 p-4">
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-white p-4 shadow-sm">
             <input
               type="text"
               value={newTeamName}
               onChange={(e) => setNewTeamName(e.target.value)}
               placeholder="Team name"
-              className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
+              className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
             />
             <Button size="sm" onClick={handleCreateTeam}>
               Save
@@ -393,7 +393,7 @@ export default function RosterPage() {
             <Button
               size="sm"
               variant="ghost"
-              className="text-zinc-200 hover:text-white"
+              className="text-ink/80 hover:text-ink"
               onClick={() => setShowCreateTeam(false)}
             >
               Cancel
@@ -411,17 +411,17 @@ export default function RosterPage() {
               <div
                 key={team.id}
                 id={team.id}
-                className="rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+                className="rounded-xl border border-border bg-white p-4 shadow-sm"
               >
                 <div className="mb-3 flex items-center justify-between">
-                  <h3 className="font-semibold text-white">{team.name}</h3>
+                  <h3 className="font-semibold text-ink">{team.name}</h3>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-500">
+                    <span className="text-xs text-muted-foreground">
                       {teamMembers[team.id]?.length ?? 0} players
                     </span>
                     <button
                       onClick={() => handleDeleteTeam(team.id, team.name)}
-                      className="rounded px-1.5 py-0.5 text-xs text-zinc-500 hover:bg-red-500/10 hover:text-red-400"
+                      className="rounded px-1.5 py-0.5 text-xs text-muted-foreground hover:bg-red-100 hover:text-red-600"
                       title="Delete team"
                     >
                       Delete
@@ -439,7 +439,7 @@ export default function RosterPage() {
                         <SortablePlayerCard player={player} />
                         <button
                           onClick={() => handleRemovePlayer(player.teamMemberId)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-zinc-600 opacity-0 hover:text-red-400 group-hover:opacity-100"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground opacity-0 hover:text-red-600 group-hover:opacity-100"
                         >
                           x
                         </button>
@@ -453,7 +453,7 @@ export default function RosterPage() {
                     <select
                       value={selectedPlayerId}
                       onChange={(e) => setSelectedPlayerId(e.target.value)}
-                      className="flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                      className="flex-1 rounded-lg border border-border bg-white px-2 py-1.5 text-xs text-ink"
                     >
                       <option value="">Select player...</option>
                       {allPlayers
@@ -470,7 +470,7 @@ export default function RosterPage() {
                     <Button
                       size="xs"
                       variant="ghost"
-                      className="text-zinc-200 hover:text-white"
+                      className="text-ink/80 hover:text-ink"
                       onClick={() => setAddingToTeam(null)}
                     >
                       x
@@ -480,7 +480,7 @@ export default function RosterPage() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="mt-3 w-full text-zinc-200 hover:text-white"
+                    className="mt-3 w-full text-ink/80 hover:text-ink"
                     onClick={() => setAddingToTeam(team.id)}
                   >
                     + Add Player
@@ -499,8 +499,8 @@ export default function RosterPage() {
       {/* ── Scouting Funnel ────────────────────────────────────── */}
       <section className="space-y-3">
         <div>
-          <h2 className="text-lg font-semibold text-white">Scouting Funnel</h2>
-          <p className="text-sm text-zinc-400">
+          <h2 className="text-lg font-semibold text-ink">Scouting Funnel</h2>
+          <p className="text-sm text-muted-foreground">
             Track prospects through the recruitment pipeline.
           </p>
         </div>
@@ -510,11 +510,11 @@ export default function RosterPage() {
             return (
               <div
                 key={col.key}
-                className={`rounded-xl border ${col.color} bg-zinc-900 p-3`}
+                className={`rounded-xl border ${col.color} bg-white p-3 shadow-sm`}
               >
-                <h3 className="mb-3 text-sm font-semibold text-white">
+                <h3 className="mb-3 text-sm font-semibold text-ink">
                   {col.label}{' '}
-                  <span className="text-zinc-500">({colProspects.length})</span>
+                  <span className="text-muted-foreground">({colProspects.length})</span>
                 </h3>
                 <div className="space-y-2">
                   {colProspects.map((p) => (
@@ -525,29 +525,29 @@ export default function RosterPage() {
                             expandedProspect === p.id ? null : p.id
                           )
                         }
-                        className="cursor-pointer rounded-lg border border-zinc-800 bg-zinc-950 p-3 hover:border-zinc-700 transition-colors"
+                        className="cursor-pointer rounded-lg border border-border bg-paper p-3 hover:border-zinc-400 transition-colors"
                       >
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-ink">
                           {p.full_name}
                         </p>
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-muted-foreground">
                           {p.position} {p.current_team && `- ${p.current_team}`}
                         </p>
                         {p.event && (
-                          <p className="mt-1 text-[10px] text-zinc-600">
+                          <p className="mt-1 text-[10px] text-muted-foreground">
                             Scouted: {p.event}
                           </p>
                         )}
                       </div>
                       {expandedProspect === p.id && (
-                        <div className="mt-1 rounded-lg border border-zinc-800 bg-zinc-950 p-3 space-y-2">
+                        <div className="mt-1 rounded-lg border border-border bg-paper p-3 space-y-2">
                           {p.assessment && (
-                            <p className="text-xs text-zinc-400">
+                            <p className="text-xs text-muted-foreground">
                               {p.assessment}
                             </p>
                           )}
                           {p.contact && (
-                            <p className="text-xs text-zinc-500">
+                            <p className="text-xs text-muted-foreground">
                               Contact: {p.contact}
                             </p>
                           )}
@@ -559,7 +559,7 @@ export default function RosterPage() {
                                   onClick={() =>
                                     moveProspectPriority(p.id, c.key)
                                   }
-                                  className="rounded bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300 hover:bg-zinc-700 transition-colors"
+                                  className="rounded bg-zinc-100 px-2 py-0.5 text-[10px] text-zinc-700 hover:bg-zinc-200 transition-colors"
                                 >
                                   &rarr; {c.label}
                                 </button>
@@ -571,7 +571,7 @@ export default function RosterPage() {
                     </div>
                   ))}
                   {colProspects.length === 0 && (
-                    <p className="text-xs text-zinc-600">No prospects.</p>
+                    <p className="text-xs text-muted-foreground">No prospects.</p>
                   )}
                 </div>
               </div>

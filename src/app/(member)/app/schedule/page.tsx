@@ -15,12 +15,12 @@ const KIND_LABELS: Record<string, string> = {
 }
 
 const KIND_COLORS: Record<string, string> = {
-  practice: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  home_game: "bg-green-500/20 text-green-400 border-green-500/30",
-  away_game: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-  tryout: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  meeting: "bg-slate-500/20 text-slate-400 border-slate-500/30",
-  other: "bg-zinc-500/20 text-zinc-400 border-zinc-500/30",
+  practice: "bg-blue-100 text-blue-700 border-blue-200",
+  home_game: "bg-green-100 text-green-700 border-green-200",
+  away_game: "bg-amber-100 text-amber-800 border-amber-200",
+  tryout: "bg-purple-100 text-purple-700 border-purple-200",
+  meeting: "bg-slate-100 text-slate-700 border-slate-200",
+  other: "bg-zinc-100 text-zinc-700 border-zinc-200",
 }
 
 export default function PlayerSchedulePage() {
@@ -47,14 +47,14 @@ export default function PlayerSchedulePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Schedule</h1>
-        <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900 p-1">
+        <h1 className="text-2xl font-bold text-ink">Schedule</h1>
+        <div className="flex gap-1 rounded-lg border border-border bg-white shadow-sm p-1">
           <button
             onClick={() => setView("calendar")}
             className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
               view === "calendar"
-                ? "bg-amber-500 text-black"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-brand text-paper"
+                : "text-muted-foreground hover:text-ink"
             }`}
           >
             Calendar
@@ -63,8 +63,8 @@ export default function PlayerSchedulePage() {
             onClick={() => setView("list")}
             className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
               view === "list"
-                ? "bg-amber-500 text-black"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-brand text-paper"
+                : "text-muted-foreground hover:text-ink"
             }`}
           >
             List
@@ -73,14 +73,14 @@ export default function PlayerSchedulePage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-zinc-500">Loading schedule...</p>
+        <p className="text-sm text-muted-foreground">Loading schedule...</p>
       ) : view === "calendar" ? (
-        <ScheduleCalendar events={events} theme="dark" />
+        <ScheduleCalendar events={events} theme="light" />
       ) : (
         <div className="space-y-3">
           {upcoming.length === 0 ? (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-              <p className="text-sm text-zinc-500">
+            <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+              <p className="text-sm text-muted-foreground">
                 No upcoming events scheduled.
               </p>
             </div>
@@ -88,12 +88,12 @@ export default function PlayerSchedulePage() {
             upcoming.map((e) => (
               <div
                 key={e.id}
-                className="rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+                className="rounded-xl border border-border bg-white shadow-sm p-5"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-medium text-white">{e.title}</h3>
+                      <h3 className="font-medium text-ink">{e.title}</h3>
                       <span
                         className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase ${
                           KIND_COLORS[e.kind] ?? KIND_COLORS.other
@@ -102,7 +102,7 @@ export default function PlayerSchedulePage() {
                         {KIND_LABELS[e.kind] ?? e.kind}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="mt-1 text-sm text-muted-foreground">
                       {new Date(e.starts_at).toLocaleDateString("en-US", {
                         weekday: "long",
                         month: "short",
@@ -117,12 +117,12 @@ export default function PlayerSchedulePage() {
                         })}`}
                     </p>
                     {e.location && (
-                      <p className="mt-0.5 text-xs text-zinc-500">
+                      <p className="mt-0.5 text-xs text-muted-foreground">
                         {e.location}
                       </p>
                     )}
                     {e.description && (
-                      <p className="mt-2 text-sm text-zinc-400">
+                      <p className="mt-2 text-sm text-muted-foreground">
                         {e.description}
                       </p>
                     )}

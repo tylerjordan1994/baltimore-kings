@@ -7,7 +7,7 @@ interface ScheduleCalendarProps {
   events: CalendarEvent[]
   /** Optional click handler — omit for read-only calendars. */
   onEventClick?: (event: CalendarEvent) => void
-  /** Visual theme. "dark" for member/admin panels, "light" for the public site. */
+  /** @deprecated The calendar is always light-themed now; this prop is ignored. */
   theme?: "dark" | "light"
 }
 
@@ -29,14 +29,11 @@ function ymd(d: Date): string {
 export function ScheduleCalendar({
   events,
   onEventClick,
-  theme = "dark",
 }: ScheduleCalendarProps) {
   const [cursor, setCursor] = useState(() => {
     const now = new Date()
     return new Date(now.getFullYear(), now.getMonth(), 1)
   })
-
-  const isDark = theme === "dark"
 
   // Group events by day key
   const eventsByDay = useMemo(() => {
@@ -73,15 +70,11 @@ export function ScheduleCalendar({
     year: "numeric",
   })
 
-  const surface = isDark
-    ? "border-zinc-800 bg-zinc-900"
-    : "border-border bg-white"
-  const headText = isDark ? "text-white" : "text-ink"
-  const subText = isDark ? "text-zinc-500" : "text-muted-foreground"
-  const cellBorder = isDark ? "border-zinc-800" : "border-border"
-  const navBtn = isDark
-    ? "border-zinc-700 bg-zinc-800 text-white hover:bg-zinc-700"
-    : "border-border bg-paper text-ink hover:bg-muted"
+  const surface = "border-border bg-white shadow-sm"
+  const headText = "text-ink"
+  const subText = "text-muted-foreground"
+  const cellBorder = "border-border"
+  const navBtn = "border-border bg-paper text-ink hover:bg-muted"
 
   function shiftMonth(delta: number) {
     setCursor(
@@ -143,10 +136,8 @@ export function ScheduleCalendar({
               <div
                 className={`mb-1 text-right text-[11px] ${
                   isToday
-                    ? "font-bold text-amber-500"
-                    : isDark
-                      ? "text-zinc-400"
-                      : "text-muted-foreground"
+                    ? "font-bold text-accent-dark"
+                    : "text-muted-foreground"
                 }`}
               >
                 {day.getDate()}

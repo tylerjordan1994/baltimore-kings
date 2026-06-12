@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { MemberSidebar } from "./member-sidebar"
+import { MemberTopbar } from "./member-topbar"
 
 // basePath handled by next.config.ts
 
@@ -59,14 +60,16 @@ export default async function MemberLayout({
   }
 
   return (
-    <div className="dark flex min-h-screen bg-court">
+    <div className="flex min-h-screen bg-paper">
       <MemberSidebar profile={profile} brandUploaded={brandUploaded} />
-      <main className="min-w-0 flex-1 overflow-y-auto">
-        {/* pt-16 below lg clears the fixed mobile menu button so it never overlaps page titles */}
-        <div className="mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:p-8">
-          {children}
-        </div>
-      </main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <MemberTopbar profile={profile} />
+        <main className="min-w-0 flex-1">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:p-8">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   )
 }

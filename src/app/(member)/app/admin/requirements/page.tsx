@@ -267,8 +267,8 @@ export default function RequirementsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Player Agreements</h1>
-          <p className="text-zinc-400">
+          <h1 className="text-2xl font-bold text-ink">Player Agreements</h1>
+          <p className="text-muted-foreground">
             Manage requirements, waivers, and contracts members must sign.
           </p>
         </div>
@@ -282,7 +282,7 @@ export default function RequirementsPage() {
       </div>
 
       {/* Top-level tabs */}
-      <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+      <div className="flex gap-1 rounded-lg border border-border bg-white p-1 shadow-sm">
         {([
           { key: 'requirements', label: 'Requirements & Waivers' },
           { key: 'contracts', label: 'Contracts' },
@@ -292,8 +292,8 @@ export default function RequirementsPage() {
             onClick={() => setTab(t.key)}
             className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               tab === t.key
-                ? 'bg-zinc-800 text-white'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-paper text-ink'
+                : 'text-muted-foreground hover:text-ink'
             }`}
           >
             {t.label}
@@ -304,35 +304,35 @@ export default function RequirementsPage() {
       {tab === 'requirements' && showForm && (
         <form
           onSubmit={handleSubmit(onSubmit as any)}
-          className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-6"
+          className="space-y-4 rounded-xl border border-border bg-white p-6 shadow-sm"
         >
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Title</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Title</label>
               <input
                 {...register('title')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
               />
-              {errors.title && <p className="mt-1 text-xs text-red-400">{errors.title.message}</p>}
+              {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Version</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Version</label>
               <input
                 type="number"
                 min={1}
                 {...register('version')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
               />
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">Body (Markdown)</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Body (Markdown)</label>
             <textarea
               {...register('body_markdown')}
               rows={8}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white font-mono"
+              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink font-mono"
             />
-            {errors.body_markdown && <p className="mt-1 text-xs text-red-400">{errors.body_markdown.message}</p>}
+            {errors.body_markdown && <p className="mt-1 text-xs text-red-600">{errors.body_markdown.message}</p>}
           </div>
           <Button type="submit">{editingId ? 'Update' : 'Create'}</Button>
         </form>
@@ -341,52 +341,52 @@ export default function RequirementsPage() {
       {tab === 'requirements' && (
         <div className="space-y-3">
           {requirements.map((r) => (
-            <div key={r.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+            <div key={r.id} className="rounded-xl border border-border bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white">{r.title}</span>
-                    <span className="text-[10px] text-zinc-500">v{r.version}</span>
-                    <span className={`rounded px-1.5 py-0.5 text-[10px] ${r.is_active ? 'bg-green-900/50 text-green-400' : 'bg-zinc-800 text-zinc-500'}`}>
+                    <span className="text-sm font-medium text-ink">{r.title}</span>
+                    <span className="text-[10px] text-muted-foreground">v{r.version}</span>
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] ${r.is_active ? 'bg-green-100 text-green-700' : 'bg-zinc-100 text-muted-foreground'}`}>
                       {r.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-muted-foreground">
                     {r.signatures?.length ?? 0} signatures
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="ghost" className="text-zinc-200 hover:text-white" onClick={() => setViewingSigs(viewingSigs === r.id ? null : r.id)}>
+                  <Button size="sm" variant="ghost" className="text-ink/80 hover:text-ink" onClick={() => setViewingSigs(viewingSigs === r.id ? null : r.id)}>
                     Signatures
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-zinc-200 hover:text-white" onClick={() => toggleActive(r.id, r.is_active)}>
+                  <Button size="sm" variant="ghost" className="text-ink/80 hover:text-ink" onClick={() => toggleActive(r.id, r.is_active)}>
                     {r.is_active ? 'Deactivate' : 'Activate'}
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-zinc-200 hover:text-white" onClick={() => handleEdit(r)}>Edit</Button>
+                  <Button size="sm" variant="ghost" className="text-ink/80 hover:text-ink" onClick={() => handleEdit(r)}>Edit</Button>
                   <Button size="sm" variant="destructive" onClick={() => handleDelete(r.id)}>Delete</Button>
                 </div>
               </div>
 
               {viewingSigs === r.id && (
-                <div className="mt-3 border-t border-zinc-800 pt-3">
+                <div className="mt-3 border-t border-border pt-3">
                   {r.signatures && r.signatures.length > 0 ? (
                     <div className="space-y-1">
                       {r.signatures.map((sig) => (
                         <div key={sig.id} className="flex items-center justify-between text-xs">
-                          <span className="text-zinc-300">{sig.profiles?.full_name ?? 'Unknown'}</span>
-                          <span className="text-zinc-600">{new Date(sig.signed_at).toLocaleDateString()}</span>
+                          <span className="text-ink/80">{sig.profiles?.full_name ?? 'Unknown'}</span>
+                          <span className="text-muted-foreground">{new Date(sig.signed_at).toLocaleDateString()}</span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-zinc-600">No signatures yet.</p>
+                    <p className="text-xs text-muted-foreground">No signatures yet.</p>
                   )}
                 </div>
               )}
             </div>
           ))}
           {requirements.length === 0 && (
-            <p className="text-center text-sm text-zinc-500">No requirements yet.</p>
+            <p className="text-center text-sm text-muted-foreground">No requirements yet.</p>
           )}
         </div>
       )}
@@ -394,15 +394,15 @@ export default function RequirementsPage() {
       {tab === 'contracts' && (
         <div className="space-y-4">
           {/* Contract status tabs */}
-          <div className="flex flex-wrap gap-1 rounded-lg bg-white/5 p-1">
+          <div className="flex flex-wrap gap-1 rounded-lg bg-paper p-1">
             {contractTabs.map((t) => (
               <button
                 key={t.key}
                 onClick={() => setContractTab(t.key)}
                 className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   contractTab === t.key
-                    ? 'bg-amber-500 text-black'
-                    : 'text-white/60 hover:text-white'
+                    ? 'bg-brand text-paper'
+                    : 'text-muted-foreground hover:text-ink'
                 }`}
               >
                 {t.label}
@@ -412,37 +412,37 @@ export default function RequirementsPage() {
 
           <div className="space-y-3">
             {contractLoading ? (
-              <p className="text-sm text-zinc-500">Loading...</p>
+              <p className="text-sm text-muted-foreground">Loading...</p>
             ) : contracts.length === 0 ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-                <p className="text-sm text-zinc-500">No contracts found.</p>
+              <div className="rounded-xl border border-border bg-white p-6 shadow-sm">
+                <p className="text-sm text-muted-foreground">No contracts found.</p>
               </div>
             ) : (
               contracts.map((c) => (
-                <div key={c.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+                <div key={c.id} className="rounded-xl border border-border bg-white p-5 shadow-sm">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-white">{c.title}</h3>
+                      <h3 className="font-medium text-ink">{c.title}</h3>
                       <div className="mt-1 flex flex-wrap gap-2">
-                        <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-zinc-400">
+                        <span className="rounded-full bg-paper px-2 py-0.5 text-xs text-muted-foreground">
                           {c.kind}
                         </span>
-                        <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-zinc-400">
+                        <span className="rounded-full bg-paper px-2 py-0.5 text-xs text-muted-foreground">
                           {c.applies_to}
                         </span>
-                        <span className="text-xs text-zinc-500">
+                        <span className="text-xs text-muted-foreground">
                           {assignCounts[c.id] || 0} assigned
                         </span>
                       </div>
                       {c.expiration_date && (
-                        <p className="mt-1 text-xs text-zinc-500">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           Expires: {new Date(c.expiration_date).toLocaleDateString()}
                         </p>
                       )}
                     </div>
                     <button
                       onClick={() => setShowAssign(c.id)}
-                      className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                      className="rounded-lg bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-zinc-200 transition-colors"
                     >
                       Assign
                     </button>
@@ -457,34 +457,34 @@ export default function RequirementsPage() {
       {/* Create Contract Modal */}
       {showContractForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f0f0f] p-6 max-h-[85vh] overflow-y-auto">
-            <h2 className="text-lg font-bold text-white mb-4">Create Contract</h2>
+          <div className="w-full max-w-2xl rounded-2xl border border-border bg-white p-6 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-ink mb-4">Create Contract</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Title</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Title</label>
                 <input
                   type="text"
                   value={cTitle}
                   onChange={(e) => setCTitle(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink placeholder:text-muted-foreground focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Body</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Body</label>
                 <textarea
                   value={cBody}
                   onChange={(e) => setCBody(e.target.value)}
                   rows={8}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink placeholder:text-muted-foreground focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1">Kind</label>
+                  <label className="block text-sm font-medium text-ink/80 mb-1">Kind</label>
                   <select
                     value={cKind}
                     onChange={(e) => setCKind(e.target.value as ContractKind)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                   >
                     {contractKindOptions.map((k) => (
                       <option key={k} value={k}>{k.replace(/_/g, ' ')}</option>
@@ -492,11 +492,11 @@ export default function RequirementsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1">Applies To</label>
+                  <label className="block text-sm font-medium text-ink/80 mb-1">Applies To</label>
                   <select
                     value={cAppliesTo}
                     onChange={(e) => setCAppliesTo(e.target.value as ContractAppliesTo)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                   >
                     <option value="individual">Individual</option>
                     <option value="team">Team</option>
@@ -506,11 +506,11 @@ export default function RequirementsPage() {
               </div>
               {cAppliesTo === 'team' && (
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1">Team</label>
+                  <label className="block text-sm font-medium text-ink/80 mb-1">Team</label>
                   <select
                     value={cTeamId}
                     onChange={(e) => setCTeamId(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                   >
                     <option value="">Select team...</option>
                     {cTeams.map((t) => (
@@ -520,25 +520,25 @@ export default function RequirementsPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Expiration Date</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Expiration Date</label>
                 <input
                   type="date"
                   value={cExpiration}
                   onChange={(e) => setCExpiration(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleCreateContract}
                   disabled={!cTitle.trim() || !cBody.trim() || cSubmitting}
-                  className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
+                  className="rounded-lg bg-brand px-6 py-2 text-sm font-medium text-paper hover:bg-brand-light disabled:opacity-50 transition-colors"
                 >
                   {cSubmitting ? 'Creating...' : 'Create'}
                 </button>
                 <button
                   onClick={() => setShowContractForm(false)}
-                  className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                  className="rounded-lg bg-paper px-6 py-2 text-sm font-medium text-ink hover:bg-zinc-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -551,16 +551,16 @@ export default function RequirementsPage() {
       {/* Assign Contract Modal */}
       {showAssign && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f0f] p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Assign Contract</h2>
+          <div className="w-full max-w-md rounded-2xl border border-border bg-white p-6">
+            <h2 className="text-lg font-bold text-ink mb-4">Assign Contract</h2>
             {contracts.find((c) => c.id === showAssign)?.applies_to === 'individual' ? (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1">Select Player</label>
+                  <label className="block text-sm font-medium text-ink/80 mb-1">Select Player</label>
                   <select
                     value={assignProfileId}
                     onChange={(e) => setAssignProfileId(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                   >
                     <option value="">Select player...</option>
                     {cPlayers.map((p) => (
@@ -570,7 +570,7 @@ export default function RequirementsPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-zinc-400 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 This will assign to{' '}
                 {contracts.find((c) => c.id === showAssign)?.applies_to === 'team'
                   ? 'all members of the selected team'
@@ -586,7 +586,7 @@ export default function RequirementsPage() {
                   (contracts.find((c) => c.id === showAssign)?.applies_to === 'individual' &&
                     !assignProfileId)
                 }
-                className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
+                className="rounded-lg bg-brand px-6 py-2 text-sm font-medium text-paper hover:bg-brand-light disabled:opacity-50 transition-colors"
               >
                 {cSubmitting ? 'Assigning...' : 'Assign'}
               </button>
@@ -595,7 +595,7 @@ export default function RequirementsPage() {
                   setShowAssign(null)
                   setAssignProfileId('')
                 }}
-                className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                className="rounded-lg bg-paper px-6 py-2 text-sm font-medium text-ink hover:bg-zinc-200 transition-colors"
               >
                 Cancel
               </button>

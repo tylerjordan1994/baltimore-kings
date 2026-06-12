@@ -121,16 +121,16 @@ export default function TrainingAndTutorialsPage() {
   }
 
   const priorityColors: Record<string, string> = {
-    high: "bg-red-500/20 text-red-400 border-red-500/30",
-    normal: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    low: "bg-zinc-500/20 text-zinc-400 border-zinc-500/30",
+    high: "bg-red-100 text-red-700 border-red-200",
+    normal: "bg-blue-100 text-blue-700 border-blue-200",
+    low: "bg-zinc-100 text-zinc-700 border-zinc-200",
   }
 
   const categoryColors: Record<string, string> = {
-    technical: "bg-purple-500/20 text-purple-400",
-    tactical: "bg-blue-500/20 text-blue-400",
-    physical: "bg-green-500/20 text-green-400",
-    mental: "bg-amber-500/20 text-amber-400",
+    technical: "bg-purple-100 text-purple-700",
+    tactical: "bg-blue-100 text-blue-700",
+    physical: "bg-green-100 text-green-700",
+    mental: "bg-amber-100 text-amber-800",
   }
 
   const tutorialCategories = Array.from(
@@ -143,20 +143,20 @@ export default function TrainingAndTutorialsPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-10">
-      <h1 className="text-2xl font-bold text-white">Training &amp; Tutorials</h1>
+      <h1 className="text-2xl font-bold text-ink">Training &amp; Tutorials</h1>
 
       {loading ? (
-        <p className="text-sm text-zinc-500">Loading...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       ) : (
         <>
           {/* Training Section */}
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-lg font-semibold text-ink">
               Training Assignments
             </h2>
             {assignments.length === 0 ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-                <p className="text-sm text-zinc-500">
+              <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+                <p className="text-sm text-muted-foreground">
                   No training assignments yet.
                 </p>
               </div>
@@ -168,12 +168,12 @@ export default function TrainingAndTutorialsPage() {
                   return (
                     <div
                       key={a.id}
-                      className="rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+                      className="rounded-xl border border-border bg-white shadow-sm p-5"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="font-medium text-white">
+                            <h3 className="font-medium text-ink">
                               {a.focus_areas?.name}
                             </h3>
                             <span
@@ -188,11 +188,11 @@ export default function TrainingAndTutorialsPage() {
                             </span>
                           </div>
                           {a.notes_markdown && (
-                            <p className="mt-2 text-sm text-zinc-400">
+                            <p className="mt-2 text-sm text-muted-foreground">
                               {a.notes_markdown}
                             </p>
                           )}
-                          <div className="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
+                          <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
                             {a.due_by && (
                               <span>
                                 Due:{" "}
@@ -208,7 +208,7 @@ export default function TrainingAndTutorialsPage() {
                               href={a.attached_youtube_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="mt-2 inline-block text-xs text-amber-400 hover:text-amber-300"
+                              className="mt-2 inline-block text-xs text-accent-dark hover:text-accent"
                             >
                               Watch Video &rarr;
                             </a>
@@ -220,7 +220,7 @@ export default function TrainingAndTutorialsPage() {
                               onClick={() =>
                                 updateStatus(a.id, "in_progress")
                               }
-                              className="rounded-lg bg-blue-500/20 px-3 py-1.5 text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/30"
+                              className="rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-200"
                             >
                               Mark In Progress
                             </button>
@@ -231,18 +231,18 @@ export default function TrainingAndTutorialsPage() {
                               onClick={() =>
                                 updateStatus(a.id, "player_marked_complete")
                               }
-                              className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 transition-colors hover:bg-green-500/30"
+                              className="rounded-lg bg-green-100 px-3 py-1.5 text-xs font-medium text-green-700 transition-colors hover:bg-green-200"
                             >
                               Mark Complete
                             </button>
                           )}
                           {status === "player_marked_complete" && (
-                            <span className="rounded-lg bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-400">
+                            <span className="rounded-lg bg-amber-100 px-3 py-1.5 text-xs font-medium text-amber-800">
                               Awaiting Confirmation
                             </span>
                           )}
                           {status === "coach_confirmed" && (
-                            <span className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400">
+                            <span className="rounded-lg bg-green-100 px-3 py-1.5 text-xs font-medium text-green-700">
                               Confirmed
                             </span>
                           )}
@@ -258,12 +258,12 @@ export default function TrainingAndTutorialsPage() {
           {/* Tutorials Section */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">Tutorials</h2>
+              <h2 className="text-lg font-semibold text-ink">Tutorials</h2>
               {tutorialCategories.length > 0 && (
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white focus:border-amber-500 focus:outline-none"
+                  className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground focus:border-accent-dark focus:outline-none"
                 >
                   <option value="">All Categories</option>
                   {tutorialCategories.map((c) => (
@@ -275,8 +275,8 @@ export default function TrainingAndTutorialsPage() {
               )}
             </div>
             {filteredTutorials.length === 0 ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-                <p className="text-sm text-zinc-500">
+              <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+                <p className="text-sm text-muted-foreground">
                   No tutorials available yet.
                 </p>
               </div>
@@ -285,20 +285,20 @@ export default function TrainingAndTutorialsPage() {
                 {filteredTutorials.map((t) => (
                   <div
                     key={t.id}
-                    className="rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+                    className="rounded-xl border border-border bg-white shadow-sm p-5"
                   >
                     <div className="mb-2 flex items-center gap-2">
-                      <h3 className="text-lg font-semibold text-white">
+                      <h3 className="text-lg font-semibold text-ink">
                         {t.title}
                       </h3>
                       {t.category && (
-                        <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-400">
+                        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-700">
                           {t.category}
                         </span>
                       )}
                     </div>
                     {t.body_markdown && (
-                      <p className="mb-3 whitespace-pre-wrap text-sm text-zinc-300">
+                      <p className="mb-3 whitespace-pre-wrap text-sm text-ink/80">
                         {t.body_markdown}
                       </p>
                     )}
@@ -308,7 +308,7 @@ export default function TrainingAndTutorialsPage() {
                           href={t.youtube_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/20"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700 transition-colors hover:bg-red-200"
                         >
                           Watch on YouTube
                         </a>
@@ -318,13 +318,13 @@ export default function TrainingAndTutorialsPage() {
                           href={t.external_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/20 bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-100 px-3 py-1.5 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-200"
                         >
                           External Resource
                         </a>
                       )}
                     </div>
-                    <p className="mt-3 text-[10px] text-zinc-600">
+                    <p className="mt-3 text-[10px] text-muted-foreground">
                       {new Date(t.created_at).toLocaleDateString()}
                     </p>
                   </div>

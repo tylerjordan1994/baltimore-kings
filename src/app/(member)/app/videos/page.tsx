@@ -48,11 +48,11 @@ export default function VideosPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Game Film</h1>
+        <h1 className="text-2xl font-bold text-ink">Game Film</h1>
         <select
           value={filterTag}
           onChange={(e) => setFilterTag(e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white focus:border-amber-500 focus:outline-none"
+          className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground focus:border-accent-dark focus:outline-none"
         >
           <option value="">All Tags</option>
           {VIDEO_TAGS.map((t) => (
@@ -62,10 +62,10 @@ export default function VideosPage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-zinc-500">Loading...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       ) : filtered.length === 0 ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-          <p className="text-sm text-zinc-500">No videos available yet.</p>
+        <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+          <p className="text-sm text-muted-foreground">No videos available yet.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -75,33 +75,33 @@ export default function VideosPage() {
               href={v.veo_url || "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-xl border border-zinc-800 bg-zinc-900 p-5 hover:border-zinc-700 transition-colors"
+              className="block rounded-xl border border-border bg-white shadow-sm p-5 hover:border-zinc-300 transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className="text-sm font-medium text-white">
+                    <h2 className="text-sm font-medium text-ink">
                       {v.title || "Untitled"}
                     </h2>
                     {v.kind && (
-                      <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-400">
+                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-700">
                         {v.kind}
                       </span>
                     )}
                   </div>
                   {v.recorded_at && (
-                    <p className="mt-1 text-xs text-zinc-500">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       {new Date(v.recorded_at).toLocaleDateString()}
                     </p>
                   )}
                   {v.notes_markdown && (
-                    <div className="mt-2 rounded-lg bg-blue-500/10 border border-blue-500/20 p-2">
-                      <p className="text-xs font-medium text-blue-400 mb-0.5">Coach Notes</p>
-                      <p className="text-sm text-zinc-300 whitespace-pre-wrap">{v.notes_markdown}</p>
+                    <div className="mt-2 rounded-lg bg-blue-50 border border-blue-200 p-2">
+                      <p className="text-xs font-medium text-blue-700 mb-0.5">Coach Notes</p>
+                      <p className="text-sm text-ink/80 whitespace-pre-wrap">{v.notes_markdown}</p>
                     </div>
                   )}
                 </div>
-                <span className="ml-3 text-xs text-zinc-500 shrink-0">
+                <span className="ml-3 text-xs text-muted-foreground shrink-0">
                   Open in VEO
                 </span>
               </div>

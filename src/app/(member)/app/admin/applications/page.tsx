@@ -69,8 +69,8 @@ export default function ApplicationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Application Review</h1>
-        <p className="text-zinc-400">Review player applications.</p>
+        <h1 className="text-2xl font-bold text-ink">Application Review</h1>
+        <p className="text-muted-foreground">Review player applications.</p>
       </div>
 
       <div className="flex gap-2">
@@ -88,26 +88,26 @@ export default function ApplicationsPage() {
 
       <div className="space-y-4">
         {applications.map((app) => (
-          <div key={app.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <div key={app.id} className="rounded-xl border border-border bg-white p-5 shadow-sm">
             <div className="mb-3 flex items-start justify-between">
               <div>
-                <h3 className="font-semibold text-white">{app.full_name}</h3>
-                <p className="text-sm text-zinc-400">{app.email} {app.phone && `| ${app.phone}`}</p>
+                <h3 className="font-semibold text-ink">{app.full_name}</h3>
+                <p className="text-sm text-muted-foreground">{app.email} {app.phone && `| ${app.phone}`}</p>
               </div>
-              <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs uppercase text-zinc-400">
+              <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs uppercase text-zinc-700">
                 {app.status}
               </span>
             </div>
-            <div className="mb-3 grid gap-2 text-sm text-zinc-300 sm:grid-cols-2">
+            <div className="mb-3 grid gap-2 text-sm text-ink/80 sm:grid-cols-2">
               {app.date_of_birth && <p>DOB: {app.date_of_birth}</p>}
               {app.years_experience != null && <p>Experience: {app.years_experience} years</p>}
               {app.position_preference && <p>Position: {app.position_preference}</p>}
               {app.prior_teams && <p>Prior teams: {app.prior_teams}</p>}
             </div>
             {app.notes && (
-              <p className="mb-3 text-sm text-zinc-400">Notes: {app.notes}</p>
+              <p className="mb-3 text-sm text-muted-foreground">Notes: {app.notes}</p>
             )}
-            <p className="mb-3 text-xs text-zinc-600">
+            <p className="mb-3 text-xs text-muted-foreground">
               Applied {new Date(app.created_at).toLocaleDateString()}
             </p>
             {app.status !== 'rejected' && (
@@ -126,7 +126,7 @@ export default function ApplicationsPage() {
           </div>
         ))}
         {applications.length === 0 && (
-          <p className="text-center text-sm text-zinc-500">No applications found.</p>
+          <p className="text-center text-sm text-muted-foreground">No applications found.</p>
         )}
       </div>
     </div>

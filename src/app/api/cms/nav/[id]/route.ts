@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server"
 
 const updateSchema = z.object({
   label: z.string().min(1).max(120).optional(),
+  description: z.string().max(160).nullable().optional(),
   link_type: z.enum(["page", "url", "group"]).optional(),
   page_id: z.string().uuid().nullable().optional(),
   external_url: z.string().nullable().optional(),

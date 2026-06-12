@@ -100,46 +100,46 @@ export default function MediaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Media Manager</h1>
-        <p className="text-zinc-400">Upload and manage photos and videos.</p>
+        <h1 className="text-2xl font-bold text-ink">Media Manager</h1>
+        <p className="text-muted-foreground">Upload and manage photos and videos.</p>
       </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-6"
+        className="space-y-4 rounded-xl border border-border bg-white p-6 shadow-sm"
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">File</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">File</label>
             <input
               type="file"
               accept="image/*,video/*"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="w-full text-sm text-zinc-300"
+              className="w-full text-sm text-ink/80"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">Kind</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Kind</label>
             <select
               {...register('kind')}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
             >
               <option value="photo">Photo</option>
               <option value="video">Video</option>
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">Caption</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Caption</label>
             <input
               {...register('caption')}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">Team</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Team</label>
             <select
               {...register('team_id')}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
             >
               <option value="">No team</option>
               {teams.map((t) => (
@@ -157,7 +157,7 @@ export default function MediaPage() {
         {media.map((item) => (
           <div
             key={item.id}
-            className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900"
+            className="group relative overflow-hidden rounded-xl border border-border bg-white shadow-sm"
           >
             {item.kind === 'photo' ? (
               <img
@@ -169,8 +169,8 @@ export default function MediaPage() {
               <video src={item.url} className="aspect-square w-full object-cover" />
             )}
             <div className="p-3">
-              <p className="truncate text-xs text-zinc-300">{item.caption || 'No caption'}</p>
-              <p className="text-[10px] text-zinc-600">
+              <p className="truncate text-xs text-ink/80">{item.caption || 'No caption'}</p>
+              <p className="text-[10px] text-muted-foreground">
                 {new Date(item.created_at).toLocaleDateString()}
               </p>
             </div>
@@ -184,7 +184,7 @@ export default function MediaPage() {
         ))}
       </div>
       {media.length === 0 && (
-        <p className="text-center text-sm text-zinc-500">No media uploaded yet.</p>
+        <p className="text-center text-sm text-muted-foreground">No media uploaded yet.</p>
       )}
     </div>
   )

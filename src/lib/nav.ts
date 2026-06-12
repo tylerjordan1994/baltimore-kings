@@ -64,6 +64,7 @@ type TreeRow = {
   id: string
   parent_id: string | null
   label: string
+  description: string | null
   link_type: string
   external_url: string | null
   page_id: string | null
@@ -77,7 +78,7 @@ export async function getPrimaryNavTree(): Promise<NavNode[]> {
   const supabase = createAnonClient()
   const { data } = await supabase
     .from("nav_items")
-    .select("id, parent_id, label, link_type, external_url, page_id, is_cta, feature_card_json, order_index")
+    .select("id, parent_id, label, description, link_type, external_url, page_id, is_cta, feature_card_json, order_index")
     .eq("menu_key", "primary")
     .eq("is_active", true)
     .eq("visibility", "public")
@@ -104,6 +105,6 @@ export async function getPrimaryNavTree(): Promise<NavNode[]> {
     featureCard: t.feature_card_json ?? null,
     children: rows
       .filter((r) => r.parent_id === t.id)
-      .map((c) => ({ label: c.label, href: hrefOf(c), description: null })),
+      .map((c) => ({ label: c.label, href: hrefOf(c), description: c.description })),
   }))
 }

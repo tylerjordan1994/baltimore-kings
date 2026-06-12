@@ -65,17 +65,17 @@ const MASL_POSITIONS = ['Target Forward', 'Second Forward', 'Midfielder', 'Defen
 function RoleTags({ profile }: { profile: Profile }) {
   const tags: { label: string; className: string }[] = []
   if (profile.role === 'superadmin') {
-    tags.push({ label: 'Super Admin', className: 'bg-purple-900/50 text-purple-300' })
+    tags.push({ label: 'Super Admin', className: 'bg-purple-100 text-purple-700' })
   } else if (profile.role === 'coach') {
-    tags.push({ label: 'Coach', className: 'bg-blue-900/50 text-blue-300' })
+    tags.push({ label: 'Coach', className: 'bg-blue-100 text-blue-700' })
   } else if (profile.role === 'player') {
-    tags.push({ label: 'Player', className: 'bg-green-900/50 text-green-300' })
+    tags.push({ label: 'Player', className: 'bg-green-100 text-green-700' })
   } else {
-    tags.push({ label: profile.role, className: 'bg-zinc-800 text-zinc-400' })
+    tags.push({ label: profile.role, className: 'bg-zinc-100 text-zinc-700' })
   }
   // Coaches/superadmins who also play get an extra Player tag.
   if (profile.also_plays && profile.role !== 'player') {
-    tags.push({ label: 'Player', className: 'bg-green-900/50 text-green-300' })
+    tags.push({ label: 'Player', className: 'bg-green-100 text-green-700' })
   }
   return (
     <div className="flex flex-wrap gap-1">
@@ -373,13 +373,13 @@ export default function PlayersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Player Management</h1>
-        <p className="text-zinc-400">View and edit all player profiles.</p>
+        <h1 className="text-2xl font-bold text-ink">Player Management</h1>
+        <p className="text-muted-foreground">View and edit all player profiles.</p>
       </div>
 
       {/* Search + Tabs */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+        <div className="flex gap-1 rounded-lg border border-border bg-white p-1 shadow-sm">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -387,7 +387,7 @@ export default function PlayersPage() {
               className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                 activeTab === tab.key
                   ? 'bg-gold/20 text-gold'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  : 'text-muted-foreground hover:text-ink hover:bg-paper'
               }`}
             >
               {tab.label}
@@ -400,21 +400,21 @@ export default function PlayersPage() {
           placeholder="Search players..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none w-full sm:w-64"
+          className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground focus:border-amber-500 focus:outline-none w-full sm:w-64"
         />
       </div>
 
       {/* Edit Dialog/Sheet */}
       {editingPlayer && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4">
-          <div className="my-8 w-full max-w-2xl rounded-xl border border-zinc-700 bg-zinc-900 p-6">
+          <div className="my-8 w-full max-w-2xl rounded-xl border border-border bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">Edit {editingPlayer.full_name}</h2>
+              <h2 className="text-lg font-semibold text-ink">Edit {editingPlayer.full_name}</h2>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => setEditingPlayer(null)}
-                className="text-zinc-200 hover:text-white"
+                className="text-ink/80 hover:text-ink"
               >
                 Close
               </Button>
@@ -422,71 +422,71 @@ export default function PlayersPage() {
             <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Full Name</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Full Name</label>
                   <input
                     {...register('full_name')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Nickname</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Nickname</label>
                   <input
                     {...register('nickname')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Phone</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Phone</label>
                   <input
                     {...register('phone')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Date of Birth</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Date of Birth</label>
                   <input
                     type="date"
                     {...register('date_of_birth')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Hometown</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Hometown</label>
                   <input
                     {...register('hometown')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">School</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">School</label>
                   <input
                     {...register('school')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Jersey #</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Jersey #</label>
                   <input
                     type="number"
                     {...register('jersey_number')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Years in Club</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Years in Club</label>
                   <input
                     type="number"
                     {...register('years_in_club')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Futsal Position / Type</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Futsal Position / Type</label>
                   {customFutsal ? (
                     <input
                       {...register('position_primary')}
                       placeholder="Custom player type..."
-                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
+                      className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
                     />
                   ) : (
                     <select
@@ -499,7 +499,7 @@ export default function PlayersPage() {
                           setValue('position_primary', e.target.value)
                         }
                       }}
-                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                      className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                     >
                       <option value="">None</option>
                       {FUTSAL_POSITIONS.map((pos) => (
@@ -510,12 +510,12 @@ export default function PlayersPage() {
                   )}
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">MASL Position / Type</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">MASL Position / Type</label>
                   {customMasl ? (
                     <input
                       {...register('position_secondary')}
                       placeholder="Custom player type..."
-                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
+                      className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
                     />
                   ) : (
                     <select
@@ -528,7 +528,7 @@ export default function PlayersPage() {
                           setValue('position_secondary', e.target.value)
                         }
                       }}
-                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                      className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                     >
                       <option value="">None</option>
                       {MASL_POSITIONS.map((pos) => (
@@ -539,10 +539,10 @@ export default function PlayersPage() {
                   )}
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Status</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Status</label>
                   <select
                     {...register('status')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   >
                     {PROFILE_STATUSES.map((s) => (
                       <option key={s} value={s}>{s}</option>
@@ -550,10 +550,10 @@ export default function PlayersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Role</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Role</label>
                   <select
                     {...register('role')}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   >
                     <option value="pending">Pending</option>
                     <option value="player">Player</option>
@@ -566,20 +566,20 @@ export default function PlayersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Photo URL</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Photo URL</label>
                   <input
                     {...register('photo_url')}
                     placeholder="https://..."
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs text-zinc-400">Upload Photo</label>
+                  <label className="mb-1 block text-xs text-muted-foreground">Upload Photo</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
-                    className="w-full text-xs text-zinc-400"
+                    className="w-full text-xs text-muted-foreground"
                   />
                 </div>
                 <div className="flex items-center gap-2">
@@ -587,9 +587,9 @@ export default function PlayersPage() {
                     id="is_minor"
                     type="checkbox"
                     {...register('is_minor')}
-                    className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 accent-[#C9A94E]"
+                    className="h-4 w-4 rounded border-border bg-white accent-[#C9A94E]"
                   />
-                  <label htmlFor="is_minor" className="text-sm text-zinc-300">
+                  <label htmlFor="is_minor" className="text-sm text-ink/80">
                     Player is a minor
                   </label>
                 </div>
@@ -598,28 +598,28 @@ export default function PlayersPage() {
                     id="also_plays"
                     type="checkbox"
                     {...register('also_plays')}
-                    className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 accent-[#C9A94E]"
+                    className="h-4 w-4 rounded border-border bg-white accent-[#C9A94E]"
                   />
-                  <label htmlFor="also_plays" className="text-sm text-zinc-300">
+                  <label htmlFor="also_plays" className="text-sm text-ink/80">
                     Also plays (e.g. coach who also plays)
                   </label>
                 </div>
               </div>
               <div>
-                <label className="mb-1 block text-xs text-zinc-400">Bio</label>
+                <label className="mb-1 block text-xs text-muted-foreground">Bio</label>
                 <textarea
                   {...register('bio')}
                   rows={3}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
                 />
               </div>
 
               {/* Team assignments */}
-              <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
-                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+              <div className="rounded-lg border border-border bg-paper p-3">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Team Assignments
                 </p>
-                <p className="mb-3 text-xs text-zinc-500">
+                <p className="mb-3 text-xs text-muted-foreground">
                   Adding a player to a team here shows them on that team&apos;s public roster.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -633,7 +633,7 @@ export default function PlayersPage() {
                         className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                           active
                             ? 'bg-gold/20 text-gold ring-1 ring-[#C9A94E]'
-                            : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                            : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
                         }`}
                       >
                         {active ? '✓ ' : '+ '}
@@ -642,14 +642,14 @@ export default function PlayersPage() {
                     )
                   })}
                   {teams.length === 0 && (
-                    <span className="text-xs text-zinc-500">No teams found.</span>
+                    <span className="text-xs text-muted-foreground">No teams found.</span>
                   )}
                 </div>
               </div>
 
               {/* Club history editor */}
-              <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3">
-                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+              <div className="rounded-lg border border-border bg-paper p-3">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Club History
                 </p>
                 <div className="space-y-2">
@@ -659,41 +659,41 @@ export default function PlayersPage() {
                         value={h.year_label}
                         onChange={(e) => updateHistoryRow(h.id, 'year_label', e.target.value)}
                         placeholder="Year"
-                        className="w-24 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                        className="w-24 rounded-lg border border-border bg-white px-2 py-1.5 text-xs text-ink"
                       />
                       <input
                         value={h.team}
                         onChange={(e) => updateHistoryRow(h.id, 'team', e.target.value)}
                         placeholder="Team"
-                        className="w-40 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                        className="w-40 rounded-lg border border-border bg-white px-2 py-1.5 text-xs text-ink"
                       />
                       <input
                         value={h.note ?? ''}
                         onChange={(e) => updateHistoryRow(h.id, 'note', e.target.value)}
                         placeholder="Note"
-                        className="min-w-[120px] flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                        className="min-w-[120px] flex-1 rounded-lg border border-border bg-white px-2 py-1.5 text-xs text-ink"
                       />
                       <button
                         type="button"
                         onClick={() => deleteHistoryRow(h.id)}
-                        className="rounded px-2 py-1 text-xs text-red-400 hover:bg-red-500/10"
+                        className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-100"
                       >
                         Delete
                       </button>
                     </div>
                   ))}
                   {history.length === 0 && (
-                    <p className="text-xs text-zinc-500">No history rows yet.</p>
+                    <p className="text-xs text-muted-foreground">No history rows yet.</p>
                   )}
                 </div>
-                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-zinc-800 pt-3">
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
                   <input
                     value={newHistory.year_label}
                     onChange={(e) =>
                       setNewHistory((p) => ({ ...p, year_label: e.target.value }))
                     }
                     placeholder="Year"
-                    className="w-24 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                    className="w-24 rounded-lg border border-border bg-white px-2 py-1.5 text-xs text-ink"
                   />
                   <input
                     value={newHistory.team}
@@ -701,7 +701,7 @@ export default function PlayersPage() {
                       setNewHistory((p) => ({ ...p, team: e.target.value }))
                     }
                     placeholder="Team"
-                    className="w-40 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                    className="w-40 rounded-lg border border-border bg-white px-2 py-1.5 text-xs text-ink"
                   />
                   <input
                     value={newHistory.note}
@@ -709,7 +709,7 @@ export default function PlayersPage() {
                       setNewHistory((p) => ({ ...p, note: e.target.value }))
                     }
                     placeholder="Note (optional)"
-                    className="min-w-[120px] flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-2 py-1.5 text-xs text-white"
+                    className="min-w-[120px] flex-1 rounded-lg border border-border bg-white px-2 py-1.5 text-xs text-ink"
                   />
                   <Button type="button" size="sm" onClick={addHistoryRow}>
                     Add Row
@@ -722,7 +722,7 @@ export default function PlayersPage() {
                   type="button"
                   variant="ghost"
                   onClick={() => setEditingPlayer(null)}
-                  className="text-zinc-200 hover:text-white"
+                  className="text-ink/80 hover:text-ink"
                 >
                   Cancel
                 </Button>
@@ -736,11 +736,11 @@ export default function PlayersPage() {
       {/* Mark Inactive Modal */}
       {inactiveModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-md rounded-xl border border-zinc-700 bg-zinc-900 p-6">
-            <h2 className="text-lg font-semibold text-white">
+          <div className="w-full max-w-md rounded-xl border border-border bg-white p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-ink">
               Mark {inactiveModal.full_name} Inactive
             </h2>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               Select reason(s) and add optional notes.
             </p>
 
@@ -748,13 +748,13 @@ export default function PlayersPage() {
               {INACTIVE_REASONS.map((reason) => (
                 <label
                   key={reason}
-                  className="flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm text-white hover:bg-zinc-800 cursor-pointer"
+                  className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-ink hover:bg-paper cursor-pointer"
                 >
                   <input
                     type="checkbox"
                     checked={inactiveReasons.includes(reason)}
                     onChange={() => toggleReason(reason)}
-                    className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 text-gold accent-[#C9A94E]"
+                    className="h-4 w-4 rounded border-border bg-white text-gold accent-[#C9A94E]"
                   />
                   {INACTIVE_REASON_LABELS[reason]}
                 </label>
@@ -762,15 +762,15 @@ export default function PlayersPage() {
             </div>
 
             <div className="mt-4">
-              <label className="mb-1 block text-xs text-zinc-400">
-                Notes {inactiveReasons.includes('other') && <span className="text-red-400">(required)</span>}
+              <label className="mb-1 block text-xs text-muted-foreground">
+                Notes {inactiveReasons.includes('other') && <span className="text-red-600">(required)</span>}
               </label>
               <textarea
                 value={inactiveNotes}
                 onChange={(e) => setInactiveNotes(e.target.value)}
                 rows={3}
                 placeholder="Additional context..."
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-600"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               />
             </div>
 
@@ -803,31 +803,31 @@ export default function PlayersPage() {
 
       {/* Inactive tab: denser table */}
       {activeTab === 'inactive' ? (
-        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+        <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-zinc-800 bg-zinc-900/50">
+            <thead className="border-b border-border bg-paper">
               <tr>
-                <th className="px-4 py-3 font-medium text-zinc-300">Player</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Date Inactivated</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Reasons</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Notes</th>
-                <th className="px-4 py-3 font-medium text-zinc-300">Actions</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">Player</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">Date Inactivated</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">Reasons</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">Notes</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800">
+            <tbody className="divide-y divide-border">
               {filteredPlayers.map((p) => (
-                <tr key={p.id} className="bg-zinc-900 hover:bg-zinc-800/50">
+                <tr key={p.id} className="bg-white hover:bg-paper">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       {p.photo_url ? (
                         <img src={p.photo_url} alt="" className="h-7 w-7 rounded-full object-cover" />
                       ) : (
-                        <div className="h-7 w-7 rounded-full bg-zinc-700" />
+                        <div className="h-7 w-7 rounded-full bg-zinc-200" />
                       )}
-                      <span className="text-white">{p.full_name}</span>
+                      <span className="text-ink">{p.full_name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-zinc-400 text-xs">
+                  <td className="px-4 py-3 text-muted-foreground text-xs">
                     {p.made_inactive_at
                       ? new Date(p.made_inactive_at).toLocaleDateString()
                       : '—'}
@@ -837,14 +837,14 @@ export default function PlayersPage() {
                       {p.inactive_reasons?.map((r) => (
                         <span
                           key={r}
-                          className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300"
+                          className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] text-zinc-700"
                         >
                           {INACTIVE_REASON_LABELS[r] || r}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-zinc-500 max-w-[200px] truncate">
+                  <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">
                     {p.inactive_notes || '—'}
                   </td>
                   <td className="px-4 py-3">
@@ -853,7 +853,7 @@ export default function PlayersPage() {
                       variant="ghost"
                       onClick={() => reactivatePlayer(p)}
                       disabled={processing}
-                      className="text-green-400 hover:text-green-300"
+                      className="text-green-700 hover:text-green-800"
                     >
                       Reactivate
                     </Button>
@@ -863,14 +863,14 @@ export default function PlayersPage() {
             </tbody>
           </table>
           {filteredPlayers.length === 0 && (
-            <p className="py-8 text-center text-sm text-zinc-500">No inactive players.</p>
+            <p className="py-8 text-center text-sm text-muted-foreground">No inactive players.</p>
           )}
         </div>
       ) : (
         /* Standard table for active/pending/all */
-        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+        <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-zinc-800 bg-zinc-900/50">
+            <thead className="border-b border-border bg-paper">
               <tr>
                 {([
                   ['full_name', 'Name'],
@@ -883,7 +883,7 @@ export default function PlayersPage() {
                 ] as [string, string][]).map(([field, label]) => (
                   <th
                     key={field}
-                    className="px-4 py-3 font-medium text-zinc-300 cursor-pointer hover:text-white select-none"
+                    className="px-4 py-3 font-medium text-muted-foreground cursor-pointer hover:text-ink select-none"
                     onClick={() => {
                       if (sortField === field) {
                         setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
@@ -895,34 +895,34 @@ export default function PlayersPage() {
                   >
                     {label}
                     {sortField === field && (
-                      <span className="ml-1 text-amber-400">{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
+                      <span className="ml-1 text-accent-dark">{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
                     )}
                   </th>
                 ))}
-                <th className="px-4 py-3 font-medium text-zinc-300">Actions</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800">
+            <tbody className="divide-y divide-border">
               {filteredPlayers.map((p) => (
-                <tr key={p.id} className="bg-zinc-900 hover:bg-zinc-800/50">
+                <tr key={p.id} className="bg-white hover:bg-paper">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       {p.photo_url ? (
                         <img src={p.photo_url} alt="" className="h-7 w-7 rounded-full object-cover" />
                       ) : (
-                        <div className="h-7 w-7 rounded-full bg-zinc-700" />
+                        <div className="h-7 w-7 rounded-full bg-zinc-200" />
                       )}
-                      <span className="text-white">{p.full_name}</span>
+                      <span className="text-ink">{p.full_name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <RoleTags profile={p} />
                   </td>
-                  <td className="px-4 py-3 text-zinc-400">{p.position_primary ?? '\u2014'}</td>
-                  <td className="px-4 py-3 text-zinc-400">{p.position_secondary ?? '\u2014'}</td>
-                  <td className="px-4 py-3 text-zinc-400">{p.jersey_number ?? '\u2014'}</td>
-                  <td className="px-4 py-3 text-zinc-400">{p.phone ?? '\u2014'}</td>
-                  <td className="px-4 py-3 text-zinc-400 text-xs">
+                  <td className="px-4 py-3 text-muted-foreground">{p.position_primary ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{p.position_secondary ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{p.jersey_number ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{p.phone ?? '\u2014'}</td>
+                  <td className="px-4 py-3 text-muted-foreground text-xs">
                     {new Date(p.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3">
@@ -931,7 +931,7 @@ export default function PlayersPage() {
                         size="sm"
                         variant="ghost"
                         onClick={() => openEdit(p)}
-                        className="text-zinc-200 hover:text-white"
+                        className="text-ink/80 hover:text-ink"
                       >
                         Edit
                       </Button>
@@ -940,7 +940,7 @@ export default function PlayersPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => setInactiveModal(p)}
-                          className="text-red-400 hover:text-red-300"
+                          className="text-red-600 hover:text-red-700"
                         >
                           Mark Inactive
                         </Button>
@@ -951,7 +951,7 @@ export default function PlayersPage() {
                           variant="ghost"
                           onClick={() => reactivatePlayer(p)}
                           disabled={processing}
-                          className="text-green-400 hover:text-green-300"
+                          className="text-green-700 hover:text-green-800"
                         >
                           Reactivate
                         </Button>
@@ -963,7 +963,7 @@ export default function PlayersPage() {
             </tbody>
           </table>
           {filteredPlayers.length === 0 && (
-            <p className="py-8 text-center text-sm text-zinc-500">No players found.</p>
+            <p className="py-8 text-center text-sm text-muted-foreground">No players found.</p>
           )}
         </div>
       )}

@@ -58,8 +58,8 @@ export default async function TacticsPage() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">Play Builder</h1>
-          <p className="mt-1 text-zinc-400">Make your own plays and share them, plus plays from your coaches.</p>
+          <h1 className="text-2xl font-bold text-ink">Play Builder</h1>
+          <p className="mt-1 text-muted-foreground">Make your own plays and share them, plus plays from your coaches.</p>
         </div>
         <NewPlayButton />
       </div>
@@ -86,11 +86,11 @@ function Section({ title, empty, children }: { title: string; empty: string; chi
   const hasItems = items.some(Boolean)
   return (
     <div>
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-400">{title}</h2>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{title}</h2>
       {hasItems ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
       ) : empty ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center text-sm text-zinc-500">{empty}</div>
+        <div className="rounded-xl border border-border bg-white shadow-sm p-6 text-center text-sm text-muted-foreground">{empty}</div>
       ) : null}
     </div>
   )
@@ -99,27 +99,27 @@ function Section({ title, empty, children }: { title: string; empty: string; chi
 function BoardCard({ board, teams, share }: { board: TacticsBoard; teams: { id: string; name: string }[]; share?: React.ReactNode }) {
   const team = teams?.find((t) => t.id === board.team_id)
   return (
-    <div className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700">
+    <div className="group overflow-hidden rounded-xl border border-border bg-white shadow-sm transition hover:border-zinc-300">
       <Link href={`/app/tactics/${board.id}`}>
-        <div className="aspect-video w-full overflow-hidden bg-zinc-950">
+        <div className="aspect-video w-full overflow-hidden bg-paper">
           {board.preview_image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={board.preview_image_url} alt={board.name} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full items-center justify-center text-xs text-zinc-600">No preview</div>
+            <div className="flex h-full items-center justify-center text-xs text-muted-foreground">No preview</div>
           )}
         </div>
       </Link>
       <div className="p-5">
         <div className="mb-2 flex items-center justify-between">
-          <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">{board.kind.replace("_", " ")}</span>
-          <span className="text-xs text-zinc-500">{board.field_type === "futsal_rounded" ? "Futsal" : "MASL"}</span>
+          <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700">{board.kind.replace("_", " ")}</span>
+          <span className="text-xs text-muted-foreground">{board.field_type === "futsal_rounded" ? "Futsal" : "MASL"}</span>
         </div>
         <div className="flex items-center justify-between gap-2">
-          <Link href={`/app/tactics/${board.id}`} className="text-lg font-semibold text-white hover:underline">{board.name}</Link>
+          <Link href={`/app/tactics/${board.id}`} className="text-lg font-semibold text-ink hover:underline">{board.name}</Link>
           {share}
         </div>
-        {team && <p className="mt-1 text-sm text-zinc-500">{team.name}</p>}
+        {team && <p className="mt-1 text-sm text-muted-foreground">{team.name}</p>}
       </div>
     </div>
   )

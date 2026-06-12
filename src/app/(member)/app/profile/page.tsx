@@ -179,21 +179,21 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-zinc-400">Loading profile...</p>
+        <p className="text-muted-foreground">Loading profile...</p>
       </div>
     )
   }
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold text-white">Edit Profile</h1>
+      <h1 className="mb-6 text-2xl font-bold text-ink">Edit Profile</h1>
 
       {message && (
         <div
           className={`mb-4 rounded-lg p-3 text-sm ${
             message.type === "success"
-              ? "bg-green-500/10 text-green-400"
-              : "bg-red-500/10 text-red-400"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
           }`}
         >
           {message.text}
@@ -202,12 +202,12 @@ export default function ProfilePage() {
 
       <form
         onSubmit={handleSubmit(onSubmit as any)}
-        className="space-y-5 rounded-xl border border-zinc-800 bg-zinc-900 p-6"
+        className="space-y-5 rounded-xl border border-border bg-white shadow-sm p-6"
       >
         <Field label="Full Name" error={errors.full_name?.message}>
           <input
             {...register("full_name")}
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
           />
         </Field>
 
@@ -215,7 +215,7 @@ export default function ProfilePage() {
           <input
             {...register("phone")}
             type="tel"
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
           />
         </Field>
 
@@ -223,7 +223,7 @@ export default function ProfilePage() {
           <input
             {...register("date_of_birth")}
             type="date"
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
           />
         </Field>
 
@@ -231,7 +231,7 @@ export default function ProfilePage() {
           <input
             {...register("nickname")}
             placeholder="What teammates call you"
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
           />
         </Field>
 
@@ -240,14 +240,14 @@ export default function ProfilePage() {
             <input
               {...register("hometown")}
               placeholder="e.g. Baltimore, MD"
-              className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
             />
           </Field>
           <Field label="School" error={errors.school?.message}>
             <input
               {...register("school")}
               placeholder="School or university"
-              className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
             />
           </Field>
         </div>
@@ -263,7 +263,7 @@ export default function ProfilePage() {
             type="number"
             min={0}
             max={99}
-            className="w-32 rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            className="w-32 rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
           />
         </Field>
 
@@ -271,13 +271,13 @@ export default function ProfilePage() {
           <textarea
             {...register("bio")}
             rows={4}
-            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
           />
         </Field>
 
         <Field label="Profile Photo" error={errors.photo_url?.message}>
           <div className="flex items-start gap-4">
-            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800">
+            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-border bg-paper">
               {photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -286,14 +286,14 @@ export default function ProfilePage() {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-xs text-zinc-500">
+                <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
                   No photo
                 </div>
               )}
             </div>
             <div className="flex-1 space-y-3">
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-400">
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">
                   Upload an image file
                 </label>
                 <input
@@ -301,21 +301,21 @@ export default function ProfilePage() {
                   accept="image/*"
                   onChange={handlePhotoUpload}
                   disabled={uploading}
-                  className="block w-full text-sm text-zinc-400 file:mr-3 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700 disabled:opacity-50"
+                  className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700 disabled:opacity-50"
                 />
                 {uploading && (
-                  <p className="mt-1 text-xs text-zinc-500">Uploading...</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Uploading...</p>
                 )}
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-400">
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">
                   Or paste an image URL
                 </label>
                 <input
                   {...register("photo_url")}
                   type="url"
                   placeholder="https://..."
-                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-md border border-border bg-white px-3 py-2 text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -329,9 +329,9 @@ export default function ProfilePage() {
               type="checkbox"
               checked={alsoPlays}
               onChange={(e) => setAlsoPlays(e.target.checked)}
-              className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-border bg-white text-blue-600 focus:ring-blue-500"
             />
-            <label htmlFor="also_plays" className="text-sm font-medium text-zinc-300">
+            <label htmlFor="also_plays" className="text-sm font-medium text-ink/80">
               Also rostered as a player
             </label>
           </div>
@@ -360,11 +360,11 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-medium text-zinc-300">
+      <label className="mb-1.5 block text-sm font-medium text-ink/80">
         {label}
       </label>
       {children}
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   )
 }

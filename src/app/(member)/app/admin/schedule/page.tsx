@@ -119,17 +119,17 @@ export default function SchedulePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Schedule Manager</h1>
-          <p className="text-zinc-400">Create and manage calendar events.</p>
+          <h1 className="text-2xl font-bold text-ink">Schedule Manager</h1>
+          <p className="text-muted-foreground">Create and manage calendar events.</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+          <div className="flex gap-1 rounded-lg border border-border bg-white shadow-sm p-1">
             <button
               onClick={() => setView('list')}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 view === 'list'
-                  ? 'bg-zinc-800 text-white'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-paper text-ink'
+                  : 'text-muted-foreground hover:text-ink'
               }`}
             >
               List
@@ -138,8 +138,8 @@ export default function SchedulePage() {
               onClick={() => setView('calendar')}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 view === 'calendar'
-                  ? 'bg-zinc-800 text-white'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-paper text-ink'
+                  : 'text-muted-foreground hover:text-ink'
               }`}
             >
               Calendar
@@ -154,22 +154,22 @@ export default function SchedulePage() {
       {showForm && (
         <form
           onSubmit={handleSubmit(onSubmit as any)}
-          className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-6"
+          className="space-y-4 rounded-xl border border-border bg-white shadow-sm p-6"
         >
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Title</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Title</label>
               <input
                 {...register('title')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               />
-              {errors.title && <p className="mt-1 text-xs text-red-400">{errors.title.message}</p>}
+              {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Kind</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Kind</label>
               <select
                 {...register('kind')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               >
                 <option value="practice">Practice</option>
                 <option value="home_game">Home Game</option>
@@ -180,45 +180,45 @@ export default function SchedulePage() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Starts At</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Starts At</label>
               <input
                 type="datetime-local"
                 {...register('starts_at')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               />
-              {errors.starts_at && <p className="mt-1 text-xs text-red-400">{errors.starts_at.message}</p>}
+              {errors.starts_at && <p className="mt-1 text-xs text-red-600">{errors.starts_at.message}</p>}
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Ends At</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Ends At</label>
               <input
                 type="datetime-local"
                 {...register('ends_at')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Location</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Location</label>
               <input
                 {...register('location')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Visibility</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Visibility</label>
               <select
                 {...register('visibility')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               >
                 <option value="public">Public</option>
                 <option value="members_only">Members Only</option>
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Teams</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Teams</label>
               <select
                 multiple
                 {...register('team_ids')}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               >
                 {teams.map((t) => (
                   <option key={t.id} value={t.id}>{t.name}</option>
@@ -227,7 +227,7 @@ export default function SchedulePage() {
             </div>
             {!editingId && (
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-400">
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">
                   Repeat weekly for N weeks
                 </label>
                 <input
@@ -235,34 +235,34 @@ export default function SchedulePage() {
                   min={1}
                   max={52}
                   {...register('repeat_weeks')}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
                 />
               </div>
             )}
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">Description</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Description</label>
             <textarea
               {...register('description')}
               rows={3}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
             />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Ticket / signup link (optional)</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Ticket / signup link (optional)</label>
               <input
                 {...register('cta_url')}
                 placeholder="/project/football-team/apply  or  https://…"
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-400">Link label</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Link label</label>
               <input
                 {...register('cta_label')}
                 placeholder="Buy tickets / Sign up"
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
               />
             </div>
           </div>
@@ -271,22 +271,22 @@ export default function SchedulePage() {
       )}
 
       {view === 'calendar' ? (
-        <ScheduleCalendar events={events} theme="dark" onEventClick={handleEdit} />
+        <ScheduleCalendar events={events} onEventClick={handleEdit} />
       ) : (
         <div className="space-y-3">
           {events.map((event) => (
             <div
               key={event.id}
-              className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+              className="flex items-center justify-between rounded-xl border border-border bg-white shadow-sm p-4"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-white">{event.title}</span>
-                  <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] uppercase text-zinc-400">
+                  <span className="text-sm font-medium text-ink">{event.title}</span>
+                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] uppercase text-zinc-700">
                     {event.kind}
                   </span>
                 </div>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-muted-foreground">
                   {new Date(event.starts_at).toLocaleString()}
                   {event.location && ` — ${event.location}`}
                 </p>
@@ -296,7 +296,7 @@ export default function SchedulePage() {
                   size="sm"
                   variant="ghost"
                   onClick={() => handleEdit(event)}
-                  className="text-zinc-200 hover:text-white"
+                  className="text-ink/80 hover:text-ink"
                 >
                   Edit
                 </Button>
@@ -307,7 +307,7 @@ export default function SchedulePage() {
             </div>
           ))}
           {events.length === 0 && (
-            <p className="text-center text-sm text-zinc-500">No events yet.</p>
+            <p className="text-center text-sm text-muted-foreground">No events yet.</p>
           )}
         </div>
       )}

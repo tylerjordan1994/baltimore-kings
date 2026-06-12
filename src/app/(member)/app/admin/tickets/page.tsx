@@ -134,14 +134,14 @@ export default function AdminTicketsPage() {
   }
 
   const inputClass =
-    "h-9 w-full rounded border border-zinc-700 bg-zinc-800 px-3 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+    "h-9 w-full rounded border border-border bg-white px-3 text-sm text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Ticketed Events</h1>
-          <p className="mt-1 text-zinc-400">
+          <h1 className="text-2xl font-bold text-ink">Ticketed Events</h1>
+          <p className="mt-1 text-muted-foreground">
             Create events, set prices, and track ticket sales.
           </p>
         </div>
@@ -149,13 +149,13 @@ export default function AdminTicketsPage() {
       </div>
 
       {showForm && (
-        <div className="rounded-xl border border-zinc-700 bg-zinc-900 p-5">
-          <h2 className="mb-4 text-sm font-semibold text-white">
+        <div className="rounded-xl border border-border bg-white shadow-sm p-5">
+          <h2 className="mb-4 text-sm font-semibold text-ink">
             {form.id ? "Edit Event" : "New Event"}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-xs text-zinc-500">Title</label>
+              <label className="mb-1 block text-xs text-muted-foreground">Title</label>
               <input
                 className={inputClass}
                 value={form.title}
@@ -164,11 +164,11 @@ export default function AdminTicketsPage() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-xs text-zinc-500">
+              <label className="mb-1 block text-xs text-muted-foreground">
                 Description
               </label>
               <textarea
-                className="min-h-16 w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+                className="min-h-16 w-full rounded border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
                 value={form.description}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
@@ -176,7 +176,7 @@ export default function AdminTicketsPage() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-zinc-500">
+              <label className="mb-1 block text-xs text-muted-foreground">
                 Date &amp; time
               </label>
               <input
@@ -189,7 +189,7 @@ export default function AdminTicketsPage() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-zinc-500">Venue</label>
+              <label className="mb-1 block text-xs text-muted-foreground">Venue</label>
               <input
                 className={inputClass}
                 value={form.venue}
@@ -197,7 +197,7 @@ export default function AdminTicketsPage() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-zinc-500">
+              <label className="mb-1 block text-xs text-muted-foreground">
                 Price (USD)
               </label>
               <input
@@ -211,7 +211,7 @@ export default function AdminTicketsPage() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-zinc-500">
+              <label className="mb-1 block text-xs text-muted-foreground">
                 Capacity (optional)
               </label>
               <input
@@ -224,7 +224,7 @@ export default function AdminTicketsPage() {
                 }
               />
             </div>
-            <label className="flex items-center gap-2 text-sm text-zinc-300">
+            <label className="flex items-center gap-2 text-sm text-ink/80">
               <input
                 type="checkbox"
                 checked={form.is_published}
@@ -235,7 +235,7 @@ export default function AdminTicketsPage() {
               Published (visible on public tickets page)
             </label>
           </div>
-          {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+          {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
           <div className="mt-4 flex gap-2">
             <Button size="sm" onClick={handleSave} disabled={saving}>
               {saving ? "Saving..." : "Save Event"}
@@ -252,8 +252,8 @@ export default function AdminTicketsPage() {
       )}
 
       {events.length === 0 ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-8 text-center">
-          <p className="text-zinc-400">No ticketed events yet.</p>
+        <div className="rounded-xl border border-border bg-white shadow-sm p-8 text-center">
+          <p className="text-muted-foreground">No ticketed events yet.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -262,30 +262,30 @@ export default function AdminTicketsPage() {
             return (
               <div
                 key={event.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-white shadow-sm p-4"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-white">
+                    <h3 className="font-semibold text-ink">
                       {event.title}
                     </h3>
                     {event.is_published ? (
-                      <span className="rounded bg-green-900/50 px-1.5 py-0.5 text-xs text-green-400">
+                      <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-xs text-emerald-700">
                         Published
                       </span>
                     ) : (
-                      <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-500">
+                      <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-700">
                         Draft
                       </span>
                     )}
                   </div>
-                  <p className="mt-0.5 text-xs text-zinc-500">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {event.event_date
                       ? new Date(event.event_date).toLocaleString()
                       : "Date TBA"}
                     {event.venue ? ` · ${event.venue}` : ""}
                   </p>
-                  <p className="mt-0.5 text-xs text-zinc-400">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     ${(event.price_cents / 100).toFixed(2)} · {sold} sold
                     {event.capacity ? ` / ${event.capacity}` : ""}
                   </p>

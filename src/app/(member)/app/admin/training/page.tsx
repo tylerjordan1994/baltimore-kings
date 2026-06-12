@@ -220,12 +220,12 @@ export default function AdminTrainingPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Training &amp; Tutorials</h1>
+        <h1 className="text-2xl font-bold text-ink">Training &amp; Tutorials</h1>
         <div className="flex gap-2">
           {tab === "tutorials" ? (
             <button
               onClick={() => { resetTutorialForm(); setShowTutorialForm(true) }}
-              className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black hover:bg-amber-400 transition-colors"
+              className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-paper hover:bg-brand-light transition-colors"
             >
               Add Tutorial
             </button>
@@ -233,13 +233,13 @@ export default function AdminTrainingPage() {
             <>
               <button
                 onClick={() => setShowFocusForm(true)}
-                className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                className="rounded-lg bg-zinc-100 px-4 py-2 text-sm font-medium text-ink hover:bg-zinc-200 transition-colors"
               >
                 Add Focus Area
               </button>
               <button
                 onClick={() => setShowAssignForm(true)}
-                className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black hover:bg-amber-400 transition-colors"
+                className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-paper hover:bg-brand-light transition-colors"
               >
                 Assign Training
               </button>
@@ -249,13 +249,13 @@ export default function AdminTrainingPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 rounded-lg bg-white/5 p-1">
+      <div className="flex gap-1 rounded-lg bg-paper p-1">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-              tab === t.key ? "bg-amber-500 text-black" : "text-white/60 hover:text-white"
+              tab === t.key ? "bg-brand text-paper" : "text-muted-foreground hover:text-ink"
             }`}
           >
             {t.label}
@@ -264,25 +264,25 @@ export default function AdminTrainingPage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-zinc-500">Loading...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       ) : tab === "focus_areas" ? (
         <div className="space-y-3">
           {focusAreas.length === 0 ? (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-              <p className="text-sm text-zinc-500">No focus areas created yet.</p>
+            <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+              <p className="text-sm text-muted-foreground">No focus areas created yet.</p>
             </div>
           ) : (
             focusAreas.map((fa) => (
-              <div key={fa.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div key={fa.id} className="rounded-xl border border-border bg-white shadow-sm p-4">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-medium text-white">{fa.name}</h3>
-                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase text-zinc-400">
+                  <h3 className="font-medium text-ink">{fa.name}</h3>
+                  <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium uppercase text-zinc-700">
                     {fa.category}
                   </span>
                 </div>
-                {fa.description && <p className="mt-1 text-sm text-zinc-400">{fa.description}</p>}
+                {fa.description && <p className="mt-1 text-sm text-muted-foreground">{fa.description}</p>}
                 {fa.default_for_positions && fa.default_for_positions.length > 0 && (
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Positions: {fa.default_for_positions.join(", ")}
                   </p>
                 )}
@@ -293,32 +293,32 @@ export default function AdminTrainingPage() {
       ) : tab === "completions" ? (
         <div className="space-y-3">
           {completions.length === 0 ? (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-              <p className="text-sm text-zinc-500">No completions awaiting review.</p>
+            <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+              <p className="text-sm text-muted-foreground">No completions awaiting review.</p>
             </div>
           ) : (
             completions.map((c: any) => (
-              <div key={c.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div key={c.id} className="rounded-xl border border-border bg-white shadow-sm p-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-medium text-white">{c.profiles?.full_name}</h3>
-                    <p className="text-sm text-zinc-400">
+                    <h3 className="font-medium text-ink">{c.profiles?.full_name}</h3>
+                    <p className="text-sm text-muted-foreground">
                       {c.training_assignments?.focus_areas?.name}
                     </p>
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-muted-foreground">
                       Marked complete: {new Date(c.updated_at).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleConfirm(c.id)}
-                      className="rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-medium text-green-400 hover:bg-green-500/30 transition-colors"
+                      className="rounded-lg bg-emerald-100 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-200 transition-colors"
                     >
                       Confirm
                     </button>
                     <button
                       onClick={() => handleSendBack(c.id)}
-                      className="rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-colors"
+                      className="rounded-lg bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-200 transition-colors"
                     >
                       Send Back
                     </button>
@@ -331,53 +331,53 @@ export default function AdminTrainingPage() {
       ) : tab === "tutorials" ? (
         <div className="space-y-3">
           {tutorials.length === 0 ? (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-              <p className="text-sm text-zinc-500">No tutorials yet.</p>
+            <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+              <p className="text-sm text-muted-foreground">No tutorials yet.</p>
             </div>
           ) : (
             tutorials.map((t) => (
               <div
                 key={t.id}
-                className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+                className="flex items-center justify-between rounded-xl border border-border bg-white shadow-sm p-4"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white">{t.title}</span>
+                    <span className="text-sm font-medium text-ink">{t.title}</span>
                     {t.category && (
-                      <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-400">
+                      <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-700">
                         {t.category}
                       </span>
                     )}
                     <span
                       className={`rounded px-1.5 py-0.5 text-[10px] ${
                         t.is_published
-                          ? "bg-green-900/50 text-green-400"
-                          : "bg-zinc-800 text-zinc-500"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-zinc-100 text-zinc-700"
                       }`}
                     >
                       {t.is_published ? "Published" : "Draft"}
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-600">
+                  <p className="text-xs text-muted-foreground">
                     {new Date(t.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => toggleTutorialPublish(t.id, t.is_published)}
-                    className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition-colors"
+                    className="rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-medium text-ink hover:bg-zinc-200 transition-colors"
                   >
                     {t.is_published ? "Unpublish" : "Publish"}
                   </button>
                   <button
                     onClick={() => handleEditTutorial(t)}
-                    className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition-colors"
+                    className="rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-medium text-ink hover:bg-zinc-200 transition-colors"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDeleteTutorial(t.id)}
-                    className="rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/30 transition-colors"
+                    className="rounded-lg bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-200 transition-colors"
                   >
                     Delete
                   </button>
@@ -387,8 +387,8 @@ export default function AdminTrainingPage() {
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <p className="text-sm text-zinc-400">
+        <div className="rounded-xl border border-border bg-white shadow-sm p-6">
+          <p className="text-sm text-muted-foreground">
             Use the &quot;Assign Training&quot; button above to create new assignments.
             Focus areas are the building blocks — create those first, then assign them to players or teams.
           </p>
@@ -398,54 +398,54 @@ export default function AdminTrainingPage() {
       {/* Tutorial Form Modal */}
       {showTutorialForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#0f0f0f] p-6 max-h-[85vh] overflow-y-auto">
-            <h2 className="text-lg font-bold text-white mb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-border bg-white shadow-sm p-6 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-ink mb-4">
               {editingTutorialId ? "Edit Tutorial" : "Add Tutorial"}
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Title</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Title</label>
                 <input
                   type="text"
                   value={tutTitle}
                   onChange={(e) => setTutTitle(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Category</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Category</label>
                 <input
                   type="text"
                   value={tutCategory}
                   onChange={(e) => setTutCategory(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">YouTube URL</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">YouTube URL</label>
                 <input
                   type="text"
                   value={tutYoutube}
                   onChange={(e) => setTutYoutube(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">External URL</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">External URL</label>
                 <input
                   type="text"
                   value={tutExternal}
                   onChange={(e) => setTutExternal(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Body (Markdown)</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Body (Markdown)</label>
                 <textarea
                   value={tutBody}
                   onChange={(e) => setTutBody(e.target.value)}
                   rows={6}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 font-mono text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 font-mono text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
@@ -453,21 +453,21 @@ export default function AdminTrainingPage() {
                   type="checkbox"
                   checked={tutPublished}
                   onChange={(e) => setTutPublished(e.target.checked)}
-                  className="rounded border-white/20"
+                  className="rounded border-border"
                 />
-                <span className="text-sm text-zinc-300">Published</span>
+                <span className="text-sm text-ink/80">Published</span>
               </label>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleSaveTutorial}
                   disabled={!tutTitle.trim()}
-                  className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
+                  className="rounded-lg bg-brand px-6 py-2 text-sm font-medium text-paper hover:bg-brand-light disabled:opacity-50 transition-colors"
                 >
                   {editingTutorialId ? "Update" : "Create"}
                 </button>
                 <button
                   onClick={() => { setShowTutorialForm(false); resetTutorialForm() }}
-                  className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                  className="rounded-lg bg-zinc-100 px-6 py-2 text-sm font-medium text-ink hover:bg-zinc-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -480,33 +480,33 @@ export default function AdminTrainingPage() {
       {/* Focus Area Form Modal */}
       {showFocusForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0f0f0f] p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Add Focus Area</h2>
+          <div className="w-full max-w-md rounded-2xl border border-border bg-white shadow-sm p-6">
+            <h2 className="text-lg font-bold text-ink mb-4">Add Focus Area</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Name</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Name</label>
                 <input
                   type="text"
                   value={faName}
                   onChange={(e) => setFaName(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Description</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Description</label>
                 <textarea
                   value={faDescription}
                   onChange={(e) => setFaDescription(e.target.value)}
                   rows={3}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Category</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Category</label>
                 <select
                   value={faCategory}
                   onChange={(e) => setFaCategory(e.target.value as FocusCategory)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 >
                   <option value="technical">Technical</option>
                   <option value="tactical">Tactical</option>
@@ -515,26 +515,26 @@ export default function AdminTrainingPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Default for Positions (comma-separated)</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Default for Positions (comma-separated)</label>
                 <input
                   type="text"
                   value={faPositions}
                   onChange={(e) => setFaPositions(e.target.value)}
                   placeholder="GK, CB, ST"
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink placeholder:text-muted-foreground focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleCreateFocusArea}
                   disabled={!faName.trim() || submitting}
-                  className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
+                  className="rounded-lg bg-brand px-6 py-2 text-sm font-medium text-paper hover:bg-brand-light disabled:opacity-50 transition-colors"
                 >
                   {submitting ? "Creating..." : "Create"}
                 </button>
                 <button
                   onClick={() => setShowFocusForm(false)}
-                  className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                  className="rounded-lg bg-zinc-100 px-6 py-2 text-sm font-medium text-ink hover:bg-zinc-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -547,15 +547,15 @@ export default function AdminTrainingPage() {
       {/* Assignment Form Modal */}
       {showAssignForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#0f0f0f] p-6 max-h-[85vh] overflow-y-auto">
-            <h2 className="text-lg font-bold text-white mb-4">Assign Training</h2>
+          <div className="w-full max-w-lg rounded-2xl border border-border bg-white shadow-sm p-6 max-h-[85vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-ink mb-4">Assign Training</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Focus Area</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Focus Area</label>
                 <select
                   value={assignFocusId}
                   onChange={(e) => setAssignFocusId(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 >
                   <option value="">Select focus area...</option>
                   {focusAreas.map((fa) => (
@@ -564,32 +564,32 @@ export default function AdminTrainingPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Assign To</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Assign To</label>
                 <div className="flex gap-2 mb-2">
                   <button
                     onClick={() => setAssignToType("player")}
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${assignToType === "player" ? "bg-amber-500 text-black" : "bg-white/10 text-white"}`}
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${assignToType === "player" ? "bg-brand text-paper" : "bg-zinc-100 text-ink"}`}
                   >
                     Players
                   </button>
                   <button
                     onClick={() => setAssignToType("team")}
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${assignToType === "team" ? "bg-amber-500 text-black" : "bg-white/10 text-white"}`}
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${assignToType === "team" ? "bg-brand text-paper" : "bg-zinc-100 text-ink"}`}
                   >
                     Team
                   </button>
                 </div>
                 {assignToType === "player" ? (
-                  <div className="max-h-40 overflow-y-auto rounded-lg border border-zinc-700 bg-zinc-800 p-2 space-y-1">
+                  <div className="max-h-40 overflow-y-auto rounded-lg border border-border bg-paper p-2 space-y-1">
                     {players.map((p) => (
-                      <label key={p.id} className="flex items-center gap-2 cursor-pointer px-2 py-1 rounded hover:bg-white/5">
+                      <label key={p.id} className="flex items-center gap-2 cursor-pointer px-2 py-1 rounded hover:bg-zinc-100">
                         <input
                           type="checkbox"
                           checked={assignPlayerIds.includes(p.id)}
                           onChange={() => togglePlayer(p.id)}
-                          className="rounded border-white/20"
+                          className="rounded border-border"
                         />
-                        <span className="text-sm text-white">{p.full_name}</span>
+                        <span className="text-sm text-ink">{p.full_name}</span>
                       </label>
                     ))}
                   </div>
@@ -597,7 +597,7 @@ export default function AdminTrainingPage() {
                   <select
                     value={assignTeamId}
                     onChange={(e) => setAssignTeamId(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                   >
                     <option value="">Select team...</option>
                     {teams.map((t) => (
@@ -608,20 +608,20 @@ export default function AdminTrainingPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1">Due Date</label>
+                  <label className="block text-sm font-medium text-ink/80 mb-1">Due Date</label>
                   <input
                     type="date"
                     value={assignDue}
                     onChange={(e) => setAssignDue(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1">Priority</label>
+                  <label className="block text-sm font-medium text-ink/80 mb-1">Priority</label>
                   <select
                     value={assignPriority}
                     onChange={(e) => setAssignPriority(e.target.value as TrainingPriority)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                   >
                     <option value="low">Low</option>
                     <option value="normal">Normal</option>
@@ -630,35 +630,35 @@ export default function AdminTrainingPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Notes</label>
                 <textarea
                   value={assignNotes}
                   onChange={(e) => setAssignNotes(e.target.value)}
                   rows={3}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Video URL</label>
+                <label className="block text-sm font-medium text-ink/80 mb-1">Video URL</label>
                 <input
                   type="url"
                   value={assignVideo}
                   onChange={(e) => setAssignVideo(e.target.value)}
                   placeholder="https://youtube.com/..."
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-white px-4 py-2 text-ink placeholder:text-muted-foreground focus:border-amber-500 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleCreateAssignment}
                   disabled={!assignFocusId || submitting}
-                  className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-medium text-black hover:bg-amber-400 disabled:opacity-50 transition-colors"
+                  className="rounded-lg bg-brand px-6 py-2 text-sm font-medium text-paper hover:bg-brand-light disabled:opacity-50 transition-colors"
                 >
                   {submitting ? "Assigning..." : "Assign"}
                 </button>
                 <button
                   onClick={() => setShowAssignForm(false)}
-                  className="rounded-lg bg-white/10 px-6 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                  className="rounded-lg bg-zinc-100 px-6 py-2 text-sm font-medium text-ink hover:bg-zinc-200 transition-colors"
                 >
                   Cancel
                 </button>

@@ -80,16 +80,16 @@ export function Toolbar({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 p-3">
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-white p-3 shadow-sm">
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="h-7 w-44 rounded border border-zinc-700 bg-zinc-800 px-2 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+        className="h-7 w-44 rounded border border-border bg-paper px-2 text-sm text-ink placeholder:text-muted-foreground focus:border-brand focus:outline-none"
         placeholder="Board name..."
       />
 
-      <div className="h-5 w-px bg-zinc-700" />
+      <div className="h-5 w-px bg-border" />
 
       {/* Add elements */}
       <Button variant="outline" size="sm" onClick={addBall}>
@@ -113,7 +113,7 @@ export function Toolbar({
       {/* Selected arrow controls */}
       {selectedArrow && (
         <>
-          <div className="h-5 w-px bg-zinc-700" />
+          <div className="h-5 w-px bg-border" />
           <Button
             variant={selectedArrow.style === "dashed" ? "default" : "outline"}
             size="sm"
@@ -143,12 +143,12 @@ export function Toolbar({
         </Button>
       )}
 
-      <div className="h-5 w-px bg-zinc-700" />
+      <div className="h-5 w-px bg-border" />
 
       <select
         value={kind}
         onChange={(e) => setKind(e.target.value as TacticsKind)}
-        className="h-7 rounded border border-zinc-700 bg-zinc-800 px-2 text-xs text-white"
+        className="h-7 rounded border border-border bg-paper px-2 text-xs text-ink"
       >
         <option value="formation">Formation</option>
         <option value="set_piece">Set Piece</option>
@@ -158,7 +158,7 @@ export function Toolbar({
       <select
         value={fieldType}
         onChange={(e) => setFieldType(e.target.value as FieldType)}
-        className="h-7 rounded border border-zinc-700 bg-zinc-800 px-2 text-xs text-white"
+        className="h-7 rounded border border-border bg-paper px-2 text-xs text-ink"
       >
         <option value="futsal_rounded">Futsal Court</option>
         <option value="masl_rounded_extra_player">MASL Arena</option>
@@ -166,12 +166,12 @@ export function Toolbar({
 
       {/* Multi-team assignment */}
       {teams.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 rounded border border-zinc-700 bg-zinc-800 px-2 py-1">
-          <span className="text-xs text-zinc-500">Teams:</span>
+        <div className="flex flex-wrap items-center gap-2 rounded border border-border bg-paper px-2 py-1">
+          <span className="text-xs text-muted-foreground">Teams:</span>
           {teams.map((t) => (
             <label
               key={t.id}
-              className="flex items-center gap-1 text-xs text-zinc-300"
+              className="flex items-center gap-1 text-xs text-ink"
             >
               <input
                 type="checkbox"

@@ -91,17 +91,17 @@ function AssetCard({
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+    <div className="rounded-xl border border-border bg-white shadow-sm p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-white">{asset.label}</h3>
+        <h3 className="text-sm font-medium text-ink">{asset.label}</h3>
         {asset.required && (
-          <span className="text-[10px] font-medium uppercase text-amber-400">
+          <span className="text-[10px] font-medium uppercase text-accent-dark">
             Required
           </span>
         )}
       </div>
 
-      <div className="mb-3 flex h-32 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800">
+      <div className="mb-3 flex h-32 items-center justify-center rounded-lg border border-border bg-paper">
         {currentUrl ? (
           <img
             src={currentUrl}
@@ -109,11 +109,11 @@ function AssetCard({
             className="max-h-28 max-w-full object-contain p-2"
           />
         ) : (
-          <span className="text-xs text-zinc-500">No image uploaded</span>
+          <span className="text-xs text-muted-foreground">No image uploaded</span>
         )}
       </div>
 
-      {warning && <p className="mb-2 text-xs text-amber-400">{warning}</p>}
+      {warning && <p className="mb-2 text-xs text-accent-dark">{warning}</p>}
 
       <input
         ref={inputRef}
@@ -284,19 +284,19 @@ export default function SocialStudioPage() {
   }
 
   const inputClass =
-    "h-9 w-full rounded border border-zinc-700 bg-zinc-800 px-3 text-sm text-white placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none"
+    "h-9 w-full rounded border border-border bg-white px-3 text-sm text-ink placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Social Studio &amp; Brand</h1>
-        <p className="mt-1 text-zinc-400">
+        <h1 className="text-2xl font-bold text-ink">Social Studio &amp; Brand</h1>
+        <p className="mt-1 text-muted-foreground">
           Build branded graphics for social media and manage club brand assets.
         </p>
       </div>
 
       {/* Section toggle */}
-      <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+      <div className="flex gap-1 rounded-lg border border-border bg-white shadow-sm p-1">
         {([
           { key: "studio", label: "Social Studio" },
           { key: "brand", label: "Brand Assets" },
@@ -306,8 +306,8 @@ export default function SocialStudioPage() {
             onClick={() => setSection(s.key)}
             className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               section === s.key
-                ? "bg-zinc-800 text-white"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-paper text-ink"
+                : "text-muted-foreground hover:text-ink"
             }`}
           >
             {s.label}
@@ -318,11 +318,11 @@ export default function SocialStudioPage() {
       {section === "brand" && (
         <div className="space-y-6">
           {brandLoading ? (
-            <p className="text-zinc-400">Loading brand assets...</p>
+            <p className="text-muted-foreground">Loading brand assets...</p>
           ) : (
             <>
               {brandError && (
-                <div className="rounded-lg border border-red-800 bg-red-950/50 px-4 py-3 text-sm text-red-300">
+                <div className="rounded-lg border border-red-200 bg-red-100 px-4 py-3 text-sm text-red-700">
                   {brandError}
                 </div>
               )}
@@ -347,7 +347,7 @@ export default function SocialStudioPage() {
         {/* Controls */}
         <div className="space-y-5">
           <div>
-            <p className="mb-2 text-xs font-medium text-zinc-500">
+            <p className="mb-2 text-xs font-medium text-muted-foreground">
               Post type
             </p>
             <div className="flex flex-wrap gap-2">
@@ -357,8 +357,8 @@ export default function SocialStudioPage() {
                   onClick={() => selectTemplate(t)}
                   className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
                     template.id === t.id
-                      ? "bg-amber-500 text-zinc-950"
-                      : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                      ? "bg-brand text-paper"
+                      : "bg-zinc-100 text-ink/80 hover:bg-zinc-200"
                   }`}
                 >
                   {t.label}
@@ -368,7 +368,7 @@ export default function SocialStudioPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">
+            <label className="mb-1 block text-xs text-muted-foreground">
               Photo (team or player)
             </label>
             <input
@@ -384,12 +384,12 @@ export default function SocialStudioPage() {
                 const file = e.target.files?.[0]
                 if (file) handlePhotoUpload(file)
               }}
-              className="mt-2 block w-full text-xs text-zinc-400 file:mr-3 file:rounded file:border-0 file:bg-zinc-800 file:px-3 file:py-1.5 file:text-xs file:text-zinc-200"
+              className="mt-2 block w-full text-xs text-muted-foreground file:mr-3 file:rounded file:border-0 file:bg-paper file:px-3 file:py-1.5 file:text-xs file:text-ink/80"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">
+            <label className="mb-1 block text-xs text-muted-foreground">
               Badge label
             </label>
             <input
@@ -399,7 +399,7 @@ export default function SocialStudioPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">
+            <label className="mb-1 block text-xs text-muted-foreground">
               Headline
             </label>
             <input
@@ -409,7 +409,7 @@ export default function SocialStudioPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">
+            <label className="mb-1 block text-xs text-muted-foreground">
               Subhead
             </label>
             <input
@@ -419,7 +419,7 @@ export default function SocialStudioPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">
+            <label className="mb-1 block text-xs text-muted-foreground">
               Detail line
             </label>
             <input
@@ -436,9 +436,9 @@ export default function SocialStudioPage() {
 
         {/* Preview — card is rendered at 1080px and scaled for display */}
         <div className="mx-auto">
-          <p className="mb-2 text-xs font-medium text-zinc-500">Preview</p>
+          <p className="mb-2 text-xs font-medium text-muted-foreground">Preview</p>
           <div
-            className="overflow-hidden rounded-lg border border-zinc-700"
+            className="overflow-hidden rounded-lg border border-border"
             style={{ width: 432, height: 432 }}
           >
             <div

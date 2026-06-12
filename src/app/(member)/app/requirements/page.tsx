@@ -76,7 +76,7 @@ export default function RequirementsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-zinc-400">Loading requirements...</p>
+        <p className="text-muted-foreground">Loading requirements...</p>
       </div>
     )
   }
@@ -85,18 +85,18 @@ export default function RequirementsPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <h1 className="text-2xl font-bold text-white">Team Expectations</h1>
-      <p className="text-sm text-zinc-400">
+      <h1 className="text-2xl font-bold text-ink">Team Expectations</h1>
+      <p className="text-sm text-muted-foreground">
         Please review and sign all active team expectations below. When an agreement is updated you&apos;ll be asked to sign the new version.
       </p>
       {needsCount > 0 && (
-        <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">
+        <div className="rounded-xl border border-amber-300 bg-amber-100 p-4 text-sm text-amber-800">
           You have <span className="font-semibold">{needsCount}</span> agreement{needsCount === 1 ? "" : "s"} that need{needsCount === 1 ? "s" : ""} your signature.
         </div>
       )}
 
       {requirements.length === 0 ? (
-        <p className="text-sm text-zinc-500">No active requirements.</p>
+        <p className="text-sm text-muted-foreground">No active requirements.</p>
       ) : (
         <div className="space-y-6">
           {requirements.map((req) => {
@@ -109,27 +109,27 @@ export default function RequirementsPage() {
               <div
                 key={req.id}
                 className={`rounded-xl border p-6 ${
-                  isSigned ? "border-green-500/30 bg-zinc-900" : isUpdate ? "border-amber-500/40 bg-zinc-900" : "border-zinc-800 bg-zinc-900"
+                  isSigned ? "border-green-300 bg-white shadow-sm" : isUpdate ? "border-amber-300 bg-white shadow-sm" : "border-border bg-white shadow-sm"
                 }`}
               >
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <h2 className="text-lg font-semibold text-white">{req.title}</h2>
+                  <h2 className="text-lg font-semibold text-ink">{req.title}</h2>
                   {isSigned ? (
-                    <span className="rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-400">Signed (v{curVer})</span>
+                    <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">Signed (v{curVer})</span>
                   ) : isUpdate ? (
-                    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-400">Updated — re-sign needed</span>
+                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">Updated — re-sign needed</span>
                   ) : (
-                    <span className="rounded-full bg-zinc-700/40 px-3 py-1 text-xs font-medium text-zinc-300">Needs signature</span>
+                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">Needs signature</span>
                   )}
                 </div>
 
                 {!isSigned && isUpdate && note ? (
-                  <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+                  <div className="mb-4 rounded-lg border border-amber-300 bg-amber-100 p-3 text-sm text-amber-800">
                     <span className="font-semibold">What changed (v{curVer}):</span> {note}
                   </div>
                 ) : null}
 
-                <div className="prose prose-invert prose-sm mb-4 max-w-none text-zinc-300">
+                <div className="prose prose-sm mb-4 max-w-none text-ink/80">
                   <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">{req.body_markdown}</pre>
                 </div>
 

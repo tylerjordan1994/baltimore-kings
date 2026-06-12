@@ -15,6 +15,7 @@ export type NavItem = {
   menu_key: string
   parent_id: string | null
   label: string
+  description: string | null
   link_type: string
   page_id: string | null
   external_url: string | null
@@ -110,8 +111,9 @@ function Row({ item, pages, groups, onChanged }: { item: NavItem; pages: Page[];
     await fetch(`${BASE}/api/cms/nav/${item.id}`, {
       method: "PUT", headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        label: next.label, link_type: next.link_type, page_id: next.page_id, external_url: next.external_url,
-        parent_id: next.parent_id, is_cta: next.is_cta, visibility: next.visibility, feature_card_json: next.feature_card_json,
+        label: next.label, description: next.description || null, link_type: next.link_type, page_id: next.page_id,
+        external_url: next.external_url, parent_id: next.parent_id, is_cta: next.is_cta, visibility: next.visibility,
+        feature_card_json: next.feature_card_json,
       }),
     })
   }
@@ -128,6 +130,10 @@ function Row({ item, pages, groups, onChanged }: { item: NavItem; pages: Page[];
       <div className="flex flex-wrap items-center gap-2">
         {top ? <button {...attributes} {...listeners} className="cursor-grab px-1 text-muted-foreground" title="Drag">⠿</button> : <span className="px-1 text-muted-foreground">↳</span>}
         <input className={`${input} w-36`} value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} onBlur={() => patch({})} />
+        {item.parent_id ? (
+          <input className={`${input} w-44`} value={draft.description ?? ""} placeholder="description (mega menu)"
+            onChange={(e) => setDraft({ ...draft, description: e.target.value })} onBlur={() => patch({})} />
+        ) : null}
         <select className={input} value={draft.link_type} onChange={(e) => patch({ link_type: e.target.value })}>
           <option value="url">URL</option><option value="page">Page</option><option value="group">Group</option>
         </select>

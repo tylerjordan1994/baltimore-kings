@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/site-header"
 import { DbSiteHeader } from "@/components/db-site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AdminBar } from "@/components/admin-bar"
+import { AnalyticsTracker } from "@/components/analytics-tracker"
 import { createClient } from "@/lib/supabase/server"
 import { getPublicNav, getPrimaryNavTree } from "@/lib/nav"
 
@@ -35,6 +36,7 @@ export default async function PublicLayout({
       <main className="flex-1">{children}</main>
       <SiteFooter quickLinks={footerLinks.map(({ label, href, external }) => ({ label, href, external }))} />
       {isCoach ? <AdminBar /> : null}
+      <AnalyticsTracker />
     </div>
   )
 }
