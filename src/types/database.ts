@@ -2166,6 +2166,7 @@ export type Database = {
         Row: {
           caption: string | null
           embed_html: string | null
+          external_id: string | null
           external_url: string | null
           id: string
           media_url: string | null
@@ -2176,6 +2177,7 @@ export type Database = {
         Insert: {
           caption?: string | null
           embed_html?: string | null
+          external_id?: string | null
           external_url?: string | null
           id?: string
           media_url?: string | null
@@ -2186,6 +2188,7 @@ export type Database = {
         Update: {
           caption?: string | null
           embed_html?: string | null
+          external_id?: string | null
           external_url?: string | null
           id?: string
           media_url?: string | null

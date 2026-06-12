@@ -140,8 +140,130 @@ function AssetCard({
   )
 }
 
+type IgStatus = {
+  connected: boolean
+  username: string | null
+  lastSyncedAt: string | null
+  lastError: string | null
+  postCount: number
+}
+
+function InstagramSection() {
+  const [status, setStatus] = useState<IgStatus | null>(null)
+  const [token, setToken] = useState("")
+  const [busy, setBusy] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  async function call(body: Record<string, string>, busyKey: string) {
+    setBusy(busyKey)
+    setError(null)
+    try {
+      const res = await fetch("/project/football-team/api/social/instagram", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? "Request failed")
+      setStatus(json)
+      return true
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Request failed")
+      return false
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  useEffect(() => {
+    call({ action: "status" }, "load")
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-ink">Instagram feed</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Pulls the club&apos;s recent Instagram posts into the website (homepage social grid and any page
+          using a social token). Posts re-sync automatically every day and stay linked to Instagram.
+        </p>
+
+        {error && (
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-100 px-4 py-3 text-sm text-red-700">{error}</div>
+        )}
+
+        {status?.connected ? (
+          <div className="mt-5 space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Connected{status.username ? ` — @${status.username}` : ""}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {status.postCount} post{status.postCount === 1 ? "" : "s"} synced
+                {status.lastSyncedAt ? ` · last sync ${new Date(status.lastSyncedAt).toLocaleString()}` : ""}
+              </span>
+            </div>
+            {status.lastError && (
+              <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                Last sync problem: {status.lastError}
+              </p>
+            )}
+            <div className="flex gap-2">
+              <Button size="sm" disabled={busy !== null} onClick={() => call({ action: "sync" }, "sync")}>
+                {busy === "sync" ? "Syncing..." : "Sync now"}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busy !== null}
+                onClick={async () => {
+                  if (!confirm("Disconnect Instagram? Already-synced posts stay on the site.")) return
+                  if (await call({ action: "disconnect" }, "disconnect")) toast.success("Instagram disconnected")
+                }}
+              >
+                Disconnect
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-5 space-y-4">
+            <ol className="list-decimal space-y-1.5 pl-5 text-sm text-ink/80">
+              <li>Make sure the club Instagram is a <b>professional account</b> (Business or Creator — free, in Instagram settings).</li>
+              <li>Go to <a className="text-accent-dark underline" href="https://developers.facebook.com/apps/" target="_blank" rel="noopener noreferrer">developers.facebook.com/apps</a> and create an app with the <b>Instagram</b> product (&quot;API setup with Instagram login&quot;).</li>
+              <li>Under <b>Instagram &gt; API setup with Instagram login</b>, add the club account and click <b>Generate token</b> (log in as the club account).</li>
+              <li>Copy the long-lived access token and paste it below. The site refreshes it automatically so it never expires.</li>
+            </ol>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                placeholder="Paste long-lived access token"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink placeholder:text-muted-foreground"
+              />
+              <Button
+                size="sm"
+                disabled={busy !== null || token.trim().length < 20}
+                onClick={async () => {
+                  if (await call({ action: "connect", token: token.trim() }, "connect")) {
+                    setToken("")
+                    toast.success("Instagram connected — posts synced")
+                  }
+                }}
+              >
+                {busy === "connect" ? "Connecting..." : "Connect"}
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function SocialStudioPage() {
-  const [section, setSection] = useState<"studio" | "brand">("studio")
+  const [section, setSection] = useState<"studio" | "brand" | "instagram">("studio")
   const cardRef = useRef<HTMLDivElement | null>(null)
   const [template, setTemplate] = useState<Template>(TEMPLATES[0])
   const [photoUrl, setPhotoUrl] = useState("")
@@ -300,7 +422,8 @@ export default function SocialStudioPage() {
         {([
           { key: "studio", label: "Social Studio" },
           { key: "brand", label: "Brand Assets" },
-        ] as { key: "studio" | "brand"; label: string }[]).map((s) => (
+          { key: "instagram", label: "Instagram" },
+        ] as { key: "studio" | "brand" | "instagram"; label: string }[]).map((s) => (
           <button
             key={s.key}
             onClick={() => setSection(s.key)}
@@ -314,6 +437,8 @@ export default function SocialStudioPage() {
           </button>
         ))}
       </div>
+
+      {section === "instagram" && <InstagramSection />}
 
       {section === "brand" && (
         <div className="space-y-6">

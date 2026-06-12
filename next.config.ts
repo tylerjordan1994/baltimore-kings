@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.instagram.com https://www.youtube.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://i.ytimg.com https://scontent.cdninstagram.com https://*.stripe.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://i.ytimg.com https://*.cdninstagram.com https://*.fbcdn.net https://*.stripe.com",
               "font-src 'self' https://fonts.gstatic.com",
               "frame-src https://js.stripe.com https://www.youtube.com https://www.instagram.com https://www.google.com https://maps.google.com",
               "connect-src 'self' https://*.supabase.co https://*.supabase.in https://api.stripe.com https://api.resend.com",
