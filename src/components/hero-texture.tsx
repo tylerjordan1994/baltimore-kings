@@ -18,19 +18,19 @@ export function HeroTexture() {
     >
       {/* Fine grid, panning down-right */}
       <div
-        className="absolute inset-[-50%] animate-[bk-grid-pan_6s_linear_infinite] opacity-[0.18]"
+        className="absolute inset-[-50%] animate-[bk-grid-pan_9s_linear_infinite] opacity-[0.05]"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(246,244,238,0.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(246,244,238,0.6) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(246,244,238,0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(246,244,238,0.5) 1px, transparent 1px)",
           backgroundSize: "64px 64px",
         }}
       />
       {/* Wider accent grid, panning up-left for parallax */}
       <div
-        className="absolute inset-[-50%] animate-[bk-grid-pan-rev_14s_linear_infinite] opacity-[0.14]"
+        className="absolute inset-[-50%] animate-[bk-grid-pan-rev_18s_linear_infinite] opacity-[0.04]"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(201,169,78,0.7) 1px, transparent 1px), linear-gradient(to bottom, rgba(201,169,78,0.7) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(201,169,78,0.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(201,169,78,0.6) 1px, transparent 1px)",
           backgroundSize: "180px 180px",
         }}
       />

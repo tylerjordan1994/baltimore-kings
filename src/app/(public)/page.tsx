@@ -140,7 +140,7 @@ export default async function HomePage() {
           <img
             src={`${BP}/photos/hero-background.png`}
             alt="Baltimore Kings players on the futsal court"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-left md:object-center"
           />
           {/* Cinematic dark gradient overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-court via-court/45 to-court/70" />

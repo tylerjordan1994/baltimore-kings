@@ -13,13 +13,25 @@ export default async function PublicLayout({
   children: React.ReactNode
 }) {
   const supabase = await createClient()
-  const [{ data: brand }, footerLinks, primaryNav, { data: { user } }] = await Promise.all([
+  const [{ data: brand }, footerLinks, primaryNav, { data: partnerData }, { data: { user } }] = await Promise.all([
     supabase.from("brand_assets").select("logo_mark_url").limit(1).single(),
     getPublicNav("footer"),
     getPrimaryNavTree(),
+    supabase
+      .from("sponsors")
+      .select("id, name, logo_url, website_url, tier")
+      .eq("is_active", true)
+      .order("order_index", { ascending: true }),
     supabase.auth.getUser(),
   ])
   const logoUrl = brand?.logo_mark_url ?? null
+  const partners = (partnerData ?? []) as {
+    id: string
+    name: string
+    logo_url: string | null
+    website_url: string | null
+    tier: string
+  }[]
 
   let isCoach = false
   if (user) {
@@ -35,7 +47,7 @@ export default async function PublicLayout({
         <SiteHeader logoUrl={logoUrl} />
       )}
       <main className="flex-1">{children}</main>
-      <SiteFooter quickLinks={footerLinks.map(({ label, href, external }) => ({ label, href, external }))} />
+      <SiteFooter quickLinks={footerLinks.map(({ label, href, external }) => ({ label, href, external }))} partners={partners} />
       {isCoach ? <AdminBar /> : null}
       <AnalyticsTracker />
       <SmoothScroll />

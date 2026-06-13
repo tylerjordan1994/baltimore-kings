@@ -2,26 +2,28 @@ import Link from "next/link"
 
 // basePath handled by next.config.ts
 
-const SPONSOR_PLACEHOLDERS = [
-  "Your Brand Here",
-  "Partner Slot",
-  "Your Logo Here",
-  "Partner Slot",
-  "Sponsor Us",
-]
-
 type QuickLink = { label: string; href: string; external: boolean }
+type Partner = {
+  id: string
+  name: string
+  logo_url: string | null
+  website_url: string | null
+  tier: string
+}
 
-export function SiteFooter({ quickLinks }: { quickLinks?: QuickLink[] } = {}) {
+export function SiteFooter({
+  quickLinks,
+  partners = [],
+}: { quickLinks?: QuickLink[]; partners?: Partner[] } = {}) {
   return (
     <footer className="relative bg-paper">
       {/* Top accent gradient line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
 
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Club Info */}
-          <div>
+        <div className="grid grid-cols-2 gap-8 sm:gap-10 lg:grid-cols-4">
+          {/* Club Info — full width on mobile/tablet so the link groups sit two-up */}
+          <div className="col-span-2 lg:col-span-1">
             <Link href="/" aria-label="Baltimore Kings home">
               <img src="/project/football-team/logo.png" alt="Baltimore Kings" className="h-24 w-24 object-contain" />
             </Link>
@@ -121,6 +123,17 @@ export function SiteFooter({ quickLinks }: { quickLinks?: QuickLink[] } = {}) {
                   <p className="text-xs text-muted-foreground">1031 Benfield Blvd, Millersville, MD 21108</p>
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=The+Court+98+Industry+Ln+Forest+Hill+MD+21050"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block"
+                >
+                  <p className="text-sm font-medium text-ink transition-colors group-hover:text-accent">The Court</p>
+                  <p className="text-xs text-muted-foreground">98 Industry Ln, Forest Hill, MD 21050</p>
+                </a>
+              </li>
             </ul>
             <h4 className="mt-8 font-heading text-xs font-semibold uppercase tracking-widest text-brand">Club</h4>
             <ul className="mt-4 space-y-3">
@@ -144,17 +157,35 @@ export function SiteFooter({ quickLinks }: { quickLinks?: QuickLink[] } = {}) {
               Become a partner &rarr;
             </Link>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {SPONSOR_PLACEHOLDERS.map((label, i) => (
-              <div
-                key={i}
-                className="flex h-12 min-w-[100px] flex-1 items-center justify-center rounded-lg border border-dashed border-border bg-white px-3 text-center"
-              >
-                <span className="font-heading text-[10px] font-medium uppercase tracking-wide text-muted-foreground/50">
-                  {label}
-                </span>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {partners.length > 0
+              ? partners.map((p) => {
+                  const Wrapper = p.website_url ? "a" : "div"
+                  const props = p.website_url
+                    ? { href: p.website_url, target: "_blank", rel: "noopener noreferrer" }
+                    : {}
+                  return (
+                    <Wrapper
+                      key={p.id}
+                      {...props}
+                      className="group flex h-14 items-center justify-center rounded-lg border border-border bg-white px-3 transition-colors hover:border-accent"
+                    >
+                      {p.logo_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.logo_url}
+                          alt={p.name}
+                          className="max-h-9 max-w-full object-contain grayscale transition-all duration-300 group-hover:grayscale-0"
+                        />
+                      ) : (
+                        <span className="text-center font-heading text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                          {p.name}
+                        </span>
+                      )}
+                    </Wrapper>
+                  )
+                })
+              : null}
           </div>
         </div>
 
