@@ -47,13 +47,13 @@ export function HeroLockup() {
     <div className="flex flex-col items-center text-center leading-none">
       <span
         ref={topRef}
-        className="font-[family-name:var(--font-serif)] text-2xl uppercase text-paper sm:text-4xl lg:text-5xl"
+        className="font-[family-name:var(--font-serif)] text-4xl uppercase text-paper drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)] sm:text-6xl lg:text-8xl"
       >
         Baltimore
       </span>
       <span
         ref={bottomRef}
-        className="-mt-1 font-[family-name:var(--font-script)] text-7xl text-accent sm:text-8xl lg:text-[10rem]"
+        className="-mt-2 font-[family-name:var(--font-script)] text-[5.5rem] leading-[0.85] text-accent drop-shadow-[0_4px_30px_rgba(0,0,0,0.5)] sm:text-[10rem] lg:text-[15rem]"
       >
         Kings
       </span>

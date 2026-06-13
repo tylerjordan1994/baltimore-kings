@@ -20,6 +20,7 @@ import {
   TiltCard,
 } from "@/components/home-motion"
 import { HeroLockup } from "@/components/hero-lockup"
+import { HeroTexture } from "@/components/hero-texture"
 import { ElfsightInstagram } from "@/components/elfsight-instagram"
 
 const BP = "/project/football-team"
@@ -130,7 +131,9 @@ export default async function HomePage() {
   return (
     <>
       {/* ═══════════════ 1. CINEMATIC HERO ═══════════════ */}
-      <section className="relative isolate min-h-[92vh] overflow-hidden bg-court">
+      {/* -mt-16/-mt-20 pulls the hero up under the transparent sticky header so the
+          background bleeds behind the navbar. */}
+      <section className="relative isolate -mt-16 min-h-[92vh] overflow-hidden bg-court md:-mt-20">
         {/* Full-bleed background photo */}
         <div className="absolute inset-0 -z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -142,6 +145,8 @@ export default async function HomePage() {
           {/* Cinematic dark gradient overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-court via-court/45 to-court/70" />
           <div className="absolute inset-0 bg-gradient-to-b from-court/60 via-transparent to-court/80" />
+          {/* Subtle animated graphical texture */}
+          <HeroTexture />
         </div>
 
         <div className="mx-auto flex min-h-[92vh] max-w-5xl flex-col items-center justify-center px-4 pb-16 pt-28 text-center sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">

@@ -132,6 +132,16 @@ export function DbSiteHeader({ nav, logoUrl }: { nav: NavNode[]; logoUrl?: strin
           >
             <Ticket className="h-5 w-5" />
           </a>
+          {/* Secondary, tonal login button between tickets and the primary CTA */}
+          <a
+            href={`${BASE}/sign-in`}
+            className={`hidden rounded-full px-5 py-2.5 text-sm font-semibold transition-colors sm:inline-flex ${solid
+                ? "bg-brand/10 text-brand hover:bg-brand/20"
+                : "bg-paper/15 text-paper backdrop-blur-md hover:bg-paper/25"
+            }`}
+          >
+            Log in
+          </a>
           {ctas.map((c) => (
             <a
               key={c.id}

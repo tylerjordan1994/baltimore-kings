@@ -54,7 +54,8 @@ const fallbackNav: NavNode[] = [
   },
   { id: "tickets", label: "Tickets", href: `${BASE}/tickets`, isCta: false, featureCard: null, children: [] },
   { id: "merch", label: "Merch", href: "https://baltimorekings.printify.me/", isCta: false, featureCard: null, children: [] },
-  { id: "login", label: "Log in", href: `${BASE}/sign-in`, isCta: true, featureCard: null, children: [] },
+  // The header renders a dedicated tonal "Log in" button; the primary CTA here is Apply.
+  { id: "apply", label: "Apply", href: `${BASE}/join/apply`, isCta: true, featureCard: null, children: [] },
 ]
 
 export function SiteHeader({ logoUrl }: { logoUrl?: string | null } = {}) {
