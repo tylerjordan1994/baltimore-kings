@@ -10,40 +10,37 @@ const venues = [
     name: "The Court",
     role: "National training center — USA Futsal Federation (opening June 15)",
     address: "Forest Hill, MD — beside The Soccer Factory, 98 Industry Ln, Forest Hill, MD 21050",
-    mapEmbed: "https://www.google.com/maps?q=98+Industry+Ln+Forest+Hill+MD+21050&output=embed",
+    photo: "/project/football-team/photos/venue-the-court.jpg",
     features: [
       "Opening June 15, affiliated with The Soccer Factory in Maryland",
       "National training center of the USA Futsal Federation",
       "Home base for the U.S. Men's international futsal team",
-      "Purpose-built futsal courts right beside The Soccer Factory",
     ],
-    parking: "On-site parking at the Industry Lane complex in Forest Hill.",
+    parking: "On-site parking at the Industry Lane complex.",
   },
   {
     name: "Benfield Sportscenter",
     role: "Futsal home court & practice facility",
     address: "1031 Benfield Blvd, Millersville, MD 21108",
-    mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3094.8!2d-76.6274!3d39.0712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7fabc12345678%3A0xabcdef!2sBenfield+Sportscenter!5e0!3m2!1sen!2sus!4v1",
+    photo: "/project/football-team/photos/venue-benfield.webp",
     features: [
       "Dedicated futsal court with proper surface",
       "Indoor climate-controlled facility",
-      "Spectator seating",
-      "Locker rooms available",
+      "Spectator seating & locker rooms",
     ],
-    parking: "Free parking lot on-site. Ample space for game days.",
+    parking: "Free on-site parking lot.",
   },
   {
     name: "GOALS Baltimore",
     role: "MASL3 home arena",
     address: "6159 Edmondson Ave, Catonsville, MD 21228",
-    mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3094.8!2d-76.7274!3d39.2812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7fabc12345678%3A0xfedcba!2sGOALS+Baltimore!5e0!3m2!1sen!2sus!4v1",
+    photo: "/project/football-team/photos/venue-goals-baltimore.webp",
     features: [
       "Full-size arena soccer field with boards",
       "Professional lighting and sound",
-      "Spectator capacity for game day atmosphere",
       "Food and beverage available",
     ],
-    parking: "Street parking and nearby lot. Arrive early on game nights.",
+    parking: "Street parking and nearby lot.",
   },
 ]
 
@@ -67,60 +64,64 @@ export default function FacilitiesPage() {
         </div>
       </section>
 
-      <section className="bg-paper pb-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
-          {venues.map((venue) => (
-            <div
-              key={venue.name}
-              className="rounded-xl border border-border bg-white overflow-hidden"
-            >
-              {/* Map */}
-              <div className="aspect-video w-full bg-paper">
-                <iframe
-                  src={venue.mapEmbed}
-                  className="h-full w-full border-0"
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title={`Map of ${venue.name}`}
+      <section className="bg-paper pb-24 pt-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-6 md:grid-cols-3">
+            {venues.map((venue) => (
+              <div
+                key={venue.name}
+                className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-colors hover:border-accent/30"
+              >
+                {/* Photo */}
+                <img
+                  src={venue.photo}
+                  alt={venue.name}
+                  className="aspect-video w-full object-cover"
                 />
+
+                {/* Info */}
+                <div className="flex flex-1 flex-col p-5">
+                  <h2 className="font-heading text-lg font-semibold text-ink">{venue.name}</h2>
+                  <p className="mt-1 text-sm text-accent">{venue.role}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{venue.address}</p>
+
+                  <ul className="mt-4 space-y-1.5">
+                    {venue.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="mt-3 text-xs text-muted-foreground">{venue.parking}</p>
+
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-accent hover:underline"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-4 w-4"
+                      aria-hidden="true"
+                    >
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    View on map
+                  </a>
+                </div>
               </div>
-
-              {/* Info */}
-              <div className="p-6 sm:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
-                  <h2 className="font-heading text-xl font-semibold text-ink">{venue.name}</h2>
-                  <span className="text-sm text-accent">{venue.role}</span>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">{venue.address}</p>
-
-                <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Features</h3>
-                    <ul className="space-y-2">
-                      {venue.features.map((f) => (
-                        <li key={f} className="text-sm text-muted-foreground flex items-start gap-2">
-                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-accent flex-shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Parking</h3>
-                    <p className="text-sm text-muted-foreground">{venue.parking}</p>
-                  </div>
-                </div>
-
-                {/* Venue photos */}
-                <div className="mt-6 grid grid-cols-3 gap-2 overflow-hidden rounded-xl">
-                  <img src="/project/football-team/photos/court-outdoor.jpg" alt="Court exterior" className="aspect-video w-full object-cover rounded-lg" />
-                  <img src="/project/football-team/photos/ball-turf.jpg" alt="Ball on turf" className="aspect-video w-full object-cover rounded-lg" />
-                  <img src="/project/football-team/photos/court-aerial-2.jpg" alt="Court aerial view" className="aspect-video w-full object-cover rounded-lg" />
-                </div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     </>

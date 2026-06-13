@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Ticket,
   Circle,
   Diamond,
   Hexagon,
@@ -17,6 +18,7 @@ import {
   Users,
   MapPin,
 } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { HeaderLogo } from "@/components/header-logo"
 import type { NavNode } from "@/lib/nav"
 
@@ -39,8 +41,17 @@ export function DbSiteHeader({ nav, logoUrl }: { nav: NavNode[]; logoUrl?: strin
   const [open, setOpen] = useState<string | null>(null)
   const [mobile, setMobile] = useState(false)
   const [mobileOpen, setMobileOpen] = useState<string | null>(null)
+  const [scrolled, setScrolled] = useState(false)
   const ref = useRef<HTMLElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Scroll-aware theme: transparent/dark over the hero near the top, solid white once scrolled.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -59,34 +70,51 @@ export function DbSiteHeader({ nav, logoUrl }: { nav: NavNode[]; logoUrl?: strin
   const enter = (id: string) => { if (timer.current) clearTimeout(timer.current); setOpen(id) }
   const leave = () => { timer.current = setTimeout(() => setOpen(null), 150) }
 
+  // The transparent/dark theme is only correct over the homepage's dark hero.
+  // Every other route has a light background at the top, so the header stays
+  // solid/light there from the start (otherwise the nav would be white-on-white).
+  const pathname = usePathname()
+  const overHero = pathname === "/"
+  const solid = scrolled || !overHero
+
   const ctas = nav.filter((n) => n.isCta)
   const items = nav.filter((n) => !n.isCta)
 
   return (
     // backdrop-blur only on lg+: a filter creates a containing block that would trap the
     // fixed mobile overlay inside the header's box. The overlay only renders below lg.
-    <header ref={ref} className="sticky top-0 z-50 w-full border-b border-border bg-white/95 lg:backdrop-blur-xl">
+    <header
+      ref={ref}
+      className={`sticky top-0 z-50 w-full transition-colors duration-300 ${solid
+          ? "border-b border-border bg-white/95 lg:backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-20 lg:px-8">
         <a href={BASE} className="flex items-center gap-2">
           <HeaderLogo logoUrl={logoUrl ?? null} />
-          <span className="hidden font-heading text-lg font-bold tracking-tight text-ink sm:inline-block">Baltimore Kings</span>
+          <span className={`hidden font-heading text-lg font-bold tracking-tight transition-colors duration-300 sm:inline-block ${solid ? "text-ink" : "text-paper"}`}>Baltimore Kings</span>
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-1.5 rounded-full border border-border bg-paper/70 p-1.5 lg:flex">
+        <nav className={`hidden items-center gap-1.5 rounded-full border p-1.5 transition-colors duration-300 lg:flex ${solid ? "border-border bg-paper/70" : "border-paper/20 bg-paper/10"}`}>
           {items.map((n) =>
             n.children.length > 0 || n.href === null ? (
               <div key={n.id} onMouseEnter={() => enter(n.id)} onMouseLeave={leave}>
                 <button
                   onClick={() => setOpen(open === n.id ? null : n.id)}
-                  className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${open === n.id ? "bg-white text-ink shadow-sm" : "text-muted-foreground hover:bg-white hover:text-ink"}`}
+                  className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    open === n.id
+                      ? solid ? "bg-white text-ink shadow-sm" : "bg-paper/20 text-paper"
+                      : solid ? "text-muted-foreground hover:bg-white hover:text-ink" : "text-paper/80 hover:bg-paper/20 hover:text-paper"
+                  }`}
                 >
                   {n.label}
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open === n.id ? "rotate-180" : ""}`} />
                 </button>
               </div>
             ) : (
-              <a key={n.id} href={n.href ?? "#"} className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-white hover:text-ink">
+              <a key={n.id} href={n.href ?? "#"} className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${solid ? "text-muted-foreground hover:bg-white hover:text-ink" : "text-paper/80 hover:bg-paper/20 hover:text-paper"}`}>
                 {n.label}
               </a>
             ),
@@ -94,12 +122,29 @@ export function DbSiteHeader({ nav, logoUrl }: { nav: NavNode[]; logoUrl?: strin
         </nav>
 
         <div className="flex items-center gap-2">
+          <a
+            href={`${BASE}/tickets`}
+            aria-label="Buy tickets"
+            className={`hidden rounded-full p-2.5 transition-colors lg:inline-flex ${solid
+                ? "text-ink hover:bg-paper"
+                : "text-paper hover:bg-paper/20"
+            }`}
+          >
+            <Ticket className="h-5 w-5" />
+          </a>
           {ctas.map((c) => (
-            <a key={c.id} href={c.href ?? "#"} className="hidden rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-brand-light sm:inline-flex">
+            <a
+              key={c.id}
+              href={c.href ?? "#"}
+              className={`hidden rounded-full px-5 py-2.5 text-sm font-semibold transition-colors sm:inline-flex ${solid
+                  ? "bg-brand text-paper hover:bg-brand-light"
+                  : "bg-paper text-ink hover:bg-paper/90"
+              }`}
+            >
               {c.label}
             </a>
           ))}
-          <button onClick={() => setMobile(!mobile)} className="rounded-full p-2 text-ink lg:hidden" aria-label="Menu">
+          <button onClick={() => setMobile(!mobile)} className={`rounded-full p-2 transition-colors lg:hidden ${solid ? "text-ink" : "text-paper"}`} aria-label="Menu">
             <Menu className="h-5 w-5" />
           </button>
         </div>
@@ -107,7 +152,8 @@ export function DbSiteHeader({ nav, logoUrl }: { nav: NavNode[]; logoUrl?: strin
 
       {/* Desktop mega menu panel — one large panel under the header */}
       {items.map((n) => {
-        if (open !== n.id || n.children.length === 0) return null
+        if (n.children.length === 0) return null
+        const isOpen = open === n.id
         const mid = Math.ceil(n.children.length / 2)
         const colA = n.children.slice(0, mid)
         const colB = n.children.slice(mid)
@@ -116,7 +162,9 @@ export function DbSiteHeader({ nav, logoUrl }: { nav: NavNode[]; logoUrl?: strin
             key={n.id}
             onMouseEnter={() => enter(n.id)}
             onMouseLeave={leave}
-            className="absolute inset-x-0 top-full hidden justify-center px-6 pt-2 lg:flex"
+            className={`absolute inset-x-0 top-full hidden justify-center px-6 pt-2 transition-all duration-200 ease-out lg:flex ${
+              isOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+            }`}
           >
             <div className="w-full max-w-6xl overflow-hidden rounded-3xl border border-border bg-paper shadow-2xl">
               <div className="grid grid-cols-[minmax(260px,340px)_1fr] gap-8 p-4">

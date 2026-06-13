@@ -19,6 +19,8 @@ import {
   MagneticButton,
   TiltCard,
 } from "@/components/home-motion"
+import { HeroLockup } from "@/components/hero-lockup"
+import { ElfsightInstagram } from "@/components/elfsight-instagram"
 
 const BP = "/project/football-team"
 
@@ -45,7 +47,15 @@ const PROGRAMS = [
     league: "Major Arena Soccer League 2",
     name: "Salisbury Steaks",
     photo: `${BP}/photos/player-arena.jpg`,
-    copy: "The club's MASL2 side and the top of the arena pathway — drawn from across the Kings squads. The club also runs a Kings team at MASL3.",
+    copy: "The club's MASL2 side and the top of the arena pathway — drawn from across the Kings squads.",
+    feature: false,
+  },
+  {
+    href: "/teams/kings-masl3",
+    league: "Major Arena Soccer League 3",
+    name: "Kings MASL3",
+    photo: `${BP}/photos/masl3-team.jpg`,
+    copy: "The club's MASL3 arena side — fast, physical six-a-side soccer and the proving ground on the road toward MASL2.",
     feature: false,
   },
 ]
@@ -86,22 +96,6 @@ const SPONSOR_TIERS: Array<{
   },
 ]
 
-type SocialPost = {
-  id: string
-  source: string
-  caption: string | null
-  media_url: string | null
-  external_url: string | null
-  posted_at: string | null
-}
-
-function formatPostDate(value: string | null) {
-  if (!value) return ""
-  const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return ""
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-}
-
 export default async function HomePage() {
   // CMS override: if a coach has marked a published Puck page as "home", it
   // renders at the site root. Otherwise the built-in homepage below is the default.
@@ -120,21 +114,13 @@ export default async function HomePage() {
 
   const supabase = await createClient()
 
-  const [{ data: sponsorData }, { data: socialData }] = await Promise.all([
-    supabase
-      .from("sponsors")
-      .select("id, name, logo_url, website_url, tier, description")
-      .eq("is_active", true)
-      .order("order_index", { ascending: true }),
-    supabase
-      .from("social_posts")
-      .select("id, source, caption, media_url, external_url, posted_at")
-      .order("posted_at", { ascending: false, nullsFirst: false })
-      .limit(6),
-  ])
+  const { data: sponsorData } = await supabase
+    .from("sponsors")
+    .select("id, name, logo_url, website_url, tier, description")
+    .eq("is_active", true)
+    .order("order_index", { ascending: true })
 
   const sponsors = (sponsorData as Sponsor[] | null) ?? []
-  const socialPosts = (socialData as SocialPost[] | null) ?? []
 
   const sponsorTiers = SPONSOR_TIERS.map((tier) => ({
     ...tier,
@@ -144,106 +130,101 @@ export default async function HomePage() {
   return (
     <>
       {/* ═══════════════ 1. CINEMATIC HERO ═══════════════ */}
-      <section className="relative isolate min-h-[88vh] overflow-hidden bg-court">
+      <section className="relative isolate min-h-[92vh] overflow-hidden bg-court">
         {/* Full-bleed background photo */}
         <div className="absolute inset-0 -z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`${BP}/photos/court-sunset.jpg`}
-            alt="Baltimore Kings indoor futsal court at sunset"
+            src={`${BP}/photos/hero-background.png`}
+            alt="Baltimore Kings players on the futsal court"
             className="h-full w-full object-cover"
           />
           {/* Cinematic dark gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-court via-court/55 to-court/70" />
-          <div className="absolute inset-0 bg-gradient-to-r from-court/85 via-court/30 to-court/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-court via-court/45 to-court/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-court/60 via-transparent to-court/80" />
         </div>
 
-        <div className="mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 sm:pb-24 lg:px-8 lg:pb-28 lg:pt-36">
-          <div className="grid items-end gap-10 lg:grid-cols-12">
-            {/* Headline block */}
-            <div className="lg:col-span-7">
-              <Reveal variant="up">
-                <span className="inline-flex items-center gap-2 rounded-full border border-paper/20 bg-paper/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-paper backdrop-blur-md">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                  Est. 2012 &middot; Baltimore, MD
-                </span>
-              </Reveal>
-              <Reveal variant="up" delay={140}>
-                <h1 className="mt-6 font-heading text-[3rem] leading-[0.92] tracking-tight text-paper sm:text-7xl lg:text-8xl xl:text-[8.5rem]">
-                  Baltimore&apos;s
-                  <br />
-                  <span className="text-accent">Futsal Club.</span>
-                </h1>
-              </Reveal>
-              <Reveal variant="up" delay={280}>
-                <p className="mt-7 max-w-xl text-base leading-relaxed text-paper/80 sm:text-lg">
-                  Year-round development through Pro-SA League 1 Futsal, plus
-                  MASL3 arena soccer when the lights come on. Train sharper,
-                  compete higher — built in Baltimore since 2012.
-                </p>
-              </Reveal>
-              <Reveal variant="up" delay={420}>
-                <div className="mt-9 flex flex-wrap items-center gap-4">
-                  <MagneticButton
-                    href={`${BP}/join/apply`}
-                    className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-ink shadow-lg shadow-accent/25 hover:bg-accent-light"
-                  >
-                    Apply for a tryout
-                    <ArrowRight className="h-4 w-4" />
-                  </MagneticButton>
-                  <Link
-                    href="/schedule"
-                    className="inline-flex items-center rounded-full border border-paper/35 bg-paper/5 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-paper backdrop-blur-md transition-colors hover:bg-paper/15"
-                  >
-                    See the schedule
-                  </Link>
-                </div>
-              </Reveal>
-            </div>
+        <div className="mx-auto flex min-h-[92vh] max-w-5xl flex-col items-center justify-center px-4 pb-16 pt-28 text-center sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
+          <Reveal variant="up">
+            <span className="inline-flex items-center gap-2 rounded-full border border-paper/20 bg-paper/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-paper backdrop-blur-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Est. 2012 &middot; Baltimore, MD
+            </span>
+          </Reveal>
 
-            {/* Overlaid membership/tryout card — lower right */}
-            <div className="lg:col-span-5 lg:pb-2">
-              <Reveal variant="up" delay={360}>
-                <div className="float-bob ml-auto w-full max-w-sm rounded-3xl border border-paper/15 bg-white/95 p-7 shadow-2xl shadow-court/40 backdrop-blur-xl">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
-                      Tryouts Open
-                    </p>
-                    <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-dark">
-                      2026 Season
-                    </span>
-                  </div>
-                  <p className="mt-3 font-heading text-3xl leading-tight text-ink">
-                    Join the Kings.
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Open trials for all three squads. Outfield and goalkeepers
-                    welcome — futsal experience a bonus, not a requirement.
-                  </p>
-                  <ul className="mt-5 space-y-2.5 border-t border-border pt-5 text-sm text-ink">
-                    {[
-                      "League 1 Futsal & MASL3 pathways",
-                      "Benfield Sports & GOALS Baltimore",
-                      "Year-round structured development",
-                    ].map((line) => (
-                      <li key={line} className="flex items-center gap-2.5">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                        {line}
-                      </li>
-                    ))}
-                  </ul>
-                  <MagneticButton
-                    href={`${BP}/join/apply`}
-                    strength={0.25}
-                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper hover:bg-brand-light"
-                  >
-                    Start application
-                    <ArrowRight className="h-4 w-4" />
-                  </MagneticButton>
-                </div>
-              </Reveal>
+          {/* Typographic "Baltimore Kings" lockup */}
+          <Reveal variant="up" delay={120}>
+            <div className="mt-7">
+              <HeroLockup />
             </div>
-          </div>
+          </Reveal>
+
+          <Reveal variant="up" delay={260}>
+            <p className="mt-7 max-w-xl text-base leading-relaxed text-paper/80 sm:text-lg">
+              Year-round development through Pro-SA League 1 Futsal, plus MASL3
+              arena soccer when the lights come on. Train sharper, compete
+              higher — built in Baltimore since 2012.
+            </p>
+          </Reveal>
+
+          <Reveal variant="up" delay={400}>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+              <MagneticButton
+                href={`${BP}/join/apply`}
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-ink shadow-lg shadow-accent/25 hover:bg-accent-light"
+              >
+                Apply for a tryout
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+              <Link
+                href="/schedule"
+                className="inline-flex items-center rounded-full border border-paper/35 bg-paper/5 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-paper backdrop-blur-md transition-colors hover:bg-paper/15"
+              >
+                See the schedule
+              </Link>
+            </div>
+          </Reveal>
+
+          {/* Membership / tryout card */}
+          <Reveal variant="up" delay={520}>
+            <div className="float-bob mt-14 w-full max-w-md rounded-3xl border border-paper/15 bg-white/95 p-7 text-left shadow-2xl shadow-court/40 backdrop-blur-xl">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+                  Tryouts Open
+                </p>
+                <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-dark">
+                  2026 Season
+                </span>
+              </div>
+              <p className="mt-3 font-heading text-3xl leading-tight text-ink">
+                Join the Kings.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Open trials for all four squads. Outfield and goalkeepers
+                welcome — futsal experience a bonus, not a requirement.
+              </p>
+              <ul className="mt-5 space-y-2.5 border-t border-border pt-5 text-sm text-ink">
+                {[
+                  "League 1 Futsal & MASL3 pathways",
+                  "Benfield Sports & GOALS Baltimore",
+                  "Year-round structured development",
+                ].map((line) => (
+                  <li key={line} className="flex items-center gap-2.5">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                    {line}
+                  </li>
+                ))}
+              </ul>
+              <MagneticButton
+                href={`${BP}/join/apply`}
+                strength={0.25}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper hover:bg-brand-light"
+              >
+                Start application
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -327,7 +308,7 @@ export default async function HomePage() {
               </Reveal>
               <Reveal variant="up" delay={120}>
                 <h2 className="mt-3 max-w-xl font-heading text-3xl leading-tight text-ink sm:text-5xl">
-                  Three squads. One development pathway.
+                  Four squads. One development pathway.
                 </h2>
               </Reveal>
             </div>
@@ -432,8 +413,8 @@ export default async function HomePage() {
             <Reveal variant="left">
               <div className="relative">
                 <Parallax
-                  src={`${BP}/photos/player-light.jpg`}
-                  alt="Baltimore Kings player in dramatic light"
+                  src={`${BP}/photos/kenny.png`}
+                  alt="Baltimore Kings player crouched in green neon light"
                   strength={50}
                   className="aspect-[4/5] w-full rounded-[28px]"
                 />
@@ -509,9 +490,12 @@ export default async function HomePage() {
       </section>
 
       {/* ═══════════════ 6. PINNED ACTION SHOWCASE ═══════════════ */}
-      <section className="relative bg-court">
+      {/* isolate + an explicit 200vh track so the two stacked h-screen panels
+          fit inside the section instead of overflowing and rendering behind the
+          venues section below. */}
+      <section className="relative isolate bg-court">
         {/* Sticky/pinned full-bleed image with scrolling copy over it */}
-        <div className="relative">
+        <div className="relative h-[200vh]">
           <div className="sticky top-0 h-screen overflow-hidden">
             <Parallax
               src={`${BP}/photos/futsal-action.jpg`}
@@ -588,27 +572,33 @@ export default async function HomePage() {
           </Reveal>
           <Reveal variant="up" delay={110}>
             <h2 className="mt-3 max-w-xl font-heading text-3xl leading-tight text-ink sm:text-5xl">
-              Two homes across the Baltimore area.
+              Three homes across the Baltimore area.
             </h2>
           </Reveal>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                photo: `${BP}/photos/court-aerial-1.jpg`,
+                photo: `${BP}/photos/venue-benfield.webp`,
                 tag: "Home Pitch — Futsal",
-                name: "Benfield Sports",
+                name: "Benfield Sportscenter",
                 addr: "1031 Benfield Blvd, Millersville, MD 21108",
               },
               {
-                photo: `${BP}/photos/player-arena.jpg`,
+                photo: `${BP}/photos/venue-goals-baltimore.webp`,
                 tag: "Home Arena — MASL3",
                 name: "GOALS Baltimore",
                 addr: "6159 Edmondson Ave, Catonsville, MD 21228",
               },
+              {
+                photo: `${BP}/photos/venue-the-court.jpg`,
+                tag: "Training — USA Futsal Federation",
+                name: "The Court",
+                addr: "98 Industry Ln, Forest Hill, MD 21050",
+              },
             ].map((v, i) => (
-              <Reveal key={v.name} variant={i === 0 ? "left" : "right"}>
-                <div className="lift-card overflow-hidden rounded-2xl border border-border bg-white">
+              <Reveal key={v.name} variant={i === 0 ? "left" : i === 1 ? "up" : "right"}>
+                <div className="lift-card h-full overflow-hidden rounded-2xl border border-border bg-white">
                   <div className="zoom-frame relative aspect-[16/9] w-full">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -667,90 +657,12 @@ export default async function HomePage() {
             </Reveal>
           </div>
 
-          {socialPosts.length > 0 ? (
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {socialPosts.map((post, i) => {
-                const Wrapper = post.external_url ? "a" : "div"
-                const wrapperProps = post.external_url
-                  ? {
-                      href: post.external_url,
-                      target: "_blank",
-                      rel: "noopener noreferrer",
-                    }
-                  : {}
-                return (
-                  <Reveal key={post.id} variant="up" delay={i * 90}>
-                    <Wrapper
-                      {...wrapperProps}
-                      className="lift-card group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white"
-                    >
-                      {/* Media */}
-                      <div className="zoom-frame relative aspect-square w-full overflow-hidden bg-court">
-                        {post.media_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={post.media_url}
-                            alt={post.caption ?? "Baltimore Kings social post"}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-brand via-court to-court">
-                            <Camera className="h-10 w-10 text-accent" />
-                            <span className="mt-3 font-heading text-sm uppercase tracking-widest text-paper/70">
-                              Baltimore Kings
-                            </span>
-                          </div>
-                        )}
-                        <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-court/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-paper backdrop-blur-sm">
-                          <Camera className="h-3 w-3" />
-                          {post.source}
-                        </span>
-                      </div>
-                      {/* Caption */}
-                      <div className="flex flex-1 flex-col justify-between p-5">
-                        <p className="line-clamp-3 text-sm leading-relaxed text-ink">
-                          {post.caption ?? "Baltimore Kings"}
-                        </p>
-                        <div className="mt-4 flex items-center justify-between">
-                          <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
-                            {formatPostDate(post.posted_at)}
-                          </span>
-                          {post.external_url && (
-                            <span className="inline-flex items-center text-xs font-semibold text-brand">
-                              View post
-                              <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </Wrapper>
-                  </Reveal>
-                )
-              })}
+          {/* Live Instagram feed via Elfsight (hosted widget — no Meta app needed). */}
+          <Reveal variant="up">
+            <div className="mt-12">
+              <ElfsightInstagram appId="0bda6fe2-f178-4299-b132-ec031b3b4b3d" />
             </div>
-          ) : (
-            <Reveal variant="up">
-              <div className="mt-12 flex flex-col items-center justify-center rounded-2xl border border-dashed border-ink/20 bg-white px-6 py-16 text-center">
-                <Camera className="h-10 w-10 text-accent" />
-                <p className="mt-4 font-heading text-xl text-ink">
-                  Follow the Kings on Instagram
-                </p>
-                <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                  New posts from matchday and training will show up here. In the
-                  meantime, catch the latest on our feed.
-                </p>
-                <a
-                  href="https://www.instagram.com/baltimoreprofutsal/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper transition-colors hover:bg-brand-light"
-                >
-                  <Camera className="h-4 w-4" />
-                  @baltimoreprofutsal
-                </a>
-              </div>
-            </Reveal>
-          )}
+          </Reveal>
         </div>
       </section>
 

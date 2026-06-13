@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Archivo_Black, Plus_Jakarta_Sans } from "next/font/google"
+import { Archivo_Black, Plus_Jakarta_Sans, DM_Serif_Display, Great_Vibes } from "next/font/google"
 import "./globals.css"
 import { Preloader } from "@/components/preloader"
 
@@ -13,6 +13,21 @@ const archivoBlack = Archivo_Black({
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+})
+
+// Hero lockup: thick display serif for "Baltimore", elegant script for "Kings".
+const dmSerif = DM_Serif_Display({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+})
+
+const greatVibes = Great_Vibes({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-script",
   display: "swap",
 })
 
@@ -41,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${archivoBlack.variable}`}>
+    <html lang="en" className={`${plusJakarta.variable} ${archivoBlack.variable} ${dmSerif.variable} ${greatVibes.variable}`}>
       <body className="min-h-screen bg-paper text-ink antialiased">
         <Preloader />
         {children}
