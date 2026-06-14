@@ -192,42 +192,49 @@ export default async function HomePage() {
 
           {/* Membership / tryout card */}
           <Reveal variant="up" delay={520}>
-            <div className="float-bob mt-14 w-full max-w-md rounded-3xl border border-paper/15 bg-white/95 p-7 text-left shadow-2xl shadow-court/40 backdrop-blur-xl">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
-                  Tryouts Open
+            <div className="mt-14 grid w-full max-w-3xl gap-x-10 gap-y-6 rounded-3xl border border-paper/15 bg-white/95 p-8 text-left shadow-2xl shadow-court/40 backdrop-blur-xl md:grid-cols-2 md:items-center">
+              {/* Left: pitch */}
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+                    Tryouts Open
+                  </p>
+                  <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-dark">
+                    2026 Season
+                  </span>
+                </div>
+                <p className="mt-3 font-heading text-3xl leading-tight text-ink">
+                  Join the Kings.
                 </p>
-                <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-dark">
-                  2026 Season
-                </span>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  Open trials for all four squads. Outfield and goalkeepers
+                  welcome — futsal experience a bonus, not a requirement.
+                </p>
               </div>
-              <p className="mt-3 font-heading text-3xl leading-tight text-ink">
-                Join the Kings.
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Open trials for all four squads. Outfield and goalkeepers
-                welcome — futsal experience a bonus, not a requirement.
-              </p>
-              <ul className="mt-5 space-y-2.5 border-t border-border pt-5 text-sm text-ink">
-                {[
-                  "League 1 Futsal & MASL3 pathways",
-                  "Benfield Sports & GOALS Baltimore",
-                  "Year-round structured development",
-                ].map((line) => (
-                  <li key={line} className="flex items-center gap-2.5">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                    {line}
-                  </li>
-                ))}
-              </ul>
-              <MagneticButton
-                href={`${BP}/join/apply`}
-                strength={0.25}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper hover:bg-brand-light"
-              >
-                Start application
-                <ArrowRight className="h-4 w-4" />
-              </MagneticButton>
+
+              {/* Right: details + CTA */}
+              <div className="border-t border-border pt-6 md:border-l md:border-t-0 md:pl-10 md:pt-0">
+                <ul className="space-y-2.5 text-sm text-ink">
+                  {[
+                    "League 1 Futsal & MASL3 pathways",
+                    "Benfield Sports & GOALS Baltimore",
+                    "Year-round structured development",
+                  ].map((line) => (
+                    <li key={line} className="flex items-center gap-2.5">
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+                <MagneticButton
+                  href={`${BP}/join/apply`}
+                  strength={0.25}
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-paper hover:bg-brand-light"
+                >
+                  Start application
+                  <ArrowRight className="h-4 w-4" />
+                </MagneticButton>
+              </div>
             </div>
           </Reveal>
         </div>
