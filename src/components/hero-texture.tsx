@@ -1,41 +1,51 @@
 /**
- * Moving line-grid texture layered over the hero background: two grids of thin
- * lines (a fine paper grid and a wider accent grid) panning in opposite
- * directions, plus a floating warm glow for depth. Pure CSS, decorative only.
- * Each grid is oversized (inset -50%) so it can translate one full cell and
- * loop seamlessly. Keyframes live in globals.css.
+ * Gold & black smoke rising subtly from the bottom of the hero — layered over
+ * the background image but behind the content. Several large, heavily-blurred
+ * radial "puffs" drift upward and fade on a loop; negative animation delays
+ * keep the smoke continuous. Pure CSS (keyframes in globals.css), decorative.
  */
+
+type Puff = {
+  left: string
+  size: number
+  color: string
+  dur: number
+  delay: number
+  drift: number
+  spin: number
+}
+
+// Alternating warm-gold and charcoal-black puffs across the width.
+const PUFFS: Puff[] = [
+  { left: "10%", size: 300, color: "rgba(201,169,78,0.22)", dur: 14, delay: 0, drift: -28, spin: -10 },
+  { left: "24%", size: 380, color: "rgba(22,20,17,0.60)", dur: 18, delay: -7, drift: 24, spin: 8 },
+  { left: "40%", size: 320, color: "rgba(201,169,78,0.16)", dur: 15, delay: -11, drift: -16, spin: 12 },
+  { left: "56%", size: 420, color: "rgba(18,16,14,0.55)", dur: 20, delay: -4, drift: 34, spin: -8 },
+  { left: "70%", size: 320, color: "rgba(201,169,78,0.20)", dur: 16, delay: -9, drift: -24, spin: 10 },
+  { left: "86%", size: 360, color: "rgba(22,20,17,0.55)", dur: 17, delay: -13, drift: 16, spin: -12 },
+]
+
 export function HeroTexture() {
   return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 overflow-hidden"
-      // Fade the grids out toward the top so they don't fight the headline.
-      style={{
-        maskImage: "linear-gradient(to bottom, transparent, #000 22%, #000 100%)",
-        WebkitMaskImage: "linear-gradient(to bottom, transparent, #000 22%, #000 100%)",
-      }}
-    >
-      {/* Fine grid, panning down-right */}
-      <div
-        className="absolute inset-[-50%] animate-[bk-grid-pan_9s_linear_infinite] opacity-[0.05]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(246,244,238,0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(246,244,238,0.5) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-        }}
-      />
-      {/* Wider accent grid, panning up-left for parallax */}
-      <div
-        className="absolute inset-[-50%] animate-[bk-grid-pan-rev_18s_linear_infinite] opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(201,169,78,0.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(201,169,78,0.6) 1px, transparent 1px)",
-          backgroundSize: "180px 180px",
-        }}
-      />
-      {/* Floating warm glow */}
-      <div className="absolute left-[28%] top-[36%] h-[55vmax] w-[55vmax] -translate-x-1/2 -translate-y-1/2 animate-[bk-glow-float_22s_ease-in-out_infinite_alternate] rounded-full bg-[radial-gradient(circle,rgba(201,169,78,0.16),transparent_60%)] blur-2xl" />
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* Soft gold bed glowing along the bottom edge */}
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(to_top,rgba(201,169,78,0.10),transparent)]" />
+      {PUFFS.map((p, i) => (
+        <span
+          key={i}
+          className="absolute bottom-[-8%] block rounded-full blur-2xl will-change-transform"
+          style={{
+            left: p.left,
+            width: p.size,
+            height: p.size,
+            background: `radial-gradient(circle, ${p.color}, transparent 70%)`,
+            // CSS vars consumed by the bk-smoke keyframes (drift + spin)
+            ["--drift" as string]: `${p.drift}px`,
+            ["--spin" as string]: `${p.spin}deg`,
+            animation: `bk-smoke ${p.dur}s ease-in ${p.delay}s infinite`,
+          }}
+        />
+      ))}
     </div>
   )
 }
